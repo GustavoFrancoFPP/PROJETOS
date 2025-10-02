@@ -1,0 +1,375 @@
+/* Corpo principal */
+body.corpo-1 {
+    margin: 0;
+    padding: 0;
+    font-family: 'Arial', sans-serif;
+    /* Nota: Substitua o 'url' pelo caminho real da sua imagem de fundo */
+    background: url("imagens/halteres-no-chao-de-uma-academia-ai-generative.jpg") no-repeat center center;
+    background-size: cover;
+    height: 100vh;
+    display: flex; /* Habilita flexbox para organizar o conteúdo */
+    align-items: center; /* Centraliza verticalmente os containers */
+    justify-content: center; /* Centraliza horizontalmente o wrapper */
+    color: white;
+    position: relative;
+    overflow-y: auto; /* Para permitir scroll se o conteúdo for muito grande */
+}
+
+/* Overlay para melhor contraste */
+.overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0.3) 100%);
+    z-index: 1;
+}
+
+/* Wrapper para o conteúdo principal e o container da direita */
+.main-content-wrapper {
+    display: flex;
+    gap: 60px; /* Espaçamento entre os dois containers */
+    width: 90%; /* Largura total do wrapper */
+    max-width: 1300px; /* Largura máxima para desktops */
+    position: relative;
+    z-index: 2;
+    padding: 40px 0; /* Padding vertical para garantir que não cole nas bordas */
+    align-items: flex-start; /* Alinha o conteúdo ao topo de cada coluna */
+}
+
+/* Container da Esquerda (conteúdo existente) */
+.left-container {
+    flex: 2; /* Ocupa mais espaço que o da direita */
+    max-width: 600px;
+    animation: fadeInUp 1.2s ease-in-out;
+    padding-left: 20px; /* Padding para afastar do canto esquerdo */
+}
+
+/* Cabeçalho */
+header {
+    margin-bottom: 30px;
+}
+
+header img {
+    max-width: 120px;
+    display: block;
+    margin-bottom: 10px;
+}
+
+header h2 {
+    font-size: 32px;
+    font-weight: bold;
+    margin: 0;
+    line-height: 1.2;
+}
+
+/* Container dos textos de destaque */
+.textos-container {
+    margin-bottom: 50px; /* Mais espaçamento após os textos de destaque */
+}
+
+/* Textos de destaque */
+.destaque {
+    background: rgba(255, 255, 255, 0.95);
+    color: #000;
+    padding: 16px 24px;
+    border-radius: 25px;
+    margin: 18px 0; /* Mais espaçamento entre eles */
+    font-weight: 600;
+    font-size: 18px;
+    animation: fadeInLeft 1s ease-in-out;
+    display: block;
+    width: fit-content;
+    max-width: 550px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    border: 2px solid rgba(255, 255, 255, 0.8);
+    text-decoration: none;
+    margin-top: 50px;
+    /* Removido o margin-top: 50px; que estava aqui */
+}
+
+.destaque-1 { animation-delay: 0.2s; }
+.destaque-2 { animation-delay: 0.4s; }
+.destaque-3 { animation-delay: 0.6s; }
+
+/* Container dos botões */
+.botoes-container {
+    display: flex;
+    gap: 15px;
+    margin-top: 30px;
+    animation: fadeInUp 1.5s ease-in-out;
+    animation-delay: 0.8s;
+    animation-fill-mode: both;
+}
+
+/* Botões - GARANTE O MESMO TAMANHO */
+.botao {
+    padding: 16px 32px;
+    border: 2px solid #00bcd4;
+    border-radius: 30px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 180px; 
+    height: 52px;
+    justify-content: center;
+    text-decoration: none;
+    box-sizing: border-box;
+    margin-top: 100px;
+    /* Removido o margin-top: 100px; que estava aqui */
+}
+
+/* Botão primário */
+.botao.login {
+    background: white;
+    color: #000;
+}
+
+/* Botão secundário */
+.botao.cadastrar {
+    background: #00bcd4;
+    color: #000;
+}
+
+/* Hover dos botões */
+.botao:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(0,0,0,0.3);
+}
+
+.botao.login:hover {
+    background: #f8f8f8;
+}
+
+.botao.cadastrar:hover {
+    background: #00a8cc;
+    border-color: #00a8cc;
+}
+
+/* Ícones */
+.material-symbols-outlined {
+    font-size: 20px;
+    vertical-align: middle;
+}
+
+/* NOVO: Container da Direita (Criadores) */
+.right-container {
+    flex: 1; /* Ocupa menos espaço que o da esquerda */
+    background: rgba(0, 0, 0, 0.7); /* Fundo semi-transparente */
+    border-radius: 15px;
+    padding: 30px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    /* Removido justify-content: center para centralizar os itens verticalmente sem quebras */
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+    animation: fadeInRight 1.2s ease-in-out; /* Animação para surgir da direita */
+}
+
+.right-container h3 {
+    font-size: 24px;
+    margin-bottom: 25px;
+    color: #00bcd4; /* Cor de destaque para o título */
+}
+
+/* NOVO: Container para agrupar as duas imagens lado a lado */
+.creators-group {
+    display: flex;
+    gap: 30px;
+    margin-bottom: 25px;
+    justify-content: center;
+}
+
+.creator-profile {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.creators-image {
+    width: 150px; /* Tamanho ajustado para caberem lado a lado */
+    height: 150px;
+    border-radius: 50%; /* Imagem redonda */
+    object-fit: cover; /* Garante que a imagem preencha o círculo */
+    margin-bottom: 10px;
+    border: 3px solid #00bcd4; /* Borda ao redor da imagem */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+.creator-name {
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 15px;
+    color: white;
+}
+
+.creator-story {
+    font-size: 15px;
+    line-height: 1.6;
+    text-align: justify;
+    max-width: 350px; /* Limita a largura do texto da história */
+    color: #ccc;
+    margin-top: 10px;
+}
+
+/* ===== Animações ===== */
+@keyframes fadeInUp {
+    0% {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeInLeft {
+    0% {
+        opacity: 0;
+        transform: translateX(-30px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+/* Animação para o container da direita */
+@keyframes fadeInRight {
+    0% {
+        opacity: 0;
+        transform: translateX(30px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+
+/* Responsividade */
+@media (max-width: 1024px) {
+    .main-content-wrapper {
+        flex-direction: column; /* Coloca os containers um abaixo do outro */
+        align-items: center; /* Centraliza o conteúdo */
+        gap: 40px; /* Espaçamento entre os containers */
+        width: 95%;
+        padding: 30px 0;
+    }
+
+    .left-container {
+        padding-left: 0;
+        text-align: center;
+        max-width: 90%;
+    }
+
+    header img {
+        margin: 0 auto 10px auto;
+    }
+
+    .textos-container {
+        margin-bottom: 30px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .destaque {
+        max-width: 90%;
+        text-align: center;
+        margin: 15px auto; /* Centraliza os destaques */
+    }
+
+    .botoes-container {
+        flex-direction: column;
+        gap: 12px;
+        margin-top: 25px;
+        align-items: center;
+    }
+
+    .botao {
+        min-width: 250px; 
+    }
+
+    .right-container {
+        max-width: 90%;
+        padding: 25px;
+    }
+
+    /* Ajuste no mobile: quebra as imagens dos criadores se for preciso */
+    .creators-group {
+        flex-wrap: wrap; 
+        justify-content: space-around;
+        gap: 20px;
+    }
+
+    .creators-image {
+        width: 120px;
+        height: 120px;
+    }
+
+    .creator-story {
+        max-width: 90%;
+    }
+}
+
+@media (max-width: 768px) {
+    header h2 {
+        font-size: 28px;
+    }
+    .destaque {
+        font-size: 16px;
+        padding: 14px 20px;
+    }
+    .botao {
+        font-size: 15px;
+        padding: 12px 25px;
+        border-radius: 25px;
+        min-width: 220px;
+    }
+    .right-container h3 {
+        font-size: 20px;
+    }
+    .creator-name {
+        font-size: 18px;
+    }
+    .creator-story {
+        font-size: 14px;
+    }
+}
+
+@media (max-width: 480px) {
+    header h2 {
+        font-size: 24px;
+    }
+    header img {
+        max-width: 100px;
+    }
+    .destaque {
+        font-size: 14px;
+        padding: 12px 18px;
+        margin: 12px auto;
+    }
+    .botao {
+        min-width: 180px;
+        height: 48px;
+        font-size: 14px;
+    }
+    body.corpo-1 {
+        padding: 20px 0;
+    }
+    .main-content-wrapper {
+        gap: 30px;
+    }
+    .creators-image {
+        width: 100px; /* Reduzido para telas muito pequenas */
+        height: 100px;
+    }
+}
