@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>TECHFIT - Login</title>
+  <link rel="stylesheet" href="login.css">
+</head>
+<body>
+  <div class="auth">
+    <div class="tabs">
+      <button class="tab active" data-tab="login">Login</button>
+      <button class="tab" data-tab="cad">Cadastro</button>
+    </div>
+
+    <!-- LOGIN -->
+    <form id="loginForm" class="form active">
+      <h1>Login</h1>
+      <p>Digite seus dados de acesso:</p>
+
+      <label for="usuario">Usuário/Email:</label>
+      <input id="usuario" type="text" placeholder="Digite seu usuário ou email" required>
+
+      <label for="senha">Senha:</label>
+      <input id="senha" type="password" placeholder="Digite sua senha" required>
+
+      <button type="submit">Acessar</button>
+    </form>
+
+    <!-- CADASTRO -->
+    <form id="cadForm" class="form">
+      <h1>Cadastro</h1>
+      <p>Preencha seus dados para se cadastrar:</p>
+
+            <label for="usuario">Usuário/Email:</label>
+      <input id="usuario" type="text" placeholder="Digite seu usuário ou email" required>
+
+      <label for="senha">Senha:</label>
+      <input id="senha" type="password" placeholder="Digite sua senha" required>
+      
+      <label for="cpf">CPF:</label>
+      <input id="cpf" type="text" placeholder="Digite seu CPF" required>
+
+      <label for="endereco">Endereço:</label>
+      <input id="endereco" type="text" placeholder="Digite seu endereço" required>
+
+      <button type="submit">Cadastrar</button>
+    </form>
+  </div>
+
+  <script src="login.js"></script>
+</body>
+</html>
