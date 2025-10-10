@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TECHFIT - Sistema Completo</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <style>
+        /* --- 1. GLOBAIS, VARIÁVEIS E CONTROLE DE PÁGINA --- */
+:root {
+    --cor-principal: #00D1B2;
+    --cor-fundo-escuro: #121212;
+    --cor-card-escuro: rgba(30, 30, 30, 0.85);
+    --cor-texto-primario: #FFFFFF;
+    --cor-texto-secundario: #B3B3B3;
+    --cor-borda-sutil: #444444;
+    --cor-erro: #F14668;
+    --cor-sucesso: #00D1B2;
+    --cor-estrela: #fdd835;
+    --font-principal: 'Poppins', sans-serif;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+    font-family: var(--font-principal);
+    background-color: var(--cor-fundo-escuro);
+    background-image: url('https://images.unsplash.com/photo-1581009137052-5a4de9973f71?q=80&w=2940&auto=format&fit=crop');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    color: var(--cor-texto-primario);
+    line-height: 1.6;
+}
+
+.container { max-width: 1400px; margin: 0 auto; padding: 20px; }
+
+.page-section { display: none; animation: fadeIn 0.5s ease-in-out; }
+.page-section.active { display: block; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+
+/* --- 2. HEADER, FOOTER E COMPONENTES COMUNS --- */
+.main-header { background-color: rgba(0, 0, 0, 0.7); backdrop-filter: blur(10px); padding: 15px 0; border-bottom: 1px solid rgba(255, 255, 255, 0.1); position: sticky; top: 0; z-index: 1000; }
+.navbar { display: flex; justify-content: space-between; align-items: center; }
+.logo { display: flex; align-items: center; text-decoration: none; }
+.logo-img { height: 45px; }
+.main-nav { display: flex; gap: 35px; list-style: none; }
+.nav-link { font-size: 1rem; font-weight: 500; color: var(--cor-texto-secundario); text-decoration: none; transition: color 0.3s ease; cursor: pointer; }
+.nav-link:hover, .nav-link.active { color: var(--cor-principal); }
+.hamburger { display: none; cursor: pointer; }
+.bar { display: block; width: 25px; height: 3px; margin: 5px auto; background-color: var(--cor-texto-primario); transition: all 0.3s ease-in-out; }
+.page-title { text-align: center; font-size: 1rem; font-weight: 500; color: var(--cor-texto-secundario); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 30px; }
+.main-footer { background-color: rgba(0, 0, 0, 0.7); padding: 40px 20px 20px; margin-top: 50px; border-top: 1px solid rgba(255, 255, 255, 0.1); text-align: center; }
+.main-footer .container { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px; }
+.footer-brand p { color: var(--cor-texto-secundario); margin-top: 5px; }
+.footer-copyright { color: var(--cor-texto-secundario); width: 100%; margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--cor-borda-sutil); font-size: 0.9rem;}
+.footer-contact { display: flex; gap: 20px; }
+.footer-contact a { color: var(--cor-texto-secundario); display: flex; align-items: center; gap: 10px; text-decoration: none; }
+.footer-contact a:hover { color: var(--cor-principal); }
+
+/* --- 3. SEÇÃO DE AUTENTICAÇÃO (LOGIN/CADASTRO) --- */
+.auth-container { max-width: 450px; margin: 40px auto; background: var(--cor-card-escuro); padding: 30px 40px; border-radius: 15px; border: 1px solid var(--cor-borda-sutil); }
+.tabs { display: flex; border-bottom: 1px solid var(--cor-borda-sutil); margin-bottom: 25px; }
+.tab { flex: 1; padding: 15px; background: none; border: none; color: var(--cor-texto-secundario); font-size: 1.1rem; cursor: pointer; border-bottom: 3px solid transparent; }
+.tab.active { color: var(--cor-principal); border-bottom-color: var(--cor-principal); }
+.form { display: none; }
+.form.active { display: block; }
+.form h1 { text-align: center; margin-bottom: 10px; }
+.form p { text-align: center; color: var(--cor-texto-secundario); margin-bottom: 25px; }
+.form label { display: block; margin-bottom: 5px; font-weight: 500; }
+.form input { width: 100%; padding: 12px; margin-bottom: 20px; background-color: #333; border: 1px solid var(--cor-borda-sutil); border-radius: 8px; color: var(--cor-texto-primario); font-size: 1rem; }
+.form button { width: 100%; padding: 15px; background-color: var(--cor-principal); border: none; border-radius: 8px; color: var(--cor-fundo-escuro); font-size: 1.1rem; font-weight: 600; cursor: pointer; }
+
+/* --- 4. SEÇÃO INÍCIO (HERO & PLANOS) --- */
+.hero-section { display: flex; gap: 30px; align-items: flex-start; }
+.carousel-container { flex: 2; position: relative; overflow: hidden; border-radius: 15px; }
+.carousel-slide { display: flex; transition: transform 0.5s ease-in-out; }
+.carousel-slide img { width: 100%; flex-shrink: 0; }
+.carousel-btn { position: absolute; top: 50%; transform: translateY(-50%); background-color: rgba(0,0,0,0.5); color: white; border: none; font-size: 2rem; padding: 10px 15px; cursor: pointer; z-index: 10; }
+.prev-btn { left: 10px; }
+.next-btn { right: 10px; }
+.info-cards-wrapper { flex: 1; display: flex; flex-direction: column; gap: 20px; }
+.info-card { background-color: var(--cor-card-escuro); padding: 25px; border-radius: 15px; display: flex; align-items: center; gap: 20px; }
+.info-card .icon { width: 50px; height: auto; }
+.info-card h4 { text-transform: uppercase; font-size: 1rem; }
+.info-card a { color: var(--cor-principal); font-weight: 600; text-decoration: none; }
+.pricing-section { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 30px; margin-top: 50px; }
+.plan-card { background-color: var(--cor-card-escuro); padding: 30px; border-radius: 15px; text-align: center; border: 2px solid transparent; }
+.plan-card.featured { border-color: var(--cor-principal); }
+.plan-card h3 { font-size: 1.8rem; }
+.plan-card .price { font-size: 2.5rem; font-weight: 700; margin: 15px 0; }
+.btn-primary { background-color: var(--cor-principal); color: var(--cor-fundo-escuro); padding: 12px 30px; border-radius: 8px; font-weight: 600; text-decoration: none; display: inline-block; }
+.features-list { list-style: none; margin-top: 20px; text-align: left; }
+.features-list li { margin-bottom: 10px; position: relative; padding-left: 25px; }
+.features-list li::before { position: absolute; left: 0; }
+.features-list .included::before { content: '✔'; color: var(--cor-sucesso); }
+.features-list .excluded::before { content: '❌'; color: var(--cor-erro); }
+
+/* --- 5. SEÇÃO LOJA --- */
+.product-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 40px; }
+.product-card { background-color: var(--cor-card-escuro); border: 2px solid var(--cor-principal); border-radius: 20px; padding: 25px; text-align: center; transition: transform 0.3s ease; }
+.product-card:hover { transform: translateY(-10px); }
+.product-image { max-width: 80%; }
+.product-rating { color: var(--cor-estrela); }
+.product-name { font-size: 1.2rem; }
+.product-price { font-size: 1.5rem; color: var(--cor-principal); }
+.btn-add-to-cart { background-color: var(--cor-principal); color: var(--cor-fundo-escuro); border: none; border-radius: 10px; padding: 12px 25px; cursor: pointer; width: 100%; }
+
+/* --- 6. SEÇÃO AGENDAMENTO --- */
+.booking { max-width: 800px; margin: 30px auto; padding: 40px; background-color: var(--cor-card-escuro); border-radius: 15px; }
+.booking h2 { text-align: center; margin-bottom: 30px; }
+.class-list { list-style: none; }
+.class-item { display: flex; align-items: center; gap: 20px; padding: 20px; background-color: rgba(255,255,255,0.05); border-radius: 10px; margin-bottom: 15px; }
+.class-item .time { font-size: 1.2rem; font-weight: 700; }
+.class-details .spots { color: var(--cor-texto-secundario); }
+.schedule-btn, .full-btn { padding: 10px 20px; border-radius: 6px; cursor: pointer; border: none; margin-left: auto; }
+.schedule-btn { background-color: var(--cor-borda-sutil); color: var(--cor-texto-primario); }
+.schedule-btn:hover { background-color: var(--cor-principal); color: var(--cor-fundo-escuro); }
+.full-btn { background-color: var(--cor-erro); color: var(--cor-texto-primario); cursor: not-allowed; }
+
+/* --- 7. SEÇÃO SUPORTE --- */
+.support-center { display: grid; grid-template-columns: 2fr 1fr; gap: 40px; }
+.search-bar { display: flex; margin: 20px 0 40px; }
+.search-bar input { flex-grow: 1; padding: 15px; border: 2px solid var(--cor-borda-sutil); background: none; color: white; border-radius: 8px 0 0 8px; font-size: 1rem;}
+.search-bar button { padding: 0 25px; border: none; background-color: var(--cor-principal); color: var(--cor-fundo-escuro); border-radius: 0 8px 8px 0; cursor: pointer; }
+.faq-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+.faq-item { display: flex; align-items: center; gap: 15px; background: var(--cor-card-escuro); padding: 25px; border-radius: 10px; text-decoration: none; }
+.faq-item:hover { background-color: var(--cor-principal); color: var(--cor-fundo-escuro); }
+.faq-item i { font-size: 1.8rem; }
+.help-box { background: var(--cor-card-escuro); padding: 30px; border-radius: 10px; text-align: center; }
+.btn-support { display: block; background-color: var(--cor-principal); color: var(--cor-fundo-escuro); padding: 15px; border-radius: 8px; margin-top: 15px; text-decoration:none; }
+
+/* --- 8. SEÇÃO PAINEL ADM --- */
+.stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 30px; margin-bottom: 30px; }
+.stat-card { background-color: var(--cor-card-escuro); padding: 25px; border-radius: 15px; }
+.stat-card h4 { color: var(--cor-texto-secundario); }
+.stat-card .value { font-size: 2.2rem; font-weight: 700; color: var(--cor-principal); }
+.main-content-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 30px; }
+.panel { background-color: var(--cor-card-escuro); padding: 25px; border-radius: 15px; }
+.item-list { list-style: none; }
+.item-list li { display: flex; align-items: center; gap: 15px; padding: 12px 0; border-bottom: 1px solid var(--cor-borda-sutil); }
+.item-list li:last-child { border: none; }
+.avatar { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; }
+.icon-placeholder { width: 40px; height: 40px; border-radius: 8px; background-color: #333; display: flex; align-items: center; justify-content: center; }
+.time { margin-left: auto; color: var(--cor-texto-secundario); }
+.actions-wrapper { display: flex; flex-direction: column; gap: 15px; }
+.action-btn { display: flex; align-items: center; justify-content: center; gap: 10px; background-color: var(--cor-principal); color: var(--cor-fundo-escuro); text-decoration: none; padding: 15px; border-radius: 8px; font-weight: 600; }
+
+/* --- RESPONSIVIDADE --- */
+@media(max-width: 992px) {
+    .hero-section, .support-center { flex-direction: column; }
+    .pricing-section, .faq-grid { grid-template-columns: 1fr; }
+}
+@media(max-width: 768px) {
+    .main-nav { position: fixed; left: -100%; top: 74px; flex-direction: column; background-color: #1a1a1a; width: 100%; text-align: center; transition: 0.3s; gap: 0; }
+    .main-nav.active { left: 0; }
+    .main-nav a { padding: 18px 0; border-bottom: 1px solid var(--cor-borda-sutil); }
+    .hamburger { display: block; }
+    .hamburger.active .bar:nth-child(2) { opacity: 0; }
+    .hamburger.active .bar:nth-child(1) { transform: translateY(8px) rotate(45deg); }
+    .hamburger.active .bar:nth-child(3) { transform: translateY(-8px) rotate(-45deg); }
+}
+    </style>
+
+    <header class="main-header">
+        <div class="container">
+            <nav class="navbar">
+                <a href="#" class="logo nav-link" data-page="auth">
+                    <img src="https://i.imgur.com/g8i5q8a.png" alt="TechFit Logo" class="logo-img">
+                </a>
+                <div class="main-nav">
+                    <a class="nav-link" data-page="inicio">Início</a>
+                    <a class="nav-link" data-page="loja">Loja</a>
+                    <a class="nav-link" data-page="agendamento">Agendamento</a>
+                    <a class="nav-link" data-page="suporte">Suporte</a>
+                    <a class="nav-link" data-page="adm">Painel ADM</a>
+                </div>
+                <div class="hamburger">
+                    <span class="bar"></span><span class="bar"></span><span class="bar"></span>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section id="auth" class="page-section">
+            <div class="container">
+                <div class="auth-container">
+                    <div class="tabs">
+                        <button class="tab active" data-tab="login">Login</button>
+                        <button class="tab" data-tab="cad">Cadastro</button>
+                    </div>
+                    <form id="loginForm" class="form active">
+                        <h1>Login</h1>
+                        <p>Digite seus dados de acesso:</p>
+                        <label for="login-usuario">Usuário/Email:</label>
+                        <input id="login-usuario" type="text" placeholder="Digite seu usuário ou email" required>
+                        <label for="login-senha">Senha:</label>
+                        <input id="login-senha" type="password" placeholder="Digite sua senha" required>
+                        <button type="submit">Acessar</button>
+                    </form>
+                    <form id="cadForm" class="form">
+                        <h1>Cadastro</h1>
+                        <p>Preencha seus dados para se cadastrar:</p>
+                        <label for="cad-usuario">Usuário/Email:</label>
+                        <input id="cad-usuario" type="text" placeholder="Digite seu usuário ou email" required>
+                        <label for="cad-senha">Senha:</label>
+                        <input id="cad-senha" type="password" placeholder="Digite sua senha" required>
+                        <label for="cpf">CPF:</label>
+                        <input id="cpf" type="text" placeholder="Digite seu CPF" required>
+                        <label for="endereco">Endereço:</label>
+                        <input id="endereco" type="text" placeholder="Digite seu endereço" required>
+                        <button type="submit">Cadastrar</button>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+        <section id="inicio" class="page-section">
+             <div class="container">
+                <p class="page-title">PÁGINA INICIAL</p>
+                <div class="hero-section">
+                    <div class="carousel-container">
+                        <div class="carousel-slide">
+                            <img src="https://images.unsplash.com/photo-1534438327276-14e5300c3a48?q=80&w=2940&auto=format&fit=crop" alt="Visão externa da academia">
+                            <img src="https://images.unsplash.com/photo-1571902943202-507ec2618e8f?q=80&w=2787&auto=format&fit=crop" alt="Área de musculação">
+                        </div>
+                        <button class="carousel-btn prev-btn">&#10094;</button>
+                        <button class="carousel-btn next-btn">&#10095;</button>
+                    </div>
+                    <div class="info-cards-wrapper">
+                        <div class="info-card"><img src="https://i.imgur.com/8QpL5rV.png" alt="Ícone de relógio" class="icon"><div class="card-content"><h4>Horário</h4><p><strong>Seg/Sex</strong> 5h-23h | <strong>Sáb</strong> 8h-17h</p><a href="#">Ver ocupação</a></div></div>
+                        <div class="info-card"><img src="https://i.imgur.com/z2QJG3t.png" alt="Ícone de localização" class="icon"><div class="card-content"><h4>Endereço</h4><p>R. Vinte e Cinco de Março, 360 - Limeira</p><a href="#">Ver rotas</a></div></div>
+                    </div>
+                </div>
+                <section class="pricing-section">
+                    <article class="plan-card"><h3 style="color: #E0E0E0;">Plano Beta</h3><p>Essencial para quem quer manter a forma, com acesso aos equipamentos e treinos básicos.</p><div class="price">R$89,90</div><a href="#" class="btn-primary">Saiba mais!</a><ul class="features-list"><li class="included">Acesso a todas as academias</li><li class="excluded">Suplementos disponíveis</li><li class="excluded">Acompanhamento Nutricional</li></ul></article>
+                    <article class="plan-card featured"><h3>Plano Alpha</h3><p>Ideal para todos, acesso completo à academia com benefícios especiais.</p><div class="price">R$139,90</div><a href="#" class="btn-primary">Saiba mais!</a><ul class="features-list"><li class="included">Acesso a todas as academias</li><li class="included">Suplementos disponíveis</li><li class="excluded">Acompanhamento Nutricional</li></ul></article>
+                    <article class="plan-card"><h3 style="color: #FFD700;">Plano Sigma</h3><p>O melhor que tem, inclui tudo para potencializar seus resultados.</p><div class="price">R$239,90</div><a href="#" class="btn-primary">Saiba mais!</a><ul class="features-list"><li class="included">Acesso a todas as academias</li><li class="included">Suplementos disponíveis</li><li class="included">Acompanhamento Nutricional</li></ul></article>
+                </section>
+            </div>
+        </section>
+
+        <section id="loja" class="page-section">
+            <div class="container">
+                <p class="page-title">LOJA DE PRODUTOS</p>
+                <div class="product-grid">
+                    <div class="product-card"><img src="https://i.imgur.com/2s4FpgS.png" alt="Whey Protein" class="product-image"><div class="product-info"><div class="product-rating"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div><h3 class="product-name">Whey Protein Concentrado TechFit</h3><p class="product-price">R$ 129,90</p><button class="btn-add-to-cart">Adicionar ao carrinho</button></div></div>
+                    <div class="product-card"><img src="https://i.imgur.com/2s4FpgS.png" alt="Whey Protein" class="product-image"><div class="product-info"><div class="product-rating"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div><h3 class="product-name">Whey Protein Isolado TechFit</h3><p class="product-price">R$ 189,90</p><button class="btn-add-to-cart">Adicionar ao carrinho</button></div></div>
+                    <div class="product-card"><img src="https://i.imgur.com/2s4FpgS.png" alt="Whey Protein" class="product-image"><div class="product-info"><div class="product-rating"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div><h3 class="product-name">Creatina Monohidratada TechFit</h3><p class="product-price">R$ 79,90</p><button class="btn-add-to-cart">Adicionar ao carrinho</button></div></div>
+                </div>
+            </div>
+        </section>
+
+        <section id="agendamento" class="page-section">
+            <div class="container">
+                <div class="booking"><h2>Agendamento de Aulas</h2><ul class="class-list"><li class="class-item"><span class="time">7:00</span><div class="class-details"><h3 class="name">Yoga Matinal</h3><p class="spots">345 vagas disponíveis</p></div><button class="schedule-btn">Agendar</button></li><li class="class-item"><span class="time">15:00</span><div class="class-details"><h3 class="name">Pilates</h3><p class="spots">244 vagas disponíveis</p></div><button class="schedule-btn">Agendar</button></li><li class="class-item"><span class="time">17:50</span><div class="class-details"><h3 class="name">Treino Funcional</h3><p class="spots">38 vagas disponíveis</p></div><button class="schedule-btn">Agendar</button></li><li class="class-item"><span class="time">21:00</span><div class="class-details"><h3 class="name">HIIT</h3></div><button class="full-btn" disabled>LOTADO</button></li></ul></div>
+            </div>
+        </section>
+
+        <section id="suporte" class="page-section">
+            <div class="container">
+                <p class="page-title">SUPORTE</p>
+                <div class="support-center">
+                    <div class="support-main-content">
+                        <h1>Central de Suporte</h1>
+                        <form class="search-bar" id="search-form"><input type="search" placeholder="Busque por pesquisas"><button type="submit"><i class="fa-solid fa-magnifying-glass"></i></button></form>
+                        <h2>Perguntas Frequentes</h2>
+                        <div class="faq-grid">
+                            <a href="#" class="faq-item"><i class="fa-solid fa-credit-card"></i><span>Planos e Pagamentos</span></a>
+                            <a href="#" class="faq-item"><i class="fa-solid fa-calendar-check"></i><span>Agendamento Online</span></a>
+                            <a href="#" class="faq-item"><i class="fa-solid fa-mobile-screen-button"></i><span>Acesso ao Aplicativo</span></a>
+                            <a href="#" class="faq-item"><i class="fa-solid fa-gears"></i><span>Problemas Técnicos</span></a>
+                        </div>
+                    </div>
+                    <aside class="support-sidebar"><div class="help-box"><h3>Ainda precisa de ajuda?</h3><a href="#" class="btn-support"><i class="fa-solid fa-comment-dots"></i><span>Falar com o Suporte</span></a></div></aside>
+                </div>
+            </div>
+        </section>
+
+        <section id="adm" class="page-section">
+            <div class="container">
+                <p class="page-title">PAINEL DO ADMINISTRADOR</p>
+                <section class="stats-grid">
+                    <div class="stat-card"><h4>Faturamento Hoje</h4><p class="value" data-format="currency">1271</p></div>
+                    <div class="stat-card"><h4>Novos Alunos</h4><p class="value" data-format="integer">5</p></div>
+                    <div class="stat-card"><h4>Check-in Hoje</h4><p class="value" data-format="integer">349</p></div>
+                    <div class="stat-card"><h4>Lotação Atual</h4><p class="value" data-format="percentage">75</p></div>
+                </section>
+                <section class="main-content-grid">
+                    <div class="panel">
+                        <h2>Acesso de Alunos</h2>
+                        <ul class="item-list" id="student-access-list">
+                            <li><img src="https://i.imgur.com/sVIsn2E.png" alt="Avatar" class="avatar"><div class="item-info"><span class="name">Ana Silva</span></div><span class="time">10:51</span></li>
+                            <li><img src="https://i.imgur.com/sVIsn2E.png" alt="Avatar" class="avatar"><div class="item-info"><span class="name">Carlos Souza</span></div><span class="time">10:52</span></li>
+                        </ul>
+                    </div>
+                    <div class="panel">
+                        <h2>Agenda do Dia</h2>
+                        <ul class="item-list">
+                            <li><div class="icon-placeholder"><i class="fa-solid fa-person-walking"></i></div><div class="item-info"><span class="name">Yoga Matinal</span></div><span class="time">7:00</span></li>
+                            <li><div class="icon-placeholder"><i class="fa-solid fa-bicycle"></i></div><div class="item-info"><span class="name">Spinning Class</span></div><span class="time">13:00</span></li>
+                            <li><div class="icon-placeholder"><i class="fa-solid fa-person-praying"></i></div><div class="item-info"><span class="name">Pilates</span></div><span class="time">15:00</span></li>
+                        </ul>
+                    </div>
+                    <div class="panel">
+                        <h2>Ações Rápidas</h2>
+                        <div class="actions-wrapper"><a href="#" class="action-btn"><i class="fa-solid fa-users-gear"></i><span>Gerenciar Alunos</span></a><a href="#" class="action-btn"><span>Nova Aula</span></a></div>
+                    </div>
+                </section>
+            </div>
+        </section>
+    </main>
+
+    <footer class="main-footer">
+        <div class="container">
+            <div class="footer-brand"><img src="https://i.imgur.com/g8i5q8a.png" alt="Logo da TECHFIT" class="logo-img"><p>Sua Academia do Futuro!</p></div>
+            <div class="footer-contact"><a href="#"><i class="fa-brands fa-instagram"></i> TECHFIT_OFC</a><a href="#"><i class="fa-brands fa-whatsapp"></i> (19) 99936-4328</a></div>
+        </div>
+        <div class="footer-copyright"><p>&copy; 2025 TECHFIT. Todos os direitos reservados.</p></div>
+    </footer>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+
+    // --- 1. SISTEMA DE NAVEGAÇÃO E CONTROLE DE PÁGINAS ---
+    const navLinks = document.querySelectorAll('.nav-link');
+    const pageSections = document.querySelectorAll('.page-section');
+    const mainHeader = document.querySelector('.main-header');
+
+    function showPage(pageId) {
+        pageSections.forEach(section => section.classList.remove('active'));
+        const activePage = document.getElementById(pageId);
+        if (activePage) {
+            activePage.classList.add('active');
+        } else {
+            // Se a página não for encontrada, exibe a de autenticação por padrão
+            document.getElementById('auth').classList.add('active');
+        }
+
+        // Destaca o link de navegação ativo
+        navLinks.forEach(link => {
+            link.classList.toggle('active', link.dataset.page === pageId);
+        });
+        
+        // Esconde o header principal na tela de autenticação
+        if (pageId === 'auth') {
+            mainHeader.style.display = 'none';
+        } else {
+            mainHeader.style.display = 'block';
+        }
+        
+        // Roda animações específicas da página, se houver
+        if (pageId === 'adm') {
+            runAdminAnimations();
+        }
+    }
+
+    navLinks.forEach(link => {
+        link.addEventListener('click', (e) => {
+            e.preventDefault();
+            const pageId = link.dataset.page;
+            if (pageId) {
+                showPage(pageId);
+                // Fecha o menu hamburguer no mobile
+                if (hamburger.classList.contains('active')) {
+                    hamburger.classList.remove("active");
+                    mainNav.classList.remove("active");
+                }
+            }
+        });
+    });
+
+    // --- 2. LÓGICA DE AUTENTICAÇÃO (LOGIN/CADASTRO) ---
+    const tabs = document.querySelectorAll('.tab');
+    const forms = document.querySelectorAll('.form');
+    tabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+            tabs.forEach(item => item.classList.remove('active'));
+            forms.forEach(form => form.classList.remove('active'));
+            tab.classList.add('active');
+            document.getElementById(tab.dataset.tab === 'login' ? 'loginForm' : 'cadForm').classList.add('active');
+        });
+    });
+
+    document.getElementById('loginForm').addEventListener('submit', (e) => {
+        e.preventDefault();
+        alert('Login realizado! Redirecionando para a página inicial.');
+        showPage('inicio'); // Redireciona para a página de início após o login
+    });
+    
+     document.getElementById('cadForm').addEventListener('submit', (e) => {
+        e.preventDefault();
+        alert('Cadastro realizado com sucesso! Faça seu login.');
+        // Simula a troca para a aba de login
+        document.querySelector('.tab[data-tab="login"]').click();
+    });
+
+    // --- 3. MENU HAMBÚRGUER ---
+    const hamburger = document.querySelector(".hamburger");
+    const mainNav = document.querySelector(".main-nav");
+    if (hamburger && mainNav) {
+        hamburger.addEventListener("click", () => {
+            hamburger.classList.toggle("active");
+            mainNav.classList.toggle("active");
+        });
+    }
+
+    // --- 4. CARROSSEL DA PÁGINA INICIAL ---
+    const carouselSlide = document.querySelector('.carousel-slide');
+    if (carouselSlide) {
+        const prevBtn = document.querySelector('.prev-btn');
+        const nextBtn = document.querySelector('.next-btn');
+        let counter = 0;
+        nextBtn.addEventListener('click', () => {
+            counter = (counter + 1) % carouselSlide.children.length;
+            updateCarousel();
+        });
+        prevBtn.addEventListener('click', () => {
+            counter = (counter - 1 + carouselSlide.children.length) % carouselSlide.children.length;
+            updateCarousel();
+        });
+        function updateCarousel() {
+            carouselSlide.style.transform = 'translateX(' + (-carouselSlide.clientWidth * counter) + 'px)';
+        }
+    }
+
+    // --- 5. AGENDAMENTO DE AULAS ---
+    document.querySelectorAll('.schedule-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const spotsElement = this.closest('.class-item').querySelector('.spots');
+            if (!spotsElement) return;
+            let currentSpots = parseInt(spotsElement.textContent.match(/\d+/)[0]);
+            if (currentSpots > 0) {
+                currentSpots--;
+                spotsElement.textContent = `${currentSpots} vagas disponíveis`;
+                if (currentSpots === 0) {
+                    this.textContent = 'LOTADO';
+                    this.classList.replace('schedule-btn', 'full-btn');
+                    this.disabled = true;
+                }
+                alert('Aula agendada com sucesso!');
+            }
+        });
+    });
+
+    // --- 6. BARRA DE BUSCA DO SUPORTE ---
+    const searchForm = document.getElementById('search-form');
+    if (searchForm) {
+        searchForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const query = searchForm.querySelector('input').value;
+            if (query) alert(`Você buscou por: ${query}`);
+        });
+    }
+
+    // --- 7. ANIMAÇÕES DO PAINEL ADM ---
+    function animateValue(element, start, end, duration) {
+        let startTimestamp = null;
+        const step = (timestamp) => {
+            if (!startTimestamp) startTimestamp = timestamp;
+            const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+            let value = Math.floor(progress * (end - start) + start);
+            if (element.dataset.format === 'currency') element.innerHTML = `R$ ${value.toLocaleString('pt-BR')}`;
+            else if (element.dataset.format === 'percentage') element.innerHTML = `${value}%`;
+            else element.innerHTML = value;
+            if (progress < 1) window.requestAnimationFrame(step);
+        };
+        window.requestAnimationFrame(step);
+    }
+    function runAdminAnimations() {
+        document.querySelectorAll('#adm .value').forEach(stat => {
+            const endValue = parseInt(stat.textContent.replace(/\D/g, '') || '0');
+             animateValue(stat, 0, endValue, 1500);
+        });
+    }
+
+    // --- 8. LISTA DE ACESSO EM TEMPO REAL DO ADM ---
+    const studentAccessList = document.getElementById('student-access-list');
+    if (studentAccessList) {
+        setInterval(() => {
+            const names = ["Ana Clara", "Lucas M.", "Sofia Lima", "Pedro H.", "Julia F."];
+            const randomName = names[Math.floor(Math.random() * names.length)];
+            const time = new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+            const newEntry = document.createElement('li');
+            newEntry.innerHTML = `<img src="https://i.imgur.com/sVIsn2E.png" alt="Avatar" class="avatar"><div class="item-info"><span>${randomName}</span></div><span class="time">${time}</span>`;
+            studentAccessList.prepend(newEntry);
+            if (studentAccessList.children.length > 4) studentAccessList.lastElementChild.remove();
+        }, 5000);
+    }
+    
+    // --- INICIALIZAÇÃO ---
+    showPage('auth'); // Mostra a página de autenticação ao carregar
+});
+    </script>
+    
+    <script src="script.js"></script>
+</body>
+</html>
