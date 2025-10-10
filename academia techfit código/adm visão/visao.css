@@ -1,0 +1,200 @@
+/* --- GLOBAIS E VARIÁVEIS DO PAINEL ADM --- */
+:root {
+    --cor-ciano-principal: #00D1B2;
+    --cor-fundo-escuro: #121212;
+    --cor-card-painel: rgba(38, 38, 38, 0.7);
+    --cor-borda-painel: rgba(122, 122, 122, 0.4);
+    --cor-texto-primario: #FFFFFF;
+    --cor-texto-secundario: #B3B3B3;
+    --cor-item-lista: #e9ecef;
+    --cor-item-lista-texto: #212529;
+    --font-principal: 'Poppins', sans-serif;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.admin-page {
+    font-family: var(--font-principal);
+    background-image: url('imagens/background-pesos.jpg');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    color: var(--cor-texto-primario);
+    line-height: 1.6;
+}
+
+.container {
+    max-width: 1400px; /* Mais largo para painéis */
+    margin: 0 auto;
+    padding: 0 30px;
+}
+
+.page-title {
+    font-size: 0.9rem;
+    color: var(--cor-texto-secundario);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin: 25px 0;
+}
+
+/* --- HEADER ADM --- */
+.admin-header {
+    background-color: #FFFFFF;
+    padding: 15px 0;
+    border-bottom: 1px solid #dee2e6;
+}
+.admin-header .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.logo-img { height: 40px; }
+.admin-nav { display: flex; gap: 30px; }
+.admin-nav a {
+    color: #343a40;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+/* --- GRIDS DE LAYOUT --- */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 25px;
+    margin-bottom: 25px;
+}
+
+.main-content-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 25px;
+}
+
+/* --- ESTILO DOS CARDS E PAINEIS --- */
+.stat-card, .panel {
+    background-color: var(--cor-card-painel);
+    backdrop-filter: blur(10px);
+    border: 1px solid var(--cor-borda-painel);
+    padding: 25px;
+    /* Efeito de canto cortado (clip-path) */
+    clip-path: polygon(0 15px, 15px 0, calc(100% - 15px) 0, 100% 15px, 100% calc(100% - 15px), calc(100% - 15px) 100%, 15px 100%, 0 calc(100% - 15px));
+}
+
+.stat-card h4 {
+    color: var(--cor-texto-secundario);
+    font-weight: 500;
+    font-size: 1rem;
+}
+
+.stat-card .value {
+    color: var(--cor-ciano-principal);
+    font-size: 2.5rem;
+    font-weight: 700;
+}
+
+.panel {
+    display: flex;
+    flex-direction: column;
+}
+
+.panel h2 {
+    font-size: 1.3rem;
+    font-weight: 600;
+    margin-bottom: 20px;
+}
+
+/* --- LISTAS (ACESSO E AGENDA) --- */
+.item-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.item-list li {
+    background-color: var(--cor-item-lista);
+    color: var(--cor-item-lista-texto);
+    padding: 10px 15px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+.avatar {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    background-color: #555;
+}
+.icon-placeholder {
+    width: 35px;
+    height: 35px;
+    border-radius: 8px;
+    background-color: #ccc;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #555;
+    font-size: 1.1rem;
+}
+.item-info { flex-grow: 1; }
+.item-info .name { font-weight: 500; }
+.time { font-size: 0.9rem; color: #6c757d; }
+
+/* --- AÇÕES RÁPIDAS --- */
+.actions-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+.action-btn {
+    background-color: var(--cor-ciano-principal);
+    color: var(--cor-fundo-escuro);
+    text-decoration: none;
+    padding: 20px;
+    border-radius: 8px;
+    text-align: center;
+    font-weight: 600;
+    font-size: 1.1rem;
+    transition: all 0.3s ease;
+}
+.action-btn.primary {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+.action-btn.primary i {
+    font-size: 1.3rem;
+}
+.action-btn:hover {
+    background-color: #00e0c0;
+    transform: translateY(-3px);
+    box-shadow: 0 4px 15px rgba(0, 209, 178, 0.2);
+}
+
+/* --- RESPONSIVIDADE --- */
+@media (max-width: 1200px) {
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    .main-content-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 768px) {
+    .container {
+        padding: 0 15px;
+    }
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+    .admin-header .container {
+        flex-direction: column;
+        gap: 15px;
+    }
+}

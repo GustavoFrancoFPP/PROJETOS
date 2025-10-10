@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TECHFIT - Agendamento de Aulas</title>
+
+    <link rel="stylesheet" href="agendamento.css">
+</head>
+<body>
+
+    <header class="top-bar">
+        <a href="/" title="Voltar para a página inicial">
+            <img src="/academia techfit código/imagens/WhatsApp Image 2025-10-02 at 15.15.22.jpeg" alt="Logo da TECHFIT" class="logo-img"> 
+        </a>
+        <nav class="main-nav" aria-label="Navegação principal">
+            <a href="#">Academias</a>
+            <a href="#">Horários</a>
+            <a href="#" class="active" aria-current="page">Agendamento</a>
+        </nav>
+    </header>
+
+    <main>
+        <section class="booking">
+            <h2>Agendamento de Aulas</h2>
+
+            <div class="date-selector">
+                <div class="date-picker">
+                    <span class="current">Qua, 01 Oct</span>
+                    <button class="arrow" aria-label="Próximo dia">→</button>
+                </div>
+
+                <ul class="weekdays">
+                    <li>Seg</li>
+                    <li>Ter</li>
+                    <li class="active">Qua</li>
+                    <li>Qui</li>
+                    <li>Sex</li>
+                    <li>Sab</li>
+                    <li>Dom</li>
+                </ul>
+            </div>
+
+            <ul class="classes-list">
+                <li class="class-item">
+                    <span class="time">7:00</span>
+                    <div class="class-details">
+                        <h3 class="name">Yoga Matinal</h3>
+                        <p class="spots">345 vagas disponíveis</p>
+                    </div>
+                    <button class="schedule-btn">Agendar</button>
+                </li>
+                <li class="class-item">
+                    <span class="time">9:00</span>
+                    <div class="class-details">
+                        <h3 class="name">Yoga Matinal</h3>
+                        <p class="spots">239 vagas disponíveis</p>
+                    </div>
+                    <button class="schedule-btn">Agendar</button>
+                </li>
+                <li class="class-item">
+                    <span class="time">13:00</span>
+                    <div class="class-details">
+                        <h3 class="name">Spinning Class</h3>
+                        <p class="spots">23 vagas disponíveis</p>
+                    </div>
+                    <button class="schedule-btn">Agendar</button>
+                </li>
+                <li class="class-item">
+                    <span class="time">15:00</span>
+                    <div class="class-details">
+                        <h3 class="name">Pilates</h3>
+                        <p class="spots">244 vagas disponíveis</p>
+                    </div>
+                    <button class="schedule-btn">Agendar</button>
+                </li>
+                <li class="class-item">
+                    <span class="time">17:50</span>
+                    <div class="class-details">
+                        <h3 class="name">Treino Funcional</h3>
+                        <p class="spots">38 vagas disponíveis</p>
+                    </div>
+                    <button class="schedule-btn">Agendar</button>
+                </li>
+                <li class="class-item">
+                    <span class="time">19:00</span>
+                    <div class="class-details">
+                        <h3 class="name">Pilates</h3>
+                        <p class="spots">324 vagas disponíveis</p>
+                    </div>
+                    <button class="schedule-btn">Agendar</button>
+                </li>
+                <li class="class-item">
+                    <span class="time">21:00</span>
+                    <div class="class-details">
+                        <h3 class="name">HIIT</h3>
+                    </div>
+                    <button class="full-btn" disabled>LOTADO</button>
+                </li>
+            </ul>
+        </section>
+    </main>
+    
+    <script src="script.js"></script>
+</body>
+</html>

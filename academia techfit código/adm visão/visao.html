@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel ADM - TECHFIT</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+    <link rel="stylesheet" href="visao.css">
+</head>
+<body class="admin-page">
+
+    <header class="admin-header">
+        <div class="container">
+            <a href="admin.html" class="logo-link">
+                <img src="imagens/logo.png" alt="Logo da TECHFIT" class="logo-img">
+            </a>
+            <nav class="admin-nav">
+                <a href="#">Produtos</a>
+                <a href="#">Aulas</a>
+                <a href="#">Feedbacks</a>
+                <a href="#">Faturamento</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="admin-main">
+        <div class="container">
+            <p class="page-title">PÁGINA INICIAL - ADM</p>
+            
+            <section class="stats-grid">
+                <div class="stat-card">
+                    <h4>Faturamento Hoje</h4>
+                    <p class="value">R$ 1.271,95</p>
+                </div>
+                <div class="stat-card">
+                    <h4>Novos Alunos</h4>
+                    <p class="value">5</p>
+                </div>
+                <div class="stat-card">
+                    <h4>Check-in Hoje</h4>
+                    <p class="value">349</p>
+                </div>
+                <div class="stat-card">
+                    <h4>Lotação Atual</h4>
+                    <p class="value">75%</p>
+                </div>
+            </section>
+
+            <section class="main-content-grid">
+                <div class="panel">
+                    <h2>Acesso de Alunos</h2>
+                    <ul class="item-list">
+                        <li>
+                            <img src="imagens/avatar-placeholder.png" alt="Avatar" class="avatar">
+                            <div class="item-info">
+                                <span class="name">Ana Silva</span>
+                            </div>
+                            <span class="time">10:51</span>
+                        </li>
+                        <li>
+                            <img src="imagens/avatar-placeholder.png" alt="Avatar" class="avatar">
+                            <div class="item-info">
+                                <span class="name">Carlos Souza</span>
+                            </div>
+                            <span class="time">10:52</span>
+                        </li>
+                        <li>
+                            <img src="imagens/avatar-placeholder.png" alt="Avatar" class="avatar">
+                            <div class="item-info">
+                                <span class="name">Beatriz Lima</span>
+                            </div>
+                            <span class="time">10:54</span>
+                        </li>
+                         <li>
+                            <img src="imagens/avatar-placeholder.png" alt="Avatar" class="avatar">
+                            <div class="item-info">
+                                <span class="name">Daniel Costa</span>
+                            </div>
+                            <span class="time">10:55</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="panel">
+                    <h2>Agenda do Dia</h2>
+                    <ul class="item-list">
+                        <li>
+                           <div class="icon-placeholder"><i class="fa-solid fa-person-walking"></i></div>
+                            <div class="item-info">
+                                <span class="name">Yoga Matinal</span>
+                            </div>
+                            <span class="time">7:00</span>
+                        </li>
+                        <li>
+                            <div class="icon-placeholder"><i class="fa-solid fa-person-walking"></i></div>
+                            <div class="item-info">
+                                <span class="name">Yoga Matinal</span>
+                            </div>
+                            <span class="time">9:00</span>
+                        </li>
+                        <li>
+                           <div class="icon-placeholder"><i class="fa-solid fa-bicycle"></i></div>
+                            <div class="item-info">
+                                <span class="name">Spinning Class</span>
+                            </div>
+                            <span class="time">13:00</span>
+                        </li>
+                        <li>
+                            <div class="icon-placeholder"><i class="fa-solid fa-person-praying"></i></div>
+                            <div class="item-info">
+                                <span class="name">Pilates</span>
+                            </div>
+                            <span class="time">15:00</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="panel">
+                    <h2>Ações Rápidas</h2>
+                    <div class="actions-wrapper">
+                        <a href="#" class="action-btn primary">
+                            <i class="fa-solid fa-users-gear"></i>
+                            <span>Gerenciar Alunos</span>
+                        </a>
+                        <a href="#" class="action-btn">
+                            <span>Nova Aula</span>
+                        </a>
+                        <a href="#" class="action-btn">
+                           <span>Enviar Notificação</span>
+                        </a>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+</body>
+<script src="visao.js"></script>
+</html>
