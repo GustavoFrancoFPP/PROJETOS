@@ -373,3 +373,69 @@ header h2 {
         height: 100px;
     }
 }
+
+/* --- HEADER --- */
+.top-bar {
+    position: fixed; /* Fixa o header no topo */
+    top: 0;
+    left: 0;
+    width: 100%;
+    display: flex;
+    justify-content: space-between; /* Alinha o logo à esquerda e a navegação à direita */
+    align-items: center;
+    padding: 15px 5%; /* Usa porcentagem para um padding mais responsivo */
+    background-color: var(--cor-fundo-transparente); /* Fundo escuro com transparência */
+    backdrop-filter: blur(10px); /* Efeito de vidro fosco */
+    border-bottom: 1px solid var(--cor-borda-sutil);
+    z-index: 1000; /* Garante que o header fique acima de outros elementos */
+}
+
+.logo-img {
+    height: 50px; /* Altura do logo */
+    width: auto;
+    border-radius: 8px; /* Bordas levemente arredondadas */
+    transition: transform 0.3s ease;
+}
+
+.logo-img:hover {
+    transform: scale(1.05); /* Leve zoom ao passar o mouse */
+}
+
+/* --- NAVEGAÇÃO PRINCIPAL --- */
+.main-nav {
+    display: flex;
+    gap: 30px; /* Espaçamento entre os links */
+}
+
+.main-nav a {
+    color: var(--cor-texto-secundario);
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 1rem;
+    padding: 5px 0;
+    position: relative;
+    transition: color 0.3s ease;
+}
+
+/* Efeito de sublinhado animado */
+.main-nav a::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 2px;
+    bottom: -5px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: var(--cor-principal-techfit);
+    transition: width 0.3s ease;
+}
+
+.main-nav a:hover,
+.main-nav a.active {
+    color: var(--cor-texto-primario);
+}
+
+.main-nav a:hover::after,
+.main-nav a.active::after {
+    width: 100%; /* Expande o sublinhado */
+}
