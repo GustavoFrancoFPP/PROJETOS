@@ -1,21 +1,214 @@
-/* Corpo principal */
+/* ===== VARIÁVEIS E CONFIGURAÇÕES GLOBAIS ===== */
+:root {
+    --header-bg: rgba(18, 18, 18, 0.95);
+    --header-border: rgba(0, 240, 225, 0.2);
+    --nav-hover: #00f0e1;
+    --nav-text: #ffffff;
+    --nav-text-muted: #b0b0b0;
+    --cor-principal: #00bcd4;
+    --cor-principal-escura: #00a8cc;
+}
+
+/* ===== RESET E CONFIGURAÇÕES BASE ===== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* ===== CORPO PRINCIPAL ===== */
 body.corpo-1 {
     margin: 0;
     padding: 0;
     font-family: 'Arial', sans-serif;
-    /* Nota: Substitua o 'url' pelo caminho real da sua imagem de fundo */
     background: url("imagens/halteres-no-chao-de-uma-academia-ai-generative.jpg") no-repeat center center;
     background-size: cover;
-    height: 100vh;
-    display: flex; /* Habilita flexbox para organizar o conteúdo */
-    align-items: center; /* Centraliza verticalmente os containers */
-    justify-content: center; /* Centraliza horizontalmente o wrapper */
+    min-height: 100vh;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
     color: white;
     position: relative;
-    overflow-y: auto; /* Para permitir scroll se o conteúdo for muito grande */
+    overflow-y: auto;
+    padding-top: 80px;
 }
 
-/* Overlay para melhor contraste */
+/* ===== HEADER MODERNO TECHFIT ===== */
+.techfit-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background: var(--header-bg);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--header-border);
+    z-index: 1000;
+    padding: 0;
+    transition: all 0.3s ease;
+}
+
+.techfit-header.scrolled {
+    background: rgba(10, 10, 10, 0.98);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.header-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 80px;
+}
+
+/* Logo */
+.header-logo {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    text-decoration: none;
+    transition: transform 0.3s ease;
+}
+
+.header-logo:hover {
+    transform: scale(1.05);
+}
+
+.logo-image {
+    height: 50px;
+    width: auto;
+    border-radius: 10px;
+    transition: all 0.3s ease;
+}
+
+.logo-text {
+    font-family: 'Poppins', sans-serif;
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--nav-text);
+    letter-spacing: -0.5px;
+}
+
+.logo-text span {
+    color: var(--nav-hover);
+}
+
+/* Navegação Principal */
+.main-navigation {
+    display: flex;
+    align-items: center;
+    gap: 40px;
+}
+
+.nav-links {
+    display: flex;
+    gap: 35px;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.nav-link {
+    position: relative;
+    text-decoration: none;
+    color: var(--nav-text-muted);
+    font-family: 'Poppins', sans-serif;
+    font-weight: 500;
+    font-size: 1rem;
+    padding: 10px 0;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.nav-link::before {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--nav-hover), #00d4ff);
+    transition: width 0.3s ease;
+}
+
+.nav-link:hover {
+    color: var(--nav-text);
+}
+
+.nav-link:hover::before {
+    width: 100%;
+}
+
+.nav-link.active {
+    color: var(--nav-hover);
+}
+
+.nav-link.active::before {
+    width: 100%;
+}
+
+/* Botão de Ação */
+.header-cta {
+    margin-left: 30px;
+}
+
+.cta-button {
+    background: linear-gradient(135deg, var(--nav-hover), #00d4ff);
+    color: #000;
+    text-decoration: none;
+    padding: 12px 28px;
+    border-radius: 25px;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 600;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+    border: none;
+    cursor: pointer;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    box-shadow: 0 4px 15px rgba(0, 240, 225, 0.3);
+}
+
+.cta-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 240, 225, 0.4);
+    background: linear-gradient(135deg, #00d4ff, var(--nav-hover));
+}
+
+/* Menu Hambúrguer */
+.hamburger-menu {
+    display: none;
+    flex-direction: column;
+    gap: 4px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 5px;
+}
+
+.hamburger-line {
+    width: 25px;
+    height: 3px;
+    background: var(--nav-text);
+    transition: all 0.3s ease;
+    border-radius: 2px;
+}
+
+.hamburger-menu.active .hamburger-line:nth-child(1) {
+    transform: rotate(45deg) translate(6px, 6px);
+}
+
+.hamburger-menu.active .hamburger-line:nth-child(2) {
+    opacity: 0;
+}
+
+.hamburger-menu.active .hamburger-line:nth-child(3) {
+    transform: rotate(-45deg) translate(6px, -6px);
+}
+
+/* ===== OVERLAY ===== */
 .overlay {
     position: absolute;
     top: 0;
@@ -26,56 +219,56 @@ body.corpo-1 {
     z-index: 1;
 }
 
-/* Wrapper para o conteúdo principal e o container da direita */
+/* ===== CONTEÚDO PRINCIPAL ===== */
 .main-content-wrapper {
     display: flex;
-    gap: 60px; /* Espaçamento entre os dois containers */
-    width: 90%; /* Largura total do wrapper */
-    max-width: 1300px; /* Largura máxima para desktops */
+    gap: 60px;
+    width: 90%;
+    max-width: 1300px;
     position: relative;
     z-index: 2;
-    padding: 40px 0; /* Padding vertical para garantir que não cole nas bordas */
-    align-items: flex-start; /* Alinha o conteúdo ao topo de cada coluna */
+    padding: 40px 0;
+    align-items: flex-start;
 }
 
-/* Container da Esquerda (conteúdo existente) */
+/* Container Esquerdo */
 .left-container {
-    flex: 2; /* Ocupa mais espaço que o da direita */
+    flex: 2;
     max-width: 600px;
     animation: fadeInUp 1.2s ease-in-out;
-    padding-left: 20px; /* Padding para afastar do canto esquerdo */
+    padding-left: 20px;
 }
 
-/* Cabeçalho */
-header {
+.content-header {
     margin-bottom: 30px;
 }
 
-header img {
+.content-logo {
     max-width: 120px;
     display: block;
     margin-bottom: 10px;
+    border-radius: 20px;
 }
 
-header h2 {
+.content-header h2 {
     font-size: 32px;
     font-weight: bold;
     margin: 0;
     line-height: 1.2;
+    text-transform: capitalize;
 }
 
-/* Container dos textos de destaque */
+/* Textos de Destaque */
 .textos-container {
-    margin-bottom: 50px; /* Mais espaçamento após os textos de destaque */
+    margin-bottom: 30px;
 }
 
-/* Textos de destaque */
 .destaque {
     background: rgba(255, 255, 255, 0.95);
     color: #000;
     padding: 16px 24px;
     border-radius: 25px;
-    margin: 18px 0; /* Mais espaçamento entre eles */
+    margin: 18px 0;
     font-weight: 600;
     font-size: 18px;
     animation: fadeInLeft 1s ease-in-out;
@@ -85,15 +278,17 @@ header h2 {
     box-shadow: 0 4px 12px rgba(0,0,0,0.15);
     border: 2px solid rgba(255, 255, 255, 0.8);
     text-decoration: none;
-    margin-top: 50px;
-    /* Removido o margin-top: 50px; que estava aqui */
 }
 
-.destaque-1 { animation-delay: 0.2s; }
-.destaque-2 { animation-delay: 0.4s; }
-.destaque-3 { animation-delay: 0.6s; }
+.destaque strong {
+    color: var(--cor-principal);
+}
 
-/* Container dos botões */
+.destaque-1 { animation-delay: 0.2s; animation-fill-mode: both; }
+.destaque-2 { animation-delay: 0.4s; animation-fill-mode: both; }
+.destaque-3 { animation-delay: 0.6s; animation-fill-mode: both; }
+
+/* Botões */
 .botoes-container {
     display: flex;
     gap: 15px;
@@ -103,10 +298,9 @@ header h2 {
     animation-fill-mode: both;
 }
 
-/* Botões - GARANTE O MESMO TAMANHO */
 .botao {
     padding: 16px 32px;
-    border: 2px solid #00bcd4;
+    border: 2px solid var(--cor-principal);
     border-radius: 30px;
     font-size: 16px;
     font-weight: bold;
@@ -115,28 +309,23 @@ header h2 {
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    min-width: 180px; 
+    min-width: 180px;
     height: 52px;
     justify-content: center;
     text-decoration: none;
     box-sizing: border-box;
-    margin-top: 100px;
-    /* Removido o margin-top: 100px; que estava aqui */
 }
 
-/* Botão primário */
 .botao.login {
     background: white;
     color: #000;
 }
 
-/* Botão secundário */
 .botao.cadastrar {
-    background: #00bcd4;
+    background: var(--cor-principal);
     color: #000;
 }
 
-/* Hover dos botões */
 .botao:hover {
     transform: translateY(-2px);
     box-shadow: 0 6px 16px rgba(0,0,0,0.3);
@@ -147,38 +336,35 @@ header h2 {
 }
 
 .botao.cadastrar:hover {
-    background: #00a8cc;
-    border-color: #00a8cc;
+    background: var(--cor-principal-escura);
+    border-color: var(--cor-principal-escura);
 }
 
-/* Ícones */
 .material-symbols-outlined {
     font-size: 20px;
     vertical-align: middle;
 }
 
-/* NOVO: Container da Direita (Criadores) */
+/* Container Direito */
 .right-container {
-    flex: 1; /* Ocupa menos espaço que o da esquerda */
-    background: rgba(0, 0, 0, 0.7); /* Fundo semi-transparente */
+    flex: 1;
+    background: rgba(0, 0, 0, 0.7);
     border-radius: 15px;
     padding: 30px;
     text-align: center;
     display: flex;
     flex-direction: column;
     align-items: center;
-    /* Removido justify-content: center para centralizar os itens verticalmente sem quebras */
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
-    animation: fadeInRight 1.2s ease-in-out; /* Animação para surgir da direita */
+    animation: fadeInRight 1.2s ease-in-out;
 }
 
 .right-container h3 {
     font-size: 24px;
     margin-bottom: 25px;
-    color: #00bcd4; /* Cor de destaque para o título */
+    color: var(--cor-principal);
 }
 
-/* NOVO: Container para agrupar as duas imagens lado a lado */
 .creators-group {
     display: flex;
     gap: 30px;
@@ -193,12 +379,12 @@ header h2 {
 }
 
 .creators-image {
-    width: 150px; /* Tamanho ajustado para caberem lado a lado */
+    width: 150px;
     height: 150px;
-    border-radius: 50%; /* Imagem redonda */
-    object-fit: cover; /* Garante que a imagem preencha o círculo */
+    border-radius: 50%;
+    object-fit: cover;
     margin-bottom: 10px;
-    border: 3px solid #00bcd4; /* Borda ao redor da imagem */
+    border: 3px solid var(--cor-principal);
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
 }
 
@@ -207,18 +393,19 @@ header h2 {
     font-weight: bold;
     margin-bottom: 15px;
     color: white;
+    text-transform: capitalize;
 }
 
 .creator-story {
     font-size: 15px;
     line-height: 1.6;
     text-align: justify;
-    max-width: 350px; /* Limita a largura do texto da história */
+    max-width: 350px;
     color: #ccc;
     margin-top: 10px;
 }
 
-/* ===== Animações ===== */
+/* ===== ANIMAÇÕES ===== */
 @keyframes fadeInUp {
     0% {
         opacity: 0;
@@ -241,7 +428,6 @@ header h2 {
     }
 }
 
-/* Animação para o container da direita */
 @keyframes fadeInRight {
     0% {
         opacity: 0;
@@ -253,13 +439,20 @@ header h2 {
     }
 }
 
-
-/* Responsividade */
+/* ===== RESPONSIVIDADE ===== */
 @media (max-width: 1024px) {
+    .nav-links {
+        gap: 25px;
+    }
+    
+    .main-navigation {
+        gap: 25px;
+    }
+    
     .main-content-wrapper {
-        flex-direction: column; /* Coloca os containers um abaixo do outro */
-        align-items: center; /* Centraliza o conteúdo */
-        gap: 40px; /* Espaçamento entre os containers */
+        flex-direction: column;
+        align-items: center;
+        gap: 40px;
         width: 95%;
         padding: 30px 0;
     }
@@ -270,7 +463,7 @@ header h2 {
         max-width: 90%;
     }
 
-    header img {
+    .content-logo {
         margin: 0 auto 10px auto;
     }
 
@@ -284,7 +477,7 @@ header h2 {
     .destaque {
         max-width: 90%;
         text-align: center;
-        margin: 15px auto; /* Centraliza os destaques */
+        margin: 15px auto;
     }
 
     .botoes-container {
@@ -295,7 +488,7 @@ header h2 {
     }
 
     .botao {
-        min-width: 250px; 
+        min-width: 250px;
     }
 
     .right-container {
@@ -303,9 +496,8 @@ header h2 {
         padding: 25px;
     }
 
-    /* Ajuste no mobile: quebra as imagens dos criadores se for preciso */
     .creators-group {
-        flex-wrap: wrap; 
+        flex-wrap: wrap;
         justify-content: space-around;
         gap: 20px;
     }
@@ -321,121 +513,161 @@ header h2 {
 }
 
 @media (max-width: 768px) {
-    header h2 {
+    .header-container {
+        height: 70px;
+        padding: 0 15px;
+    }
+    
+    .logo-text {
+        font-size: 1.5rem;
+    }
+    
+    .logo-image {
+        height: 40px;
+    }
+    
+    .hamburger-menu {
+        display: flex;
+    }
+    
+    .main-navigation {
+        position: fixed;
+        top: 70px;
+        left: 0;
+        width: 100%;
+        background: var(--header-bg);
+        backdrop-filter: blur(20px);
+        flex-direction: column;
+        gap: 0;
+        padding: 20px 0;
+        transform: translateY(-100%);
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.3s ease;
+        border-bottom: 1px solid var(--header-border);
+    }
+    
+    .main-navigation.active {
+        transform: translateY(0);
+        opacity: 1;
+        visibility: visible;
+    }
+    
+    .nav-links {
+        flex-direction: column;
+        gap: 0;
+        width: 100%;
+    }
+    
+    .nav-link {
+        padding: 15px 30px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        width: 100%;
+        display: block;
+    }
+    
+    .nav-link::before {
+        display: none;
+    }
+    
+    .header-cta {
+        margin: 20px 30px 0;
+        width: calc(100% - 60px);
+    }
+    
+    .cta-button {
+        width: 100%;
+        text-align: center;
+        justify-content: center;
+    }
+
+    body.corpo-1 {
+        padding-top: 70px;
+    }
+    
+    .main-content-wrapper {
+        gap: 30px;
+        padding: 20px 0;
+    }
+
+    .content-header h2 {
         font-size: 28px;
     }
+    
     .destaque {
         font-size: 16px;
         padding: 14px 20px;
     }
+    
     .botao {
         font-size: 15px;
         padding: 12px 25px;
         border-radius: 25px;
         min-width: 220px;
+        min-height: 44px;
     }
+    
     .right-container h3 {
         font-size: 20px;
     }
+    
     .creator-name {
         font-size: 18px;
     }
+    
     .creator-story {
         font-size: 14px;
     }
 }
 
 @media (max-width: 480px) {
-    header h2 {
+    .header-container {
+        height: 60px;
+    }
+    
+    .logo-text {
+        font-size: 1.3rem;
+    }
+    
+    .logo-image {
+        height: 35px;
+    }
+    
+    .main-navigation {
+        top: 60px;
+    }
+
+    body.corpo-1 {
+        padding-top: 60px;
+        padding: 20px 0;
+    }
+    
+    .main-content-wrapper {
+        gap: 25px;
+    }
+
+    .content-header h2 {
         font-size: 24px;
     }
-    header img {
+    
+    .content-logo {
         max-width: 100px;
     }
+    
     .destaque {
         font-size: 14px;
         padding: 12px 18px;
         margin: 12px auto;
     }
+    
     .botao {
         min-width: 180px;
         height: 48px;
         font-size: 14px;
     }
-    body.corpo-1 {
-        padding: 20px 0;
-    }
-    .main-content-wrapper {
-        gap: 30px;
-    }
+    
     .creators-image {
-        width: 100px; /* Reduzido para telas muito pequenas */
+        width: 100px;
         height: 100px;
     }
-}
-
-/* --- HEADER --- */
-.top-bar {
-    position: fixed; /* Fixa o header no topo */
-    top: 0;
-    left: 0;
-    width: 100%;
-    display: flex;
-    justify-content: space-between; /* Alinha o logo à esquerda e a navegação à direita */
-    align-items: center;
-    padding: 15px 5%; /* Usa porcentagem para um padding mais responsivo */
-    background-color: var(--cor-fundo-transparente); /* Fundo escuro com transparência */
-    backdrop-filter: blur(10px); /* Efeito de vidro fosco */
-    border-bottom: 1px solid var(--cor-borda-sutil);
-    z-index: 1000; /* Garante que o header fique acima de outros elementos */
-}
-
-.logo-img {
-    height: 50px; /* Altura do logo */
-    width: auto;
-    border-radius: 8px; /* Bordas levemente arredondadas */
-    transition: transform 0.3s ease;
-}
-
-.logo-img:hover {
-    transform: scale(1.05); /* Leve zoom ao passar o mouse */
-}
-
-/* --- NAVEGAÇÃO PRINCIPAL --- */
-.main-nav {
-    display: flex;
-    gap: 30px; /* Espaçamento entre os links */
-}
-
-.main-nav a {
-    color: var(--cor-texto-secundario);
-    text-decoration: none;
-    font-weight: 600;
-    font-size: 1rem;
-    padding: 5px 0;
-    position: relative;
-    transition: color 0.3s ease;
-}
-
-/* Efeito de sublinhado animado */
-.main-nav a::after {
-    content: '';
-    position: absolute;
-    width: 0;
-    height: 2px;
-    bottom: -5px;
-    left: 50%;
-    transform: translateX(-50%);
-    background-color: var(--cor-principal-techfit);
-    transition: width 0.3s ease;
-}
-
-.main-nav a:hover,
-.main-nav a.active {
-    color: var(--cor-texto-primario);
-}
-
-.main-nav a:hover::after,
-.main-nav a.active::after {
-    width: 100%; /* Expande o sublinhado */
 }

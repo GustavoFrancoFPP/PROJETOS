@@ -3,37 +3,59 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="TechFit - Sua academia inteligente com IA. Treine 7 dias grátis e transforme seus resultados!">
+    <meta name="keywords" content="academia, techfit, treino, inteligência artificial, fitness">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" />
     <link rel="stylesheet" href="pagina1.css">
     <title>Academia Inteligente - Techfit</title>
 </head>
 <body class="corpo-1">
 
-        <header class="top-bar">
-        <a href="inicio.html" title="Voltar para a página inicial">
-            <img src="/academia techfit código/imagens/WhatsApp Image 2025-10-02 at 15.15.22.jpeg" alt="Logo da TECHFIT" class="logo-img"> 
-        </a>
-            <nav class="main-nav">
-    <a href="pagina_1.html">Academias</a>
-    <a href="produtos.html">Produtos</a>
-    <a href="agendamento2.html">Agendamento</a>
-    <a href="suporte.html">Suporte</a>
-</nav>
+    <header class="techfit-header">
+        <div class="header-container">
+            <!-- Logo -->
+            <a href="inicio.html" class="header-logo">
+                <img src="imagens/WhatsApp Image 2025-10-02 at 15.15.22.jpeg" 
+                     alt="TechFit - Academia Inteligente" 
+                     class="logo-image">
+                <div class="logo-text">TECH<span>FIT</span></div>
+            </a>
+
+            <nav class="main-navigation" aria-label="Navegação principal">
+                <ul class="nav-links" role="menubar">
+                    <li><a href="inicio.html" class="nav-link">Início</a></li>
+                    <li><a href="pagina_1.html" class="nav-link active">Academias</a></li>
+                    <li><a href="produtos.html" class="nav-link">Produtos</a></li>
+                    <li><a href="agendamento2.html" class="nav-link">Agendamento</a></li>
+                    <li><a href="suporte.html" class="nav-link">Suporte</a></li>
+                </ul>
+
+                <div class="header-cta">
+                    <a href="login.html" class="cta-button">Área do Aluno</a>
+                </div>
+            </nav>
+
+            <button class="hamburger-menu" aria-label="Menu">
+                <span class="hamburger-line"></span>
+                <span class="hamburger-line"></span>
+                <span class="hamburger-line"></span>
+            </button>
+        </div>
     </header>
 
     <div class="overlay"></div>
     
     <div class="main-content-wrapper">
         <div class="left-container">
-            <header>
-                <img src="imagens/WhatsApp Image 2025-10-02 at 15.15.22.jpeg" alt="academia-logo" style="border: 30px; border-radius: 20px;"> 
-                <h2>academia inteligente</h2>
+            <header class="content-header">
+                <img src="imagens/WhatsApp Image 2025-10-02 at 15.15.22.jpeg" alt="academia-logo" class="content-logo">
+                <h2>Academia Inteligente</h2>
             </header>
             
             <div class="textos-container">
-                <p class="destaque destaque-1">transforme seu treino em resultado real com a **Techfit**!</p>
-                <p class="destaque destaque-2">se cadastre hoje e treine **7 dias grátis**!</p>
-                <p class="destaque destaque-3">Sua academia inteligente, sua **evolução garantida**</p>
+                <p class="destaque destaque-1">Transforme seu treino em resultado real com a <strong>Techfit</strong>!</p>
+                <p class="destaque destaque-2">Se cadastre hoje e treine <strong>7 dias grátis</strong>!</p>
+                <p class="destaque destaque-3">Sua academia inteligente, sua <strong>evolução garantida</strong></p>
             </div>
             
             <div class="botoes-container">
@@ -53,23 +75,25 @@
             
             <div class="creators-group">
                 <div class="creator-profile">
-                    <img src="/academia techfit código/imagens/wmremove-transformed.png" alt="Criador-1" class="creators-image">
-                    <p class="creator-name">Jefferson bruno</p>
+                    <img src="imagens/wmremove-transformed.png" alt="Jefferson Bruno" class="creators-image">
+                    <p class="creator-name">Jefferson Bruno</p>
                 </div>
                 
                 <div class="creator-profile">
-                    <img src="/academia techfit código/imagens/wmremove-transformed (1).png" alt="Criador-2" class="creators-image">
-                    <p class="creator-name">Gustavo franco</p>
+                    <img src="imagens/wmremove-transformed (1).png" alt="Gustavo Franco" class="creators-image">
+                    <p class="creator-name">Gustavo Franco</p>
                 </div>
             </div>
             
             <p class="creator-story">
-                jefferon e gustavo interessados por tecnologia e bem-estar, uniram forças para criar a Techfit. 
+                Jefferson e Gustavo, interessados por tecnologia e bem-estar, uniram forças para criar a Techfit. 
                 Com a visão de democratizar o acesso a treinos eficazes e personalizados, 
                 eles desenvolveram uma plataforma inovadora que utiliza IA para otimizar cada sessão. 
                 A Techfit nasceu da crença de que todos merecem uma vida mais saudável, com a inteligência ao seu lado.
             </p>
         </div>
     </div>
+
+    <script src="inicio.js"></script>
 </body>
 </html>

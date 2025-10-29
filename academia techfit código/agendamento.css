@@ -239,3 +239,372 @@ main {
     }
 }
 
+/* --- MELHORIAS PARA INTERAÇÃO --- */
+
+/* Efeito hover para os dias da semana */
+.weekdays li {
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.weekdays li:hover:not(.active) {
+    color: var(--cor-texto-primario);
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 5px;
+}
+
+/* Botão de próximo dia */
+.date-picker .arrow {
+    background: none;
+    border: none;
+    color: var(--cor-texto-primario);
+    font-size: 1.2rem;
+    cursor: pointer;
+    padding: 5px 10px;
+    border-radius: 5px;
+    transition: all 0.3s ease;
+}
+
+.date-picker .arrow:hover {
+    background-color: var(--cor-principal-techfit);
+    color: var(--cor-fundo-escuro);
+}
+
+/* Feedback visual para botões de agendamento */
+.schedule-btn {
+    transition: all 0.3s ease;
+}
+
+.schedule-btn:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 240, 225, 0.3);
+}
+
+/* Animação para quando uma aula é agendada */
+.class-item {
+    transition: all 0.3s ease;
+}
+
+.class-item:has(.schedule-btn:hover) {
+    transform: translateX(5px);
+}
+
+/* --- HEADER MODERNO TECHFIT --- */
+:root {
+    --header-bg: rgba(18, 18, 18, 0.95);
+    --header-border: rgba(0, 240, 225, 0.2);
+    --nav-hover: #00f0e1;
+    --nav-text: #ffffff;
+    --nav-text-muted: #b0b0b0;
+}
+
+.techfit-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background: var(--header-bg);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--header-border);
+    z-index: 1000;
+    padding: 0;
+    transition: all 0.3s ease;
+}
+
+.techfit-header.scrolled {
+    background: rgba(10, 10, 10, 0.98);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.header-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 80px;
+}
+
+/* Logo */
+.header-logo {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    text-decoration: none;
+    transition: transform 0.3s ease;
+}
+
+.header-logo:hover {
+    transform: scale(1.05);
+}
+
+.logo-image {
+    height: 50px;
+    width: auto;
+    border-radius: 10px;
+    transition: all 0.3s ease;
+}
+
+.logo-text {
+    font-family: 'Poppins', sans-serif;
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--nav-text);
+    letter-spacing: -0.5px;
+}
+
+.logo-text span {
+    color: var(--nav-hover);
+}
+
+/* Navegação Principal */
+.main-navigation {
+    display: flex;
+    align-items: center;
+    gap: 40px;
+}
+
+.nav-links {
+    display: flex;
+    gap: 35px;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.nav-link {
+    position: relative;
+    text-decoration: none;
+    color: var(--nav-text-muted);
+    font-family: 'Poppins', sans-serif;
+    font-weight: 500;
+    font-size: 1rem;
+    padding: 10px 0;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.nav-link::before {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--nav-hover), #00d4ff);
+    transition: width 0.3s ease;
+}
+
+.nav-link:hover {
+    color: var(--nav-text);
+}
+
+.nav-link:hover::before {
+    width: 100%;
+}
+
+.nav-link.active {
+    color: var(--nav-hover);
+}
+
+.nav-link.active::before {
+    width: 100%;
+}
+
+/* Botão de Ação */
+.header-cta {
+    margin-left: 30px;
+}
+
+.cta-button {
+    background: linear-gradient(135deg, var(--nav-hover), #00d4ff);
+    color: #000;
+    text-decoration: none;
+    padding: 12px 28px;
+    border-radius: 25px;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 600;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+    border: none;
+    cursor: pointer;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    box-shadow: 0 4px 15px rgba(0, 240, 225, 0.3);
+}
+
+.cta-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 240, 225, 0.4);
+    background: linear-gradient(135deg, #00d4ff, var(--nav-hover));
+}
+
+/* Menu Hambúrguer (Mobile) */
+.hamburger-menu {
+    display: none;
+    flex-direction: column;
+    gap: 4px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 5px;
+}
+
+.hamburger-line {
+    width: 25px;
+    height: 3px;
+    background: var(--nav-text);
+    transition: all 0.3s ease;
+    border-radius: 2px;
+}
+
+.hamburger-menu.active .hamburger-line:nth-child(1) {
+    transform: rotate(45deg) translate(6px, 6px);
+}
+
+.hamburger-menu.active .hamburger-line:nth-child(2) {
+    opacity: 0;
+}
+
+.hamburger-menu.active .hamburger-line:nth-child(3) {
+    transform: rotate(-45deg) translate(6px, -6px);
+}
+
+/* --- RESPONSIVIDADE --- */
+@media (max-width: 1024px) {
+    .nav-links {
+        gap: 25px;
+    }
+    
+    .main-navigation {
+        gap: 25px;
+    }
+}
+
+@media (max-width: 768px) {
+    .header-container {
+        height: 70px;
+        padding: 0 15px;
+    }
+    
+    .logo-text {
+        font-size: 1.5rem;
+    }
+    
+    .logo-image {
+        height: 40px;
+    }
+    
+    .hamburger-menu {
+        display: flex;
+    }
+    
+    .main-navigation {
+        position: fixed;
+        top: 70px;
+        left: 0;
+        width: 100%;
+        background: var(--header-bg);
+        backdrop-filter: blur(20px);
+        flex-direction: column;
+        gap: 0;
+        padding: 20px 0;
+        transform: translateY(-100%);
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.3s ease;
+        border-bottom: 1px solid var(--header-border);
+    }
+    
+    .main-navigation.active {
+        transform: translateY(0);
+        opacity: 1;
+        visibility: visible;
+    }
+    
+    .nav-links {
+        flex-direction: column;
+        gap: 0;
+        width: 100%;
+    }
+    
+    .nav-link {
+        padding: 15px 30px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        width: 100%;
+        display: block;
+    }
+    
+    .nav-link::before {
+        display: none;
+    }
+    
+    .header-cta {
+        margin: 20px 30px 0;
+        width: calc(100% - 60px);
+    }
+    
+    .cta-button {
+        width: 100%;
+        text-align: center;
+        justify-content: center;
+    }
+}
+
+@media (max-width: 480px) {
+    .header-container {
+        height: 60px;
+    }
+    
+    .logo-text {
+        font-size: 1.3rem;
+    }
+    
+    .logo-image {
+        height: 35px;
+    }
+    
+    .main-navigation {
+        top: 60px;
+    }
+}
+
+/* CORREÇÃO PARA HEADER FIXO */
+.techfit-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background: var(--header-bg);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--header-border);
+    z-index: 1000;
+    padding: 0;
+    transition: all 0.3s ease;
+}
+
+/* Adicione padding-top no body ou no conteúdo principal */
+body {
+    padding-top: 80px; /* Altura do header desktop */
+}
+
+/* Ajuste para mobile */
+@media (max-width: 768px) {
+    body {
+        padding-top: 70px; /* Altura do header mobile */
+    }
+}
+
+@media (max-width: 480px) {
+    body {
+        padding-top: 60px; /* Altura do header mobile pequeno */
+    }
+}
+
+/* Se você tiver elementos com position: fixed ou absolute que precisam de ajuste */
+main, .container, .content-container {
+    position: relative;
+    z-index: 1;
+}
