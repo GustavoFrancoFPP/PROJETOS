@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>TechFit Academia</title>
+
+  <!-- Fonts (Orbitron para títulos; Rajdhani para texto) -->
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Rajdhani:wght@300;400;600&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="academia.css" />
+  <script src="https://kit.fontawesome.com/a2d9a32d4d.js" crossorigin="anonymous"></script>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header class="cabecalho">
+    <div class="brand">
+      <img src="assets/logo.png" alt="TechFit logo" class="logo" />
+      <span class="brand-name">TechFit Academia</span>
+    </div>
+
+    <nav class="menu" aria-label="Navegação principal">
+      <!-- mantém onclick conforme solicitado -->
+      <button onclick="mostrarsecao('principal')">Início</button>
+      <button onclick="mostrarsecao('treinos')">Treinos</button>
+      <button onclick="mostrarsecao('academias')">Unidades</button>
+      <button onclick="mostrarsecao('planos')">Planos</button>
+      <button onclick="mostrarsecao('produtos')">Produtos</button>
+      <button onclick="mostrarsecao('agendamento')">Agendamento</button>
+      <button onclick="mostrarsecao('suporte')">Suporte</button>
+      <button onclick="mostrarsecao('login')">Login</button>
+      <button onclick="mostrarsecao('contato')">Contato</button>
+    </nav>
+
+    <button class="mobile-toggle" aria-label="Abrir menu" onclick="toggleMobileMenu()">
+      <i class="fa fa-bars"></i>
+    </button>
+  </header>
+
+  <main>
+    <!-- INÍCIO / HERO (principal) -->
+    <section id="principal" class="secao active">
+      <div class="hero">
+        <div class="hero-left">
+          <h1 class="hero-title">Transforme seu corpo. Eleve sua mente.</h1>
+          <p class="lead">Treine com tecnologia, conforto e resultados reais. Bem-vindo à TechFit — potência e precisão para seus treinos.</p>
+
+          <div class="hero-ctas">
+            <button class="btn primary" onclick="document.querySelector('.planos').scrollIntoView({behavior:'smooth'})">VER PLANOS</button>
+            <button class="btn outline" onclick="mostrarsecao('treinos')">EXPLORAR TREINOS</button>
+          </div>
+
+          <div class="trust">
+            <div class="trust-item"><strong>+50</strong><span>Instrutores</span></div>
+            <div class="trust-item"><strong>12</strong><span>Unidades</span></div>
+            <div class="trust-item"><strong>10k+</strong><span>Alunos</span></div>
+          </div>
+        </div>
+
+        <div class="hero-right">
+          <!-- CARROSSEL HERO (maior e com mais destaque) -->
+          <div class="hero-carrossel" id="heroCarrossel">
+            <div class="hero-slide" data-title="Treino de Força" data-desc="Aumente sua performance.">
+              <img src="assets/slide1.jpg" alt="treino força" />
+            </div>
+            <div class="hero-slide" data-title="Aulas em Grupo" data-desc="Energia e motivação.">
+              <img src="assets/slide2.jpg" alt="aula em grupo" />
+            </div>
+            <div class="hero-slide" data-title="Pilates & Mobilidade" data-desc="Postura e bem-estar.">
+              <img src="assets/slide3.jpg" alt="pilates" />
+            </div>
+
+            <button class="slide-arrow left" aria-label="Anterior" onclick="prevHero()">‹</button>
+            <button class="slide-arrow right" aria-label="Próximo" onclick="nextHero()">›</button>
+
+            <div class="hero-caption">
+              <h3 id="heroTitle">Treino de Força</h3>
+              <p id="heroDesc">Aumente sua performance.</p>
+            </div>
+            <div class="slide-indicators" id="slideIndicators"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PLANOS (preview com botão acima) -->
+      <section class="planos">
+        <div class="planos-header">
+          <button class="titulo-btn" onclick="mostrarsecao('planos')">Nossos Planos</button>
+          <p class="sub">Planos flexíveis para todos os objetivos — inscreva-se sem complicação.</p>
+        </div>
+
+        <div class="planos-grid">
+          <article class="plano-card">
+            <div class="tag">Essencial</div>
+            <h4 class="preco">R$ 480</h4>
+            <p class="plano-name">Single Club</p>
+            <ul>
+              <li>Equipamentos de ponta</li>
+              <li>Acesso aos studios</li>
+              <li>Aplicativo básico</li>
+            </ul>
+            <button class="btn primary">Comece agora</button>
+          </article>
+
+          <article class="plano-card featured">
+            <div class="tag">Popular</div>
+            <h4 class="preco">R$ 520</h4>
+            <p class="plano-name">Experience</p>
+            <ul>
+              <li>Tudo do Single</li>
+              <li>Monitoria e programa</li>
+              <li>4 meses de fidelidade</li>
+            </ul>
+            <button class="btn primary">Assinar</button>
+          </article>
+
+          <article class="plano-card">
+            <div class="tag">Premium</div>
+            <h4 class="preco">R$ 600</h4>
+            <p class="plano-name">All Access</p>
+            <ul>
+              <li>Acesso total às unidades</li>
+              <li>Studios e workshops</li>
+              <li>Eventos exclusivos</li>
+            </ul>
+            <button class="btn primary">Assinar</button>
+          </article>
+        </div>
+      </section>
+    </section>
+
+    <!-- TREINOS -->
+    <section id="treinos" class="secao">
+      <div class="container">
+        <h2 class="section-title">Treinos</h2>
+        <p class="section-sub">Modalidades diversas para objetivos diferentes — força, resistência, mobilidade e muito mais.</p>
+
+        <div class="cards">
+          <div class="card">
+            <img src="assets/treino-artes.jpg" alt="Artes Marciais">
+            <div class="card-body">
+              <h3>Artes Marciais</h3>
+              <p>Defesa pessoal, disciplina e condicionamento.</p>
+            </div>
+          </div>
+
+          <div class="card">
+            <img src="assets/treino-ginastica.jpg" alt="Ginástica">
+            <div class="card-body">
+              <h3>Ginástica</h3>
+              <p>Aulas para força e flexibilidade.</p>
+            </div>
+          </div>
+
+          <div class="card">
+            <img src="assets/treino-zumba.jpg" alt="Zumba">
+            <div class="card-body">
+              <h3>Zumba</h3>
+              <p>Queime calorias dançando ao som de hits.</p>
+            </div>
+          </div>
+
+          <div class="card">
+            <img src="assets/treino-pilates.jpg" alt="Pilates">
+            <div class="card-body">
+              <h3>Pilates</h3>
+              <p>Postura, core e mobilidade.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ACADEMIAS / UNIDADES -->
+    <section id="academias" class="secao">
+      <div class="container">
+        <h2 class="section-title">Nossas Unidades</h2>
+        <p class="section-sub">Encontre a unidade mais próxima de você.</p>
+
+        <div id="unidades-list" class="unidades-grid"></div>
+      </div>
+    </section>
+
+    <!-- PLANOS (detalhado) -->
+    <section id="planos" class="secao">
+      <div class="container">
+        <h2 class="section-title">Planos</h2>
+        <p class="section-sub">Escolha o plano ideal com transparência e benefícios reais.</p>
+
+        <div class="planos-detalhe">
+          <div class="plano-detalhe-card">
+            <h3>Single Club</h3>
+            <p class="preco-grande">R$ 480</p>
+            <ul>
+              <li>Equipamentos de ponta</li>
+              <li>Aulas avulsas</li>
+            </ul>
+            <button class="btn primary">Assinar</button>
+          </div>
+
+          <div class="plano-detalhe-card destaque">
+            <h3>Experience</h3>
+            <p class="preco-grande">R$ 520</p>
+            <ul>
+              <li>Monitoria e planos individuais</li>
+              <li>Descontos em produtos</li>
+            </ul>
+            <button class="btn primary">Assinar</button>
+          </div>
+
+          <div class="plano-detalhe-card">
+            <h3>All Access</h3>
+            <p class="preco-grande">R$ 600</p>
+            <ul>
+              <li>Acesso total às unidades</li>
+              <li>Studios e workshops</li>
+            </ul>
+            <button class="btn primary">Assinar</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PRODUTOS -->
+    <section id="produtos" class="secao">
+      <div class="container">
+        <h2 class="section-title">Produtos</h2>
+        <p class="section-sub">Loja TechFit — acessórios e equipamentos selecionados.</p>
+        <div id="produtos-grid" class="produtos-grid"></div>
+      </div>
+    </section>
+
+    <!-- AGENDAMENTO -->
+    <section id="agendamento" class="secao">
+      <div class="container">
+        <h2 class="section-title">Agendamento</h2>
+        <p class="section-sub">Agende sua aula experimental ou avaliação física.</p>
+
+        <form id="formAgenda" class="form-grid" onsubmit="return handleAgendamento(event)">
+          <input type="text" id="nome" placeholder="Seu nome" required />
+          <input type="tel" id="telefone" placeholder="Telefone" required />
+          <input type="email" id="email" placeholder="E-mail" required />
+          <select id="unidadeSelect" required></select>
+          <input type="date" id="data" required />
+          <select id="horario" required>
+            <option value="">Escolha um horário</option>
+            <option>08:00</option>
+            <option>10:00</option>
+            <option>14:00</option>
+            <option>18:00</option>
+            <option>20:00</option>
+          </select>
+          <textarea id="observacoes" placeholder="Observações (opcional)"></textarea>
+          <button class="btn primary" type="submit">Agendar</button>
+        </form>
+      </div>
+    </section>
+
+    <!-- SUPORTE -->
+    <section id="suporte" class="secao">
+      <div class="container">
+        <h2 class="section-title">Suporte</h2>
+        <p class="section-sub">Perguntas frequentes e suporte ao aluno.</p>
+
+        <div class="accordion">
+          <details>
+            <summary>Como alterar meu plano?</summary>
+            <p>Consulte a central de atendimento ou fale com a recepção de sua unidade.</p>
+          </details>
+
+          <details>
+            <summary>Posso treinar em outras unidades?</summary>
+            <p>Depende do seu plano. O All Access permite acesso a todas as unidades.</p>
+          </details>
+
+          <details>
+            <summary>Como cancelar?</summary>
+            <p>O cancelamento é presencial ou pelo formulário disponível na central.</p>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <!-- LOGIN -->
+    <section id="login" class="secao">
+      <div class="container narrow">
+        <h2 class="section-title">Login</h2>
+        <p class="section-sub">Acesse sua conta TechFit</p>
+
+        <div class="login-box">
+          <form id="loginForm" onsubmit="return handleLogin(event)">
+            <input type="email" id="loginEmail" placeholder="E-mail" required />
+            <input type="password" id="loginPass" placeholder="Senha" required />
+            <div class="login-actions">
+              <button class="btn primary" type="submit">Entrar</button>
+              <button class="btn outline" type="button" onclick="mostrarsecao('contato')">Ajuda</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <!-- CONTATO -->
+    <section id="contato" class="secao">
+      <div class="container">
+        <h2 class="section-title">Contato</h2>
+        <p class="section-sub">Envie sua mensagem — responderemos em até 48h.</p>
+
+        <div class="contato-grid">
+          <form id="contatoForm" class="form-grid" onsubmit="return handleContato(event)">
+            <input type="text" id="nomeContato" placeholder="Seu nome" required />
+            <input type="email" id="emailContato" placeholder="Seu e-mail" required />
+            <input type="tel" id="telContato" placeholder="Telefone" />
+            <textarea id="mensagemContato" placeholder="Sua mensagem" required></textarea>
+            <button class="btn primary" type="submit">Enviar Mensagem</button>
+          </form>
+
+          <div class="contato-info">
+            <h3>Visite-nos</h3>
+            <p>TechFit Academia — Endereço de exemplo, Cidade</p>
+            <p><i class="fa fa-phone"></i> (19) 99936-4328</p>
+            <p><i class="fa fa-instagram"></i> @TECHFIT_OFC</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="main-footer">
+    <div class="footer-inner">
+      <div class="copyright">© 2025 TechFit Academia • Todos os direitos reservados</div>
+      <div class="socials">
+        <a href="#" aria-label="Instagram"><i class="fa fa-instagram"></i></a>
+        <a href="#" aria-label="WhatsApp"><i class="fa fa-whatsapp"></i></a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
