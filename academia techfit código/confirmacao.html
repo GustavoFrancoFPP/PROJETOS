@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Confirmação - TECHFIT</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"/>
+    <link rel="stylesheet" href="confirmacao.css">
+</head>
+<body>
+    <header class="techfit-header">
+        <div class="header-container">
+            <a href="inicio.html" class="header-logo">
+                <img src="imagens/WhatsApp Image 2025-10-02 at 15.15.22.jpeg" 
+                     alt="TechFit - Academia Inteligente" 
+                     class="logo-image">
+                <div class="logo-text">TECH<span>FIT</span></div>
+            </a>
+
+            <nav class="main-navigation">
+                <ul class="nav-links">
+                    <li><a href="inicio.html" class="nav-link">Início</a></li>
+                    <li><a href="unidades.html" class="nav-link">Academias</a></li>
+                    <li><a href="produtos.html" class="nav-link">Produtos</a></li>
+                    <li><a href="agendamento2.html" class="nav-link">Agendamento</a></li>
+                    <li><a href="suporte.html" class="nav-link">Suporte</a></li>
+                </ul>
+
+                <div class="header-cta">
+                    <a href="login.html" class="cta-button">Área do Aluno</a>
+                </div>
+            </nav>
+
+            <button class="hamburger-menu" aria-label="Menu">
+                <span class="hamburger-line"></span>
+                <span class="hamburger-line"></span>
+                <span class="hamburger-line"></span>
+            </button>
+        </div>
+    </header>
+
+    <main class="confirmacao-container">
+        <div class="container">
+            <div class="confirmacao-header">
+                <h1><i class="fas fa-check-circle"></i> Pedido Confirmado!</h1>
+                <div class="confirmacao-steps">
+                    <div class="step completed">
+                        <span class="step-number">1</span>
+                        <span class="step-text">Carrinho</span>
+                    </div>
+                    <div class="step completed">
+                        <span class="step-number">2</span>
+                        <span class="step-text">Pagamento</span>
+                    </div>
+                    <div class="step active">
+                        <span class="step-number">3</span>
+                        <span class="step-text">Confirmação</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="confirmacao-content">
+                <div class="sucesso-card">
+                    <div class="sucesso-icon">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    
+                    <h2>Obrigado pela sua compra!</h2>
+                    <p class="pedido-numero">Seu pedido <strong id="numeroPedido">TECH000000</strong> foi confirmado</p>
+                    
+                    <div class="info-entrega">
+                        <div class="info-item">
+                            <i class="fas fa-shipping-fast"></i>
+                            <div>
+                                <strong>Previsão de Entrega</strong>
+                                <p id="previsaoEntrega">7 dias úteis</p>
+                            </div>
+                        </div>
+                        
+                        <div class="info-item">
+                            <i class="fas fa-envelope"></i>
+                            <div>
+                                <strong>E-mail de Confirmação</strong>
+                                <p id="emailCliente">Enviado para seu e-mail</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="resumo-rapido">
+                        <h3>Resumo do Pedido</h3>
+                        <div class="resumo-detalhes">
+                            <div class="detalhe-item">
+                                <span>Itens:</span>
+                                <span id="totalItens">0</span>
+                            </div>
+                            <div class="detalhe-item">
+                                <span>Total:</span>
+                                <span id="totalPedido">R$ 0,00</span>
+                            </div>
+                            <div class="detalhe-item">
+                                <span>Método:</span>
+                                <span id="metodoPagamento">Cartão</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="acoes-confirmacao">
+                        <a href="produtos.html" class="btn btn-secundario">
+                            <i class="fas fa-shopping-bag"></i>
+                            Continuar Comprando
+                        </a>
+                        <a href="inicio.html" class="btn btn-primario">
+                            <i class="fas fa-home"></i>
+                            Voltar ao Início
+                        </a>
+                    </div>
+
+                    <div class="info-adicional">
+                        <h4><i class="fas fa-info-circle"></i> O que acontece agora?</h4>
+                        <ul>
+                            <li>Você receberá um e-mail com todos os detalhes do pedido</li>
+                            <li>Seu pedido será processado e enviado em até 24h</li>
+                            <li>Acompanhe o status pela Área do Aluno</li>
+                            <li>Dúvidas? Entre em contato pelo WhatsApp</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container footer-container">
+            <div class="footer-brand">
+                <a href="#" class="logo">
+                     <img src="imagens/WhatsApp Image 2025-10-02 at 15.15.22.jpeg" alt="TechFit Logo" class="logo-img">
+                     <span>TECHFIT</span>
+                </a>
+                <p>Sua Academia do Futuro!</p>
+            </div>
+            <div class="footer-contact">
+                 <a href="#" class="contact-link">
+                    <i class="fab fa-instagram"></i>
+                    <span>TECHFIT_OFC</span>
+                </a>
+                <a href="#" class="contact-link">
+                    <i class="fab fa-whatsapp"></i>
+                    <span>(19) 99936 - 4328</span>
+                </a>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2024 TECHFIT. Todos os direitos reservados</p>
+        </div>
+    </footer>
+
+    <script src="confirmacao.js"></script>
+    <script src="header-carrinho-simples.js"></script>
+</body>
+</html>

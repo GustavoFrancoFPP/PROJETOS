@@ -1,0 +1,316 @@
+/* confirmacao.css */
+:root {
+    --primary-color: #00f0e1;
+    --background-dark: #121212;
+    --background-light: #1e1e1e;
+    --text-color: #ffffff;
+    --text-muted: #a0a0a0;
+    --success-color: #4CAF50;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: var(--background-dark);
+    color: var(--text-color);
+    line-height: 1.6;
+    padding-top: 80px;
+}
+
+.confirmacao-container {
+    min-height: calc(100vh - 200px);
+    padding: 40px 0;
+}
+
+.confirmacao-header {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.confirmacao-header h1 {
+    font-size: 2.5rem;
+    margin-bottom: 30px;
+    color: var(--success-color);
+}
+
+.confirmacao-header h1 i {
+    margin-right: 15px;
+}
+
+.confirmacao-steps {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+.step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    opacity: 0.5;
+    transition: all 0.3s ease;
+}
+
+.step.active {
+    opacity: 1;
+}
+
+.step.completed .step-number {
+    background: var(--success-color);
+    border-color: var(--success-color);
+}
+
+.step-number {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--background-light);
+    border: 2px solid var(--primary-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+}
+
+.step.active .step-number {
+    background: var(--primary-color);
+    color: var(--background-dark);
+}
+
+.step-text {
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.confirmacao-content {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.sucesso-card {
+    background: var(--background-light);
+    border-radius: 20px;
+    padding: 50px;
+    text-align: center;
+    border: 2px solid var(--success-color);
+    box-shadow: 0 10px 30px rgba(76, 175, 80, 0.2);
+}
+
+.sucesso-icon {
+    font-size: 5rem;
+    color: var(--success-color);
+    margin-bottom: 30px;
+}
+
+.sucesso-card h2 {
+    font-size: 2rem;
+    margin-bottom: 15px;
+    color: var(--text-color);
+}
+
+.pedido-numero {
+    font-size: 1.2rem;
+    color: var(--text-muted);
+    margin-bottom: 40px;
+}
+
+.pedido-numero strong {
+    color: var(--primary-color);
+}
+
+.info-entrega {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 30px;
+    margin: 40px 0;
+    padding: 30px;
+    background: var(--background-dark);
+    border-radius: 15px;
+}
+
+.info-item {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    text-align: left;
+}
+
+.info-item i {
+    font-size: 2.5rem;
+    color: var(--primary-color);
+    width: 60px;
+}
+
+.info-item strong {
+    display: block;
+    margin-bottom: 5px;
+    color: var(--text-color);
+}
+
+.info-item p {
+    color: var(--text-muted);
+    margin: 0;
+}
+
+.resumo-rapido {
+    background: var(--background-dark);
+    border-radius: 15px;
+    padding: 30px;
+    margin: 40px 0;
+}
+
+.resumo-rapido h3 {
+    color: var(--primary-color);
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.resumo-detalhes {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+}
+
+.detalhe-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.detalhe-item:last-child {
+    border-bottom: none;
+}
+
+.acoes-confirmacao {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    margin: 40px 0;
+    flex-wrap: wrap;
+}
+
+.btn {
+    padding: 15px 30px;
+    border-radius: 10px;
+    text-decoration: none;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    transition: all 0.3s ease;
+}
+
+.btn-primario {
+    background: var(--primary-color);
+    color: var(--background-dark);
+}
+
+.btn-primario:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 240, 225, 0.3);
+}
+
+.btn-secundario {
+    background: var(--background-dark);
+    color: var(--text-color);
+    border: 2px solid var(--primary-color);
+}
+
+.btn-secundario:hover {
+    background: var(--primary-color);
+    color: var(--background-dark);
+    transform: translateY(-2px);
+}
+
+.info-adicional {
+    margin-top: 40px;
+    padding-top: 40px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    text-align: left;
+}
+
+.info-adicional h4 {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+    color: var(--primary-color);
+}
+
+.info-adicional ul {
+    list-style: none;
+    padding: 0;
+}
+
+.info-adicional li {
+    padding: 8px 0;
+    position: relative;
+    padding-left: 25px;
+    color: var(--text-muted);
+}
+
+.info-adicional li:before {
+    content: '✓';
+    position: absolute;
+    left: 0;
+    color: var(--success-color);
+    font-weight: bold;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    body {
+        padding-top: 70px;
+    }
+    
+    .confirmacao-header h1 {
+        font-size: 2rem;
+    }
+    
+    .confirmacao-steps {
+        gap: 20px;
+    }
+    
+    .sucesso-card {
+        padding: 30px 20px;
+    }
+    
+    .info-entrega {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+    
+    .info-item {
+        text-align: center;
+        flex-direction: column;
+    }
+    
+    .acoes-confirmacao {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .btn {
+        width: 100%;
+        max-width: 300px;
+        justify-content: center;
+    }
+}
+
+@media (max-width: 480px) {
+    body {
+        padding-top: 60px;
+    }
+    
+    .confirmacao-container {
+        padding: 20px 0;
+    }
+    
+    .resumo-detalhes {
+        grid-template-columns: 1fr;
+    }
+}
