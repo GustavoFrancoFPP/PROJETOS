@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Central de Suporte - TECHFIT</title>
+    <title>Suporte - TECHFIT</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -16,83 +16,81 @@
 <body>
 
     <header class="techfit-header">
-    <div class="header-container">
-        <!-- Logo -->
-        <a href="inicio.html" class="header-logo">
-            <img src="/academia techfit código/imagens/WhatsApp Image 2025-10-02 at 15.15.22.jpeg" 
-                 alt="TechFit - Academia Inteligente" 
-                 class="logo-image">
-            <div class="logo-text">TECH<span>FIT</span></div>
-        </a>
+        <div class="header-container">
+            <!-- Logo -->
+            <a href="inicio.html" class="header-logo">
+                <img src="imagens/WhatsApp Image 2025-10-02 at 15.15.22.jpeg" 
+                     alt="TechFit - Academia Inteligente" 
+                     class="logo-image">
+                <div class="logo-text">TECH<span>FIT</span></div>
+            </a>
 
-        <!-- Navegação -->
-        <nav class="main-navigation">
-            <ul class="nav-links">
-                <li><a href="inicio.html" class="nav-link">Início</a></li>
-                <li><a href="pagina_1.html" class="nav-link">Academias</a></li>
-                <li><a href="produtos.html" class="nav-link">Produtos</a></li>
-                <li><a href="agendamento2.html" class="nav-link">Agendamento</a></li>
-                <li><a href="suporte.html" class="nav-link">Suporte</a></li>
-            </ul>
+            <!-- Navegação -->
+            <nav class="main-navigation">
+                <ul class="nav-links">
+                    <li><a href="inicio.html" class="nav-link">Início</a></li>
+                    <li><a href="unidades.html" class="nav-link">Academias</a></li>
+                    <li><a href="produtos.html" class="nav-link">Produtos</a></li>
+                    <li><a href="agendamento2.html" class="nav-link">Agendamento</a></li>
+                    <li><a href="suporte.html" class="nav-link active">Suporte</a></li>
+                </ul>
 
-            <!-- Botão de Ação -->
-            <div class="header-cta">
-                <a href="login.html" class="cta-button">Área do Aluno</a>
-            </div>
-        </nav>
+                <!-- Botão de Ação -->
+                <div class="header-cta">
+                    <a href="login.html" class="cta-button">Área do Aluno</a>
+                </div>
+            </nav>
 
-        <!-- Menu Hambúrguer (Mobile) -->
-        <button class="hamburger-menu" aria-label="Menu">
-            <span class="hamburger-line"></span>
-            <span class="hamburger-line"></span>
-            <span class="hamburger-line"></span>
-        </button>
-    </div>
-</header>
+            <!-- Menu Hambúrguer (Mobile) -->
+            <button class="hamburger-menu" aria-label="Menu">
+                <span class="hamburger-line"></span>
+                <span class="hamburger-line"></span>
+                <span class="hamburger-line"></span>
+            </button>
+        </div>
+    </header>
 
     <main>
         <div class="container">
-            <p class="page-title">SUPORTE</p>
+            <p class="page-title">SUPORTE AO CLIENTE</p>
             
             <section class="support-center">
-                
-                <div class="support-main-content">
-                    <h1>Central de Suporte</h1>
-                    <form class="search-bar" id="search-form">
-                        <i class="fa-solid fa-magnifying-glass"></i>
-                        <input type="search" placeholder="Busque por pesquisas">
-                    </form>
-
-                    <h2>Perguntas Frequentes</h2>
-                    <div class="faq-grid">
-                        <a href="#" class="faq-item">
-                            <i class="fa-solid fa-credit-card"></i>
-                            <span>Planos e Pagamentos</span>
-                        </a>
-                        <a href="#" class="faq-item">
-                            <i class="fa-solid fa-calendar-check"></i>
-                            <span>Agendamento Online</span>
-                        </a>
-                        <a href="#" class="faq-item">
-                            <i class="fa-solid fa-mobile-screen-button"></i>
-                            <span>Acesso ao Aplicativo</span>
-                        </a>
-                        <a href="#" class="faq-item">
-                            <i class="fa-solid fa-gears"></i>
-                            <span>Problemas Técnicos</span>
-                        </a>
+                <div class="chat-container">
+                    <div class="chat-header">
+                        <h1><i class="fas fa-robot"></i> Suporte TECHFIT</h1>
+                        <p>Estou aqui para ajudar! Como posso auxiliá-lo hoje?</p>
+                    </div>
+                    
+                    <div class="chat-messages" id="chatMessages">
+                        <!-- Mensagens serão adicionadas aqui via JavaScript -->
+                        <div class="message bot-message">
+                            Olá! Sou o assistente virtual da TECHFIT. Como posso ajudá-lo hoje?
+                            <div class="quick-options">
+                                <div class="quick-option" data-option="problema-site">Problemas no site</div>
+                                <div class="quick-option" data-option="produto">Dúvidas sobre produtos</div>
+                                <div class="quick-option" data-option="agendamento">Problemas com agendamento</div>
+                                <div class="quick-option" data-option="pagamento">Dificuldades com pagamento</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="chat-status" id="chatStatus">
+                        <!-- Status de digitação será mostrado aqui -->
+                    </div>
+                    
+                    <div class="chat-input-container">
+                        <form class="chat-input-form" id="chatForm">
+                            <input type="text" 
+                                   class="chat-input" 
+                                   id="chatInput" 
+                                   placeholder="Digite sua mensagem..." 
+                                   required>
+                            <button type="submit" class="send-button" id="sendButton">
+                                <i class="fas fa-paper-plane"></i>
+                            </button>
+                        </form>
                     </div>
                 </div>
-
-                <aside class="support-sidebar">
-                    <div class="help-box">
-                        <h3>Ainda precisa de ajuda?</h3>
-                        <a href="#" class="btn-support">
-                            <i class="fa-solid fa-comment-dots"></i>
-                            <span>Falar com o Suporte</span>
-                        </a>
-                    </div>
-                </aside>
             </section>
         </div>
     </main>
@@ -100,7 +98,7 @@
     <footer class="main-footer">
         <div class="container">
             <div class="footer-brand">
-                <img src="/academia techfit código/imagens/WhatsApp Image 2025-10-02 at 15.15.22.jpeg" alt="Logo da TECHFIT" class="logo-img">
+                <img src="imagens/WhatsApp Image 2025-10-02 at 15.15.22.jpeg" alt="Logo da TECHFIT" class="logo-img">
                 <p>Sua Academia do Futuro!</p>
             </div>
             <div class="footer-copyright">

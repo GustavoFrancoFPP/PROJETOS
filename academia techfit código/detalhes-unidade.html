@@ -7,7 +7,6 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" />
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <style>
-        /* ===== VARIÁVEIS E CONFIGURAÇÕES GLOBAIS ===== */
         :root {
             --cor-principal: #00bcd4;
             --cor-principal-escura: #00a8cc;
@@ -537,7 +536,6 @@
     </style>
 </head>
 <body>
-    <!-- Header -->
     <header class="techfit-header">
         <div class="header-container">
             <a href="inicio.html" class="header-logo">
@@ -569,7 +567,6 @@
         </div>
     </header>
 
-    <!-- Conteúdo Principal -->
     <div class="localizacao-container">
         <div class="localizacao-header">
             <h1>Localização</h1>
@@ -577,7 +574,6 @@
         </div>
 
         <div class="conteudo-principal">
-            <!-- Mapa Interativo -->
             <section class="mapa-section">
                 <h2>
                     <span class="material-symbols-outlined">map</span>
@@ -586,7 +582,6 @@
                 <div id="map"></div>
             </section>
 
-            <!-- Informações de Localização -->
             <section class="info-section">
                 <h2>
                     <span class="material-symbols-outlined">pin_drop</span>
@@ -637,7 +632,6 @@
             </section>
         </div>
 
-        <!-- Unidades Próximas -->
         <section class="unidades-section">
             <h2>
                 <span class="material-symbols-outlined">location_city</span>
@@ -682,20 +676,15 @@
 
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script>
-        // Inicialização do mapa
         function initMap() {
-            // Coordenadas da TechFit Paulista
             const techfitPaulista = [-23.5630, -46.6520];
-            
-            // Criar mapa
+
             const map = L.map('map').setView(techfitPaulista, 15);
             
-            // Adicionar camada do mapa
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                 attribution: '© OpenStreetMap contributors'
             }).addTo(map);
             
-            // Adicionar marcador personalizado
             const customIcon = L.divIcon({
                 className: 'custom-marker',
                 html: `
@@ -715,7 +704,6 @@
                 iconAnchor: [20, 40]
             });
             
-            // Adicionar marcador da TechFit
             L.marker(techfitPaulista, { icon: customIcon })
                 .addTo(map)
                 .bindPopup(`
@@ -736,7 +724,6 @@
                 `)
                 .openPopup();
             
-            // Adicionar círculo de área de cobertura
             L.circle(techfitPaulista, {
                 color: '#00bcd4',
                 fillColor: '#00bcd4',
@@ -745,12 +732,9 @@
             }).addTo(map);
         }
         
-        // Menu mobile
         document.addEventListener('DOMContentLoaded', function() {
-            // Inicializar mapa
             initMap();
             
-            // Menu hamburger
             const hamburgerMenu = document.querySelector('.hamburger-menu');
             const mainNavigation = document.querySelector('.main-navigation');
             
@@ -761,7 +745,6 @@
                 });
             }
             
-            // Fechar menu ao clicar em um link (mobile)
             document.querySelectorAll('.nav-link').forEach(link => {
                 link.addEventListener('click', function() {
                     if (hamburgerMenu) hamburgerMenu.classList.remove('active');
