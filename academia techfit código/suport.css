@@ -1,4 +1,7 @@
 /* --- GLOBAIS E VARIÁVEIS --- */
+body{
+    background-color: gray;
+}
 :root {
     --cor-ciano-principal: #00D1B2;
     --cor-fundo-escuro: #121212;
