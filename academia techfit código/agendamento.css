@@ -1,14 +1,29 @@
-/* --- VARIAVEIS GLOBAIS E RESET --- */
+/* ===== VARIÁVEIS E CONFIGURAÇÕES GLOBAIS ===== */
 :root {
-    --cor-principal-techfit: #00D1B2; /* Um tom de verde-água/ciano vibrante */
+    --cor-ciano-principal: #00D1B2;
     --cor-fundo-escuro: #121212;
-    --cor-fundo-transparente: rgba(18, 18, 18, 0.8);
-    --cor-item-lista: rgba(255, 255, 255, 0.05);
+    --cor-card-escuro: rgba(30, 30, 30, 0.85);
+    --cor-card-claro: rgba(230, 230, 230, 0.6);
     --cor-texto-primario: #FFFFFF;
     --cor-texto-secundario: #B3B3B3;
+    --cor-check: #00D1B2;
+    --cor-cross: #F14668;
+    --font-principal: 'Poppins', sans-serif;
+    
+    /* Header */
+    --header-bg: rgba(18, 18, 18, 0.95);
+    --header-border: rgba(0, 240, 225, 0.2);
+    --nav-hover: #00f0e1;
+    --nav-text: #ffffff;
+    --nav-text-muted: #b0b0b0;
+    
+    /* Agendamento */
+    --cor-fundo-transparente: rgba(18, 18, 18, 0.8);
+    --cor-item-lista: rgba(255, 255, 255, 0.05);
     --cor-borda-sutil: #444444;
 }
 
+/* ===== RESET E CONFIGURAÇÕES BASE ===== */
 * {
     margin: 0;
     padding: 0;
@@ -16,288 +31,46 @@
 }
 
 body {
-    font-family: 'Poppins', 'Helvetica Neue', sans-serif;
-    background-image: url('https://images.unsplash.com/photo-1571902943202-507ec2618e8f?q=80&w=2787&auto=format&fit=crop'); /* Imagem de halteres de alta qualidade */
-    background-size: cover;
-    background-position: center center;
-    background-attachment: fixed; /* Deixa a imagem de fundo estática */
+    font-family: var(--font-principal);
+    background: linear-gradient(135deg, #0c0c0c 0%, #1a1a1a 50%, #2d2d2d 100%);
     color: var(--cor-texto-primario);
     line-height: 1.6;
-}
-
-/* --- CABEÇALHO (HEADER) --- */
-.top-bar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 20px 40px;
-    background-color: rgba(0, 0, 0, 0.3); /* Um fundo sutil para destacar o header */
-}
-
-.logo-img {
-    height: 80px;  /* Ajustei o tamanho para um header mais padrão */
-    width: auto;
-    border-radius: 10px;
-}
-
-.main-nav {
-    display: flex;
-    gap: 25px;
-}
-
-.main-nav a {
-    color: var(--cor-texto-primario);
-    text-decoration: none;
-    font-size: 1rem;
-    font-weight: 500;
-    padding: 10px 15px;
-    border-radius: 8px;
-    transition: background-color 0.3s ease, color 0.3s ease;
-}
-
-.main-nav a:hover {
-    background-color: var(--cor-principal-techfit);
-    color: var(--cor-fundo-escuro);
-}
-
-.main-nav a.active {
-    background-color: rgba(255, 255, 255, 0.9);
-    color: var(--cor-fundo-escuro);
-    font-weight: 700;
-}
-
-/* --- SEÇÃO DE AGENDAMENTO --- */
-main {
-    display: flex;
-    justify-content: center;
-    padding: 40px 20px;
-}
-
-.booking {
-    width: 100%;
-    max-width: 800px;
-    background-color: var(--cor-fundo-transparente);
-    border-radius: 12px;
-    padding: 30px;
-    backdrop-filter: blur(10px); /* Efeito de vidro fosco no fundo */
-    border: 1px solid var(--cor-borda-sutil);
-}
-
-.booking h2 {
-    font-size: 2.2rem;
-    margin-bottom: 25px;
-    border-left: 4px solid var(--cor-principal-techfit);
-    padding-left: 15px;
-}
-
-/* --- SELETOR DE DIA --- */
-.date-picker {
-    font-size: 1.1rem;
-    color: var(--cor-texto-secundario);
-    margin-bottom: 15px;
-}
-
-.weekdays {
-    list-style: none;
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 30px;
-    border-bottom: 1px solid var(--cor-borda-sutil);
-}
-
-.weekdays li {
-    flex: 1;
-    text-align: center;
-    padding: 15px 5px;
-    font-weight: 500;
-    color: var(--cor-texto-secundario);
-    cursor: pointer;
-    transition: color 0.3s ease;
+    padding-top: 80px;
+    min-height: 100vh;
     position: relative;
 }
 
-.weekdays li:hover {
-    color: var(--cor-texto-primario);
-}
-
-.weekdays li.active {
-    color: var(--cor-texto-primario);
-    font-weight: 700;
-}
-
-.weekdays li.active::after {
+/* Overlay para melhor contraste */
+body::before {
     content: '';
-    position: absolute;
-    bottom: -1px; /* Alinha com a borda do container */
+    position: fixed;
+    top: 0;
     left: 0;
     width: 100%;
-    height: 3px;
-    background-color: var(--cor-principal-techfit);
-    border-radius: 2px;
+    height: 100%;
+    background: url('https://images.unsplash.com/photo-1571902943202-507ec2618e8f?q=80&w=2787&auto=format&fit=crop') center/cover no-repeat;
+    opacity: 0.3;
+    z-index: -1;
 }
 
-
-/* --- LISTA DE AULAS --- */
-.classes-list {
-    list-style: none;
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+    width: 100%;
 }
 
-.class-item {
-    display: flex;
-    align-items: center;
-    gap: 20px;
-    background-color: var(--cor-item-lista);
-    padding: 20px;
-    border-radius: 8px;
-    border: 1px solid transparent;
-    transition: border-color 0.3s ease, background-color 0.3s ease;
+a {
+    color: var(--cor-ciano-principal);
+    text-decoration: none;
+    transition: color 0.3s ease;
 }
 
-.class-item:hover {
-    background-color: rgba(255, 255, 255, 0.08);
-    border-color: var(--cor-borda-sutil);
+a:hover {
+    color: #00a38c;
 }
 
-.class-item .time {
-    font-size: 1.2rem;
-    font-weight: 700;
-    min-width: 60px;
-}
-
-.class-item .class-details {
-    flex-grow: 1; /* Ocupa o espaço restante */
-}
-
-.class-details .name {
-    font-size: 1.1rem;
-    font-weight: 600;
-    margin: 0;
-}
-
-.class-details .spots {
-    font-size: 0.9rem;
-    color: var(--cor-texto-secundario);
-    margin: 0;
-}
-
-/* --- BOTÕES --- */
-.schedule-btn, .full-btn {
-    padding: 10px 20px;
-    border-radius: 6px;
-    font-weight: 600;
-    font-size: 0.9rem;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    border: 1px solid var(--cor-texto-secundario);
-}
-
-.schedule-btn {
-    background-color: var(--cor-fundo-escuro);
-    color: var(--cor-texto-primario);
-}
-
-.schedule-btn:hover {
-    background-color: var(--cor-principal-techfit);
-    border-color: var(--cor-principal-techfit);
-    color: var(--cor-fundo-escuro);
-}
-
-.full-btn {
-    background-color: transparent;
-    color: var(--cor-texto-secundario);
-    cursor: not-allowed;
-}
-
-
-/* --- RESPONSIVIDADE --- */
-@media (max-width: 768px) {
-    .top-bar {
-        flex-direction: column;
-        gap: 20px;
-    }
-    
-    .booking {
-        padding: 20px;
-    }
-
-    .booking h2 {
-        font-size: 1.8rem;
-    }
-
-    .class-item {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 15px;
-    }
-
-    .schedule-btn, .full-btn {
-        width: 100%;
-        text-align: center;
-    }
-}
-
-/* --- MELHORIAS PARA INTERAÇÃO --- */
-
-/* Efeito hover para os dias da semana */
-.weekdays li {
-    transition: all 0.3s ease;
-    cursor: pointer;
-}
-
-.weekdays li:hover:not(.active) {
-    color: var(--cor-texto-primario);
-    background-color: rgba(255, 255, 255, 0.1);
-    border-radius: 5px;
-}
-
-/* Botão de próximo dia */
-.date-picker .arrow {
-    background: none;
-    border: none;
-    color: var(--cor-texto-primario);
-    font-size: 1.2rem;
-    cursor: pointer;
-    padding: 5px 10px;
-    border-radius: 5px;
-    transition: all 0.3s ease;
-}
-
-.date-picker .arrow:hover {
-    background-color: var(--cor-principal-techfit);
-    color: var(--cor-fundo-escuro);
-}
-
-/* Feedback visual para botões de agendamento */
-.schedule-btn {
-    transition: all 0.3s ease;
-}
-
-.schedule-btn:hover:not(:disabled) {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 240, 225, 0.3);
-}
-
-/* Animação para quando uma aula é agendada */
-.class-item {
-    transition: all 0.3s ease;
-}
-
-.class-item:has(.schedule-btn:hover) {
-    transform: translateX(5px);
-}
-
-/* --- HEADER MODERNO TECHFIT --- */
-:root {
-    --header-bg: rgba(18, 18, 18, 0.95);
-    --header-border: rgba(0, 240, 225, 0.2);
-    --nav-hover: #00f0e1;
-    --nav-text: #ffffff;
-    --nav-text-muted: #b0b0b0;
-}
-
+/* ===== HEADER MODERNO TECHFIT ===== */
 .techfit-header {
     position: fixed;
     top: 0;
@@ -317,7 +90,7 @@ main {
 }
 
 .header-container {
-    max-width: 1400px;
+    max-width: 1200px;
     margin: 0 auto;
     padding: 0 20px;
     display: flex;
@@ -340,7 +113,7 @@ main {
 }
 
 .logo-image {
-    height: 50px;
+    height: 40px;
     width: auto;
     border-radius: 10px;
     transition: all 0.3s ease;
@@ -441,7 +214,7 @@ main {
     background: linear-gradient(135deg, #00d4ff, var(--nav-hover));
 }
 
-/* Menu Hambúrguer (Mobile) */
+/* Menu Hambúrguer */
 .hamburger-menu {
     display: none;
     flex-direction: column;
@@ -472,7 +245,251 @@ main {
     transform: rotate(-45deg) translate(6px, -6px);
 }
 
-/* --- RESPONSIVIDADE --- */
+/* ===== SEÇÃO DE AGENDAMENTO ===== */
+main {
+    display: flex;
+    justify-content: center;
+    padding: 40px 20px;
+    min-height: calc(100vh - 200px);
+}
+
+.booking {
+    width: 100%;
+    max-width: 800px;
+    background-color: var(--cor-fundo-transparente);
+    border-radius: 12px;
+    padding: 30px;
+    backdrop-filter: blur(10px);
+    border: 1px solid var(--cor-borda-sutil);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+}
+
+.booking h2 {
+    font-size: 2.2rem;
+    margin-bottom: 25px;
+    border-left: 4px solid var(--cor-ciano-principal);
+    padding-left: 15px;
+    color: var(--cor-texto-primario);
+}
+
+/* Seletor de Data */
+.date-selector {
+    margin-bottom: 30px;
+}
+
+.date-picker {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 1.1rem;
+    color: var(--cor-texto-secundario);
+    margin-bottom: 15px;
+    padding: 10px 0;
+}
+
+.date-picker .current {
+    font-weight: 600;
+    color: var(--cor-texto-primario);
+}
+
+.date-picker .arrow {
+    background: none;
+    border: none;
+    color: var(--cor-texto-primario);
+    font-size: 1.2rem;
+    cursor: pointer;
+    padding: 5px 10px;
+    border-radius: 5px;
+    transition: all 0.3s ease;
+}
+
+.date-picker .arrow:hover {
+    background-color: var(--cor-ciano-principal);
+    color: var(--cor-fundo-escuro);
+}
+
+.weekdays {
+    list-style: none;
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 30px;
+    border-bottom: 1px solid var(--cor-borda-sutil);
+}
+
+.weekdays li {
+    flex: 1;
+    text-align: center;
+    padding: 15px 5px;
+    font-weight: 500;
+    color: var(--cor-texto-secundario);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.weekdays li:hover {
+    color: var(--cor-texto-primario);
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 5px;
+}
+
+.weekdays li.active {
+    color: var(--cor-texto-primario);
+    font-weight: 700;
+}
+
+.weekdays li.active::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background-color: var(--cor-ciano-principal);
+    border-radius: 2px;
+}
+
+/* Lista de Aulas */
+.classes-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.class-item {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    background-color: var(--cor-item-lista);
+    padding: 20px;
+    border-radius: 8px;
+    border: 1px solid transparent;
+    transition: all 0.3s ease;
+}
+
+.class-item:hover {
+    background-color: rgba(255, 255, 255, 0.08);
+    border-color: var(--cor-borda-sutil);
+    transform: translateX(5px);
+}
+
+.class-item .time {
+    font-size: 1.2rem;
+    font-weight: 700;
+    min-width: 60px;
+    color: var(--cor-texto-primario);
+}
+
+.class-item .class-details {
+    flex-grow: 1;
+}
+
+.class-details .name {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin: 0;
+    color: var(--cor-texto-primario);
+}
+
+.class-details .spots {
+    font-size: 0.9rem;
+    color: var(--cor-texto-secundario);
+    margin: 0;
+}
+
+/* Botões */
+.schedule-btn, .full-btn {
+    padding: 10px 20px;
+    border-radius: 6px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: 1px solid var(--cor-texto-secundario);
+    min-width: 100px;
+}
+
+.schedule-btn {
+    background-color: var(--cor-fundo-escuro);
+    color: var(--cor-texto-primario);
+}
+
+.schedule-btn:hover {
+    background-color: var(--cor-ciano-principal);
+    border-color: var(--cor-ciano-principal);
+    color: var(--cor-fundo-escuro);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 240, 225, 0.3);
+}
+
+.full-btn {
+    background-color: transparent;
+    color: var(--cor-texto-secundario);
+    cursor: not-allowed;
+}
+
+/* ===== FOOTER ===== */
+.main-footer {
+    background: rgba(0, 0, 0, 0.8);
+    padding: 40px 0;
+    margin-top: 50px;
+    font-size: 0.95rem;
+    backdrop-filter: blur(10px);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.main-footer .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.footer-brand {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+}
+
+.footer-brand .logo-img {
+    height: 45px;
+    width: auto;
+    border-radius: 10px;
+}
+
+.footer-brand p {
+    color: var(--cor-texto-secundario);
+    margin: 0;
+    font-style: italic;
+}
+
+.footer-copyright {
+    color: var(--cor-texto-secundario);
+    text-align: center;
+}
+
+.footer-contact {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.footer-contact a {
+    color: var(--cor-texto-primario);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    transition: all 0.3s ease;
+    font-size: 0.9rem;
+}
+
+.footer-contact a:hover {
+    color: var(--cor-ciano-principal);
+    transform: translateX(5px);
+}
+
+/* ===== RESPONSIVIDADE ===== */
 @media (max-width: 1024px) {
     .nav-links {
         gap: 25px;
@@ -480,6 +497,10 @@ main {
     
     .main-navigation {
         gap: 25px;
+    }
+    
+    .booking {
+        max-width: 90%;
     }
 }
 
@@ -494,7 +515,7 @@ main {
     }
     
     .logo-image {
-        height: 40px;
+        height: 35px;
     }
     
     .hamburger-menu {
@@ -551,6 +572,47 @@ main {
         text-align: center;
         justify-content: center;
     }
+
+    body {
+        padding-top: 70px;
+    }
+    
+    .main-footer .container {
+        flex-direction: column;
+        gap: 25px;
+        text-align: center;
+    }
+    
+    .footer-contact {
+        align-items: center;
+    }
+    
+    .booking {
+        padding: 20px;
+    }
+
+    .booking h2 {
+        font-size: 1.8rem;
+    }
+
+    .class-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+    }
+
+    .schedule-btn, .full-btn {
+        width: 100%;
+        text-align: center;
+    }
+    
+    .footer-brand {
+        align-items: center;
+    }
+    
+    .footer-brand .logo-img {
+        height: 40px;
+    }
 }
 
 @media (max-width: 480px) {
@@ -563,48 +625,39 @@ main {
     }
     
     .logo-image {
-        height: 35px;
+        height: 30px;
     }
     
     .main-navigation {
         top: 60px;
     }
-}
 
-/* CORREÇÃO PARA HEADER FIXO */
-.techfit-header {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    background: var(--header-bg);
-    backdrop-filter: blur(20px);
-    border-bottom: 1px solid var(--header-border);
-    z-index: 1000;
-    padding: 0;
-    transition: all 0.3s ease;
-}
-
-/* Adicione padding-top no body ou no conteúdo principal */
-body {
-    padding-top: 80px; /* Altura do header desktop */
-}
-
-/* Ajuste para mobile */
-@media (max-width: 768px) {
     body {
-        padding-top: 70px; /* Altura do header mobile */
+        padding-top: 60px;
     }
-}
-
-@media (max-width: 480px) {
-    body {
-        padding-top: 60px; /* Altura do header mobile pequeno */
+    
+    .booking {
+        padding: 15px;
     }
-}
-
-/* Se você tiver elementos com position: fixed ou absolute que precisam de ajuste */
-main, .container, .content-container {
-    position: relative;
-    z-index: 1;
+    
+    .booking h2 {
+        font-size: 1.5rem;
+    }
+    
+    .weekdays li {
+        padding: 10px 2px;
+        font-size: 0.9rem;
+    }
+    
+    .class-item {
+        padding: 15px;
+    }
+    
+    .footer-brand .logo-img {
+        height: 35px;
+    }
+    
+    .date-picker {
+        font-size: 1rem;
+    }
 }
