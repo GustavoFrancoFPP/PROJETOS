@@ -1,25 +1,52 @@
-// header-carrinho-simples.js - Botão do carrinho simples
+// header-carrinho-simples.js - Botão do carrinho simples CORRIGIDO
 document.addEventListener('DOMContentLoaded', function() {
     
-    // 1. Adicionar ícone do carrinho no header
+    // 1. Adicionar ícone do carrinho no header - VERSÃO CORRIGIDA
     function adicionarIconeCarrinho() {
-        const headerCta = document.querySelector('.header-cta');
+        // Tentar encontrar o header-cta (página inicio.html)
+        let headerCta = document.querySelector('.header-cta');
         
         if (headerCta) {
-            // Criar link do carrinho
-            const cartLink = document.createElement('a');
-            cartLink.href = 'carrinho.html';
-            cartLink.className = 'cart-button';
-            cartLink.innerHTML = `
-                <i class="fas fa-shopping-cart"></i>
-                <span class="cart-count">0</span>
-            `;
-            
-            // Adicionar antes do botão "Área do Aluno"
+            // Se existe header-cta, adicionar antes do primeiro elemento
+            const cartLink = criarElementoCarrinho();
             headerCta.insertBefore(cartLink, headerCta.firstChild);
-            
-            console.log('🛒 Botão do carrinho adicionado');
+        } else {
+            // Se não existe header-cta (página pagina_1.html), adicionar na navegação
+            const mainNavigation = document.querySelector('.main-navigation');
+            if (mainNavigation) {
+                const cartLink = criarElementoCarrinho();
+                
+                // Encontrar o container do header-cta ou criar um
+                let ctaContainer = mainNavigation.querySelector('.header-cta');
+                if (!ctaContainer) {
+                    ctaContainer = document.createElement('div');
+                    ctaContainer.className = 'header-cta';
+                    mainNavigation.appendChild(ctaContainer);
+                }
+                
+                // Adicionar o carrinho antes do botão "Área do Aluno"
+                const ctaButton = ctaContainer.querySelector('.cta-button');
+                if (ctaButton) {
+                    ctaContainer.insertBefore(cartLink, ctaButton);
+                } else {
+                    ctaContainer.appendChild(cartLink);
+                }
+            }
         }
+        
+        console.log('🛒 Botão do carrinho adicionado');
+    }
+
+    // Função auxiliar para criar o elemento do carrinho
+    function criarElementoCarrinho() {
+        const cartLink = document.createElement('a');
+        cartLink.href = 'carrinho.html';
+        cartLink.className = 'cart-button';
+        cartLink.innerHTML = `
+            <i class="fas fa-shopping-cart"></i>
+            <span class="cart-count">0</span>
+        `;
+        return cartLink;
     }
 
     // 2. Atualizar contador do carrinho
@@ -101,19 +128,24 @@ document.addEventListener('DOMContentLoaded', function() {
     function configurarScrollHeader() {
         const header = document.querySelector('.techfit-header');
         
-        window.addEventListener('scroll', function() {
-            if (window.scrollY > 100) {
-                header.classList.add('scrolled');
-            } else {
-                header.classList.remove('scrolled');
-            }
-        });
+        if (header) {
+            window.addEventListener('scroll', function() {
+                if (window.scrollY > 100) {
+                    header.classList.add('scrolled');
+                } else {
+                    header.classList.remove('scrolled');
+                }
+            });
+        }
     }
 
-    // 6. Adicionar estilos do carrinho
+    // 6. Adicionar estilos do carrinho - VERSÃO CORRIGIDA
     function adicionarEstilosCarrinho() {
+        // Verificar se os estilos já foram adicionados
+        if (document.querySelector('#carrinho-styles')) return;
+        
         const styles = `
-            <style>
+            <style id="carrinho-styles">
                 /* Botão do Carrinho */
                 .cart-button {
                     position: relative;
@@ -161,7 +193,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 .header-cta {
                     display: flex;
                     align-items: center;
-                    gap: 0;
+                    gap: 15px;
                 }
                 
                 /* Responsivo */

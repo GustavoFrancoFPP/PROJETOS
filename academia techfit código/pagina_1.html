@@ -7,12 +7,13 @@
     <meta name="keywords" content="academia, techfit, unidades, localização, fitness">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" />
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     <link rel="stylesheet" href="unidades.css">
     <title>Unidades - Techfit</title>
 </head>
 <body class="corpo-1">
 
-        <header class="techfit-header">
+           <header class="techfit-header">
         <div class="header-container">
             <a href="inicio.html" class="header-logo">
                 <img src="imagens/WhatsApp Image 2025-10-02 at 15.15.22.jpeg" 
@@ -20,16 +21,24 @@
                      class="logo-image">
                 <div class="logo-text">TECH<span>FIT</span></div>
             </a>
-<!-- LINKS CORRETOS -->
-<nav class="main-navigation" aria-label="Navegação principal">
-    <ul class="nav-links" role="menubar">
-        <li><a href="inicio.html" class="nav-link active">Início</a></li>
-        <li><a href="pagina_1.html" class="nav-link">Academias</a></li> <!-- CORRIGIDO -->
-        <li><a href="produtos.html" class="nav-link">Produtos</a></li>
-        <li><a href="agendamento2.php" class="nav-link">Agendamento</a></li>
-        <li><a href="suporte.html" class="nav-link">Suporte</a></li>
-    </ul>
-</nav>
+
+            <!-- Navegação -->
+            <nav class="main-navigation">
+                <ul class="nav-links" role="menubar">
+                    <li><a href="inicio.html" class="nav-link">Início</a></li>
+                    <li><a href="pagina_1.html" class="nav-link active">Academias</a></li>
+                    <li><a href="produtos.html" class="nav-link">Produtos</a></li>
+                    <li><a href="agendamento2.html" class="nav-link">Agendamento</a></li>
+                    <li><a href="suporte.html" class="nav-link">Suporte</a></li>
+                </ul>
+
+                <!-- Botão de Ação -->
+                <div class="header-cta">
+                    <!-- Botão do Carrinho (será adicionado pelo JavaScript) -->
+                    <a href="login.html" class="cta-button">Área do Aluno</a>
+                </div>
+            </nav>
+
             <button class="hamburger-menu" aria-label="Menu">
                 <span class="hamburger-line"></span>
                 <span class="hamburger-line"></span>
@@ -102,7 +111,6 @@
                     </div>
                 </div>
             </div>
-            
             <div class="unidade-card" data-cidade="mg" data-lat="-19.9246" data-lng="-43.9355">
                 <img src="imagens/academia-interior3.jpg" alt="TechFit Savassi" class="unidade-imagem">
                 <div class="unidade-info">

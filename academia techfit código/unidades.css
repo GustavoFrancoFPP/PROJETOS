@@ -641,4 +641,73 @@ body.corpo-1 {
     #map {
         height: 250px;
     }
+
+    /* Adicione isso no final do unidades.css */
+
+/* Estilos do Carrinho para pagina_1.html */
+.cart-button {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.1);
+    margin-right: 15px;
+    transition: all 0.3s ease;
+    text-decoration: none;
+}
+
+.cart-button:hover {
+    background: rgba(0, 240, 225, 0.2);
+    transform: scale(1.05);
+}
+
+.cart-button i {
+    font-size: 1.3rem;
+    color: var(--nav-text);
+}
+
+.cart-count {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background: #00f0e1;
+    color: #121212;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid #121212;
+}
+
+.header-cta {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+/* Responsivo */
+@media (max-width: 768px) {
+    .cart-button {
+        width: 40px;
+        height: 40px;
+        margin-right: 10px;
+    }
+    
+    .cart-count {
+        width: 18px;
+        height: 18px;
+        font-size: 0.6rem;
+    }
+    
+    .header-cta {
+        gap: 10px;
+    }
+}
 }

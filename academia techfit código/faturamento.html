@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel ADM - Faturamento</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+    <link rel="stylesheet" href="admin.css">
+</head>
+<body class="admin-page">
+
+    <!-- Header -->
+    <header class="techfit-header">
+        <div class="header-container">
+            <a href="visao.html" class="header-logo">
+                <img src="imagens/WhatsApp Image 2025-10-02 at 15.15.22.jpeg" 
+                     alt="TechFit - Academia Inteligente" 
+                     class="logo-image">
+                <div class="logo-text">TECH<span>FIT</span></div>
+            </a>
+
+            <!-- Navegação -->
+            <nav class="main-navigation">
+                <ul class="nav-links">
+                    <li><a href="visao.html" class="nav-link">Visão Geral</a></li>
+                    <li><a href="produtosadm.html" class="nav-link">Produtos</a></li>
+                    <li><a href="aulas.html" class="nav-link">Aulas</a></li>
+                    <li><a href="feedbacks.html" class="nav-link">Feedbacks</a></li>
+                    <li><a href="faturamento.html" class="nav-link active">Faturamento</a></li>
+                </ul>
+
+                <!-- Botão de Ação -->
+                <div class="header-cta">
+                    <a href="login.html" class="cta-button logout">
+                        <i class="fas fa-sign-out-alt"></i>
+                        Sair
+                    </a>
+                </div>
+            </nav>
+
+            <!-- Menu Hambúrguer (Mobile) -->
+            <button class="hamburger-menu" aria-label="Menu">
+                <span class="hamburger-line"></span>
+                <span class="hamburger-line"></span>
+                <span class="hamburger-line"></span>
+            </button>
+        </div>
+    </header>
+
+    <main class="admin-main">
+        <div class="container">
+            <p class="page-title">RELATÓRIOS DE FATURAMENTO</p>
+            
+            <!-- Estatísticas Financeiras -->
+            <section class="stats-grid">
+                <div class="stats-card">
+                    <div class="icon">
+                        <i class="fas fa-money-bill-wave"></i>
+                    </div>
+                    <div class="value">R$ 45.271</div>
+                    <div class="label">Faturamento Mensal</div>
+                </div>
+                <div class="stats-card">
+                    <div class="icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <div class="value">+12.5%</div>
+                    <div class="label">Crescimento</div>
+                </div>
+                <div class="stats-card">
+                    <div class="icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="value">324</div>
+                    <div class="label">Alunos Ativos</div>
+                </div>
+                <div class="stats-card">
+                    <div class="icon">
+                        <i class="fas fa-shopping-cart"></i>
+                    </div>
+                    <div class="value">R$ 8.542</div>
+                    <div class="label">Vendas Produtos</div>
+                </div>
+            </section>
+
+            <!-- Filtros de Período -->
+            <div class="panel" style="margin-bottom: 25px;">
+                <div style="display: flex; gap: 15px; flex-wrap: wrap; align-items: center; justify-content: space-between;">
+                    <div style="display: flex; gap: 15px; flex-wrap: wrap;">
+                        <select class="form-control" style="width: auto;">
+                            <option>Este Mês</option>
+                            <option>Mês Passado</option>
+                            <option>Últimos 3 Meses</option>
+                            <option>Este Ano</option>
+                            <option>Personalizado</option>
+                        </select>
+                        <input type="date" class="form-control" style="width: auto;">
+                        <input type="date" class="form-control" style="width: auto;">
+                        <button class="action-btn">
+                            <i class="fas fa-filter"></i>
+                            Aplicar
+                        </button>
+                    </div>
+                    <div>
+                        <button class="action-btn btn-secondary">
+                            <i class="fas fa-file-export"></i>
+                            Exportar PDF
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Métricas Detalhadas -->
+            <section class="main-content-grid" style="margin-bottom: 25px;">
+                <div class="panel">
+                    <h2>Receitas por Categoria</h2>
+                    <div style="padding: 20px;">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 15px;">
+                            <span>Mensalidades</span>
+                            <strong>R$ 36.729</strong>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 15px;">
+                            <span>Vendas de Produtos</span>
+                            <strong>R$ 8.542</strong>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 15px;">
+                            <span>Aulas Avulsas</span>
+                            <strong>R$ 2.150</strong>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 15px;">
+                            <span>Taxas Adicionais</span>
+                            <strong>R$ 850</strong>
+                        </div>
+                        <hr style="border-color: rgba(255,255,255,0.1); margin: 20px 0;">
+                        <div style="display: flex; justify-content: space-between; font-size: 1.2rem; font-weight: 700;">
+                            <span>Total</span>
+                            <strong style="color: var(--cor-ciano-principal);">R$ 48.271</strong>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="panel">
+                    <h2>Taxa de Conversão</h2>
+                    <div style="text-align: center; padding: 30px 20px;">
+                        <div style="width: 120px; height: 120px; margin: 0 auto 20px; border-radius: 50%; 
+                                  background: conic-gradient(var(--cor-ciano-principal) 0% 68%, rgba(255,255,255,0.1) 68% 100%); 
+                                  display: flex; align-items: center; justify-content: center; position: relative;">
+                            <div style="width: 80px; height: 80px; background: rgba(30,30,30,0.9); border-radius: 50%; 
+                                      display: flex; align-items: center; justify-content: center;">
+                                <span style="font-size: 1.5rem; font-weight: 700;">68%</span>
+                            </div>
+                        </div>
+                        <div style="color: var(--cor-texto-secundario);">
+                            Visitantes para Alunos
+                        </div>
+                    </div>
+                </div>
+
+                <div class="panel">
+                    <h2>Metas do Mês</h2>
+                    <div style="padding: 20px;">
+                        <div style="margin-bottom: 20px;">
+                            <div style="display: flex; justify-content: between; margin-bottom: 5px;">
+                                <span>Faturamento</span>
+                                <span>R$ 45.271 / R$ 50.000</span>
+                            </div>
+                            <div style="height: 10px; background: rgba(255,255,255,0.1); border-radius: 5px;">
+                                <div style="width: 90.5%; height: 100%; background: var(--cor-ciano-principal); border-radius: 5px;"></div>
+                            </div>
+                        </div>
+                        <div style="margin-bottom: 20px;">
+                            <div style="display: flex; justify-content: between; margin-bottom: 5px;">
+                                <span>Novos Alunos</span>
+                                <span>45 / 50</span>
+                            </div>
+                            <div style="height: 10px; background: rgba(255,255,255,0.1); border-radius: 5px;">
+                                <div style="width: 90%; height: 100%; background: #28a745; border-radius: 5px;"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div style="display: flex; justify-content: between; margin-bottom: 5px;">
+                                <span>Vendas Produtos</span>
+                                <span>R$ 8.542 / R$ 10.000</span>
+                            </div>
+                            <div style="height: 10px; background: rgba(255,255,255,0.1); border-radius: 5px;">
+                                <div style="width: 85.4%; height: 100%; background: #ffc107; border-radius: 5px;"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Transações Recentes -->
+            <div class="panel">
+                <h2>Transações Recentes</h2>
+                <div class="data-table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Cliente</th>
+                                <th>Descrição</th>
+                                <th>Valor</th>
+                                <th>Data</th>
+                                <th>Status</th>
+                                <th>Método</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>#001245</td>
+                                <td>
+                                    <strong>Maria Santos</strong><br>
+                                    <small>Plano Premium</small>
+                                </td>
+                                <td>Mensalidade Dezembro</td>
+                                <td style="color: #28a745;">R$ 189,90</td>
+                                <td>10/12/2024</td>
+                                <td><span class="status-badge status-completed">Pago</span></td>
+                                <td>Cartão</td>
+                            </tr>
+                            <tr>
+                                <td>#001244</td>
+                                <td>
+                                    <strong>João Silva</strong><br>
+                                    <small>Plano Básico</small>
+                                </td>
+                                <td>Mensalidade Dezembro</td>
+                                <td style="color: #28a745;">R$ 129,90</td>
+                                <td>10/12/2024</td>
+                                <td><span class="status-badge status-completed">Pago</span></td>
+                                <td>PIX</td>
+                            </tr>
+                            <tr>
+                                <td>#001243</td>
+                                <td>
+                                    <strong>Ana Costa</strong><br>
+                                    <small>Produtos</small>
+                                </td>
+                                <td>Whey Protein + Creatina</td>
+                                <td style="color: #28a745;">R$ 247,80</td>
+                                <td>09/12/2024</td>
+                                <td><span class="status-badge status-completed">Pago</span></td>
+                                <td>Cartão</td>
+                            </tr>
+                            <tr>
+                                <td>#001242</td>
+                                <td>
+                                    <strong>Carlos Lima</strong><br>
+                                    <small>Aula Avulsa</small>
+                                </td>
+                                <td>Aula de Spinning</td>
+                                <td style="color: #28a745;">R$ 35,00</td>
+                                <td>09/12/2024</td>
+                                <td><span class="status-badge status-completed">Pago</span></td>
+                                <td>Dinheiro</td>
+                            </tr>
+                            <tr>
+                                <td>#001241</td>
+                                <td>
+                                    <strong>Pedro Oliveira</strong><br>
+                                    <small>Plano Premium</small>
+                                </td>
+                                <td>Mensalidade Dezembro</td>
+                                <td style="color: #dc3545;">R$ 189,90</td>
+                                <td>08/12/2024</td>
+                                <td><span class="status-badge status-cancelled">Atrasado</span></td>
+                                <td>Boleto</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Gráficos de Tendência -->
+            <section class="main-content-grid" style="margin-top: 30px;">
+                <div class="panel">
+                    <h2>Faturamento Mensal 2024</h2>
+                    <div style="padding: 20px; height: 200px; display: flex; align-items: end; gap: 10px;">
+                        <div style="flex: 1; display: flex; flex-direction: column; align-items: center;">
+                            <div style="background: var(--cor-ciano-principal); height: 40px; width: 30px; border-radius: 5px 5px 0 0;"></div>
+                            <small>Jan</small>
+                        </div>
+                        <div style="flex: 1; display: flex; flex-direction: column; align-items: center;">
+                            <div style="background: var(--cor-ciano-principal); height: 60px; width: 30px; border-radius: 5px 5px 0 0;"></div>
+                            <small>Fev</small>
+                        </div>
+                        <div style="flex: 1; display: flex; flex-direction: column; align-items: center;">
+                            <div style="background: var(--cor-ciano-principal); height: 80px; width: 30px; border-radius: 5px 5px 0 0;"></div>
+                            <small>Mar</small>
+                        </div>
+                        <div style="flex: 1; display: flex; flex-direction: column; align-items: center;">
+                            <div style="background: var(--cor-ciano-principal); height: 95px; width: 30px; border-radius: 5px 5px 0 0;"></div>
+                            <small>Abr</small>
+                        </div>
+                        <div style="flex: 1; display: flex; flex-direction: column; align-items: center;">
+                            <div style="background: var(--cor-ciano-principal); height: 110px; width: 30px; border-radius: 5px 5px 0 0;"></div>
+                            <small>Mai</small>
+                        </div>
+                        <div style="flex: 1; display: flex; flex-direction: column; align-items: center;">
+                            <div style="background: var(--cor-ciano-principal); height: 130px; width: 30px; border-radius: 5px 5px 0 0;"></div>
+                            <small>Jun</small>
+                        </div>
+                        <div style="flex: 1; display: flex; flex-direction: column; align-items: center;">
+                            <div style="background: var(--cor-ciano-principal); height: 150px; width: 30px; border-radius: 5px 5px 0 0;"></div>
+                            <small>Jul</small>
+                        </div>
+                        <div style="flex: 1; display: flex; flex-direction: column; align-items: center;">
+                            <div style="background: var(--cor-ciano-principal); height: 140px; width: 30px; border-radius: 5px 5px 0 0;"></div>
+                            <small>Ago</small>
+                        </div>
+                        <div style="flex: 1; display: flex; flex-direction: column; align-items: center;">
+                            <div style="background: var(--cor-ciano-principal); height: 160px; width: 30px; border-radius: 5px 5px 0 0;"></div>
+                            <small>Set</small>
+                        </div>
+                        <div style="flex: 1; display: flex; flex-direction: column; align-items: center;">
+                            <div style="background: var(--cor-ciano-principal); height: 170px; width: 30px; border-radius: 5px 5px 0 0;"></div>
+                            <small>Out</small>
+                        </div>
+                        <div style="flex: 1; display: flex; flex-direction: column; align-items: center;">
+                            <div style="background: var(--cor-ciano-principal); height: 180px; width: 30px; border-radius: 5px 5px 0 0;"></div>
+                            <small>Nov</small>
+                        </div>
+                        <div style="flex: 1; display: flex; flex-direction: column; align-items: center;">
+                            <div style="background: var(--cor-ciano-principal); height: 200px; width: 30px; border-radius: 5px 5px 0 0;"></div>
+                            <small>Dez</small>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="main-footer">
+        <div class="container">
+            <div class="footer-brand">
+                <img src="imagens/WhatsApp Image 2025-10-02 at 15.15.22.jpeg" alt="Logo da TECHFIT" class="logo-img">
+                <p>Sua Academia do Futuro!</p>
+            </div>
+            <div class="footer-copyright">
+                <p>&copy; 2024 TECHFIT. Todos os direitos reservados.</p>
+            </div>
+            <div class="footer-contact">
+                <a href="#"><i class="fab fa-instagram"></i> TECHFIT_OFC</a>
+                <a href="#"><i class="fab fa-whatsapp"></i> (19) 99936-4328</a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="faturamento.js"></script>
+    <script src="header-admin.js"></script>
+</body>
+</html>

@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TECHFIT - Agendamento de Aulas</title>
+
+    <link rel="stylesheet" href="agendamento.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+</head>
+<body>
+        <header class="techfit-header">
+        <div class="header-container">
+            <!-- Logo -->
+            <a href="inicio.html" class="header-logo">
+                <img src="imagens/WhatsApp Image 2025-10-02 at 15.15.22.jpeg" 
+                     alt="TechFit - Academia Inteligente" 
+                     class="logo-image">
+                <div class="logo-text">TECH<span>FIT</span></div>
+            </a>
+
+            <!-- Navegação -->
+            <nav class="main-navigation">
+                <ul class="nav-links">
+                    <li><a href="inicio.html" class="nav-link">Início</a></li>
+                    <li><a href="pagina_1.html" class="nav-link">Academias</a></li>
+                    <li><a href="produtos.html" class="nav-link">Produtos</a></li>
+                    <li><a href="agendamento2.html" class="nav-link active">Agendamento</a></li>
+                    <li><a href="suporte.html" class="nav-link">Suporte</a></li>
+                </ul>
+
+                <!-- Botão de Ação -->
+                <div class="header-cta">
+                    <!-- Botão do Carrinho (será adicionado pelo JavaScript) -->
+                    <a href="login.html" class="cta-button">Área do Aluno</a>
+                </div>
+            </nav>
+
+            <!-- Menu Hambúrguer (Mobile) -->
+            <button class="hamburger-menu" aria-label="Menu">
+                <span class="hamburger-line"></span>
+                <span class="hamburger-line"></span>
+                <span class="hamburger-line"></span>
+            </button>
+        </div>
+    </header>
+
+
+    <main>
+        <section class="booking">
+            <h2>Agendamento de Aulas</h2>
+
+            <div class="date-selector">
+                <div class="date-picker">
+                    <span class="current">Qua, 01 Oct</span>
+                    <button class="arrow" aria-label="Próximo dia">→</button>
+                </div>
+
+                <ul class="weekdays">
+                    <li>Seg</li>
+                    <li>Ter</li>
+                    <li class="active">Qua</li>
+                    <li>Qui</li>
+                    <li>Sex</li>
+                    <li>Sab</li>
+                    <li>Dom</li>
+                </ul>
+            </div>
+
+            <ul class="classes-list">
+                <li class="class-item">
+                    <span class="time">7:00</span>
+                    <div class="class-details">
+                        <h3 class="name">Yoga Matinal</h3>
+                        <p class="spots">345 vagas disponíveis</p>
+                    </div>
+                    <button class="schedule-btn">Agendar</button>
+                </li>
+                <li class="class-item">
+                    <span class="time">9:00</span>
+                    <div class="class-details">
+                        <h3 class="name">Yoga Matinal</h3>
+                        <p class="spots">239 vagas disponíveis</p>
+                    </div>
+                    <button class="schedule-btn">Agendar</button>
+                </li>
+                <li class="class-item">
+                    <span class="time">13:00</span>
+                    <div class="class-details">
+                        <h3 class="name">Spinning Class</h3>
+                        <p class="spots">23 vagas disponíveis</p>
+                    </div>
+                    <button class="schedule-btn">Agendar</button>
+                </li>
+                <li class="class-item">
+                    <span class="time">15:00</span>
+                    <div class="class-details">
+                        <h3 class="name">Pilates</h3>
+                        <p class="spots">244 vagas disponíveis</p>
+                    </div>
+                    <button class="schedule-btn">Agendar</button>
+                </li>
+                <li class="class-item">
+                    <span class="time">17:50</span>
+                    <div class="class-details">
+                        <h3 class="name">Treino Funcional</h3>
+                        <p class="spots">38 vagas disponíveis</p>
+                    </div>
+                    <button class="schedule-btn">Agendar</button>
+                </li>
+                <li class="class-item">
+                    <span class="time">19:00</span>
+                    <div class="class-details">
+                        <h3 class="name">Pilates</h3>
+                        <p class="spots">324 vagas disponíveis</p>
+                    </div>
+                    <button class="schedule-btn">Agendar</button>
+                </li>
+                <li class="class-item">
+                    <span class="time">21:00</span>
+                    <div class="class-details">
+                        <h3 class="name">HIIT</h3>
+                    </div>
+                    <button class="full-btn" disabled>LOTADO</button>
+                </li>
+            </ul>
+        </section>
+    </main>
+
+    <script src="header-carrinho-simples.js"></script>
+    
+    <script src="script.js"></script>
+</body>
+</html>

@@ -23,6 +23,199 @@
     --cor-borda-sutil: #444444;
 }
 
+/* ===== CORREÇÕES DO HEADER PARA AGENDAMENTO ===== */
+
+/* Layout do Header CTA */
+.header-cta {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-left: 30px;
+}
+
+/* Estilos do Carrinho */
+.cart-button {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.1);
+    margin-right: 15px;
+    transition: all 0.3s ease;
+    text-decoration: none;
+}
+
+.cart-button:hover {
+    background: rgba(0, 240, 225, 0.2);
+    transform: scale(1.05);
+}
+
+.cart-button i {
+    font-size: 1.3rem;
+    color: var(--nav-text);
+}
+
+.cart-count {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background: #00f0e1;
+    color: #121212;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid #121212;
+}
+
+/* Botão de Ação */
+.cta-button {
+    background: linear-gradient(135deg, var(--nav-hover), #00d4ff);
+    color: #000;
+    text-decoration: none;
+    padding: 12px 28px;
+    border-radius: 25px;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 600;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+    border: none;
+    cursor: pointer;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    box-shadow: 0 4px 15px rgba(0, 240, 225, 0.3);
+}
+
+.cta-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 240, 225, 0.4);
+    background: linear-gradient(135deg, #00d4ff, var(--nav-hover));
+}
+
+/* Menu Hambúrguer */
+.hamburger-menu {
+    display: none;
+    flex-direction: column;
+    gap: 4px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 5px;
+}
+
+.hamburger-line {
+    width: 25px;
+    height: 3px;
+    background: var(--nav-text);
+    transition: all 0.3s ease;
+    border-radius: 2px;
+}
+
+.hamburger-menu.active .hamburger-line:nth-child(1) {
+    transform: rotate(45deg) translate(6px, 6px);
+}
+
+.hamburger-menu.active .hamburger-line:nth-child(2) {
+    opacity: 0;
+}
+
+.hamburger-menu.active .hamburger-line:nth-child(3) {
+    transform: rotate(-45deg) translate(6px, -6px);
+}
+
+/* ===== RESPONSIVIDADE - CORREÇÕES ===== */
+@media (max-width: 768px) {
+    .header-container {
+        height: 70px;
+        padding: 0 15px;
+    }
+    
+    .hamburger-menu {
+        display: flex;
+    }
+    
+    .main-navigation {
+        position: fixed;
+        top: 70px;
+        left: 0;
+        width: 100%;
+        background: var(--header-bg);
+        backdrop-filter: blur(20px);
+        flex-direction: column;
+        gap: 0;
+        padding: 20px 0;
+        transform: translateY(-100%);
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.3s ease;
+        border-bottom: 1px solid var(--header-border);
+    }
+    
+    .main-navigation.active {
+        transform: translateY(0);
+        opacity: 1;
+        visibility: visible;
+    }
+    
+    .nav-links {
+        flex-direction: column;
+        gap: 0;
+        width: 100%;
+    }
+    
+    .nav-link {
+        padding: 15px 30px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        width: 100%;
+        display: block;
+    }
+    
+    .nav-link::before {
+        display: none;
+    }
+    
+    .header-cta {
+        margin: 20px 30px 0;
+        width: calc(100% - 60px);
+        flex-direction: column;
+    }
+    
+    .cta-button {
+        width: 100%;
+        text-align: center;
+        justify-content: center;
+    }
+    
+    .cart-button {
+        width: 40px;
+        height: 40px;
+        margin-right: 10px;
+    }
+    
+    .cart-count {
+        width: 18px;
+        height: 18px;
+        font-size: 0.6rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .header-container {
+        height: 60px;
+    }
+    
+    .main-navigation {
+        top: 60px;
+    }
+}
+
 /* ===== RESET E CONFIGURAÇÕES BASE ===== */
 * {
     margin: 0;

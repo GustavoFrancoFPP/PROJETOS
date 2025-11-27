@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel ADM - Aulas</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+    <link rel="stylesheet" href="admin.css">
+</head>
+<body class="admin-page">
+
+    <!-- Header -->
+    <header class="techfit-header">
+        <div class="header-container">
+            <a href="visao.html" class="header-logo">
+                <img src="imagens/WhatsApp Image 2025-10-02 at 15.15.22.jpeg" 
+                     alt="TechFit - Academia Inteligente" 
+                     class="logo-image">
+                <div class="logo-text">TECH<span>FIT</span></div>
+            </a>
+
+            <!-- Navegação -->
+            <nav class="main-navigation">
+                <ul class="nav-links">
+                    <li><a href="visao.html" class="nav-link">Visão Geral</a></li>
+                    <li><a href="produtosadm.html" class="nav-link">Produtos</a></li>
+                    <li><a href="aulas.html" class="nav-link active">Aulas</a></li>
+                    <li><a href="feedbacks.html" class="nav-link">Feedbacks</a></li>
+                    <li><a href="faturamento.html" class="nav-link">Faturamento</a></li>
+                </ul>
+
+                <!-- Botão de Ação -->
+                <div class="header-cta">
+                    <a href="login.html" class="cta-button logout">
+                        <i class="fas fa-sign-out-alt"></i>
+                        Sair
+                    </a>
+                </div>
+            </nav>
+
+            <!-- Menu Hambúrguer (Mobile) -->
+            <button class="hamburger-menu" aria-label="Menu">
+                <span class="hamburger-line"></span>
+                <span class="hamburger-line"></span>
+                <span class="hamburger-line"></span>
+            </button>
+        </div>
+    </header>
+
+    <main class="admin-main">
+        <div class="container">
+            <p class="page-title">GERENCIAMENTO DE AULAS</p>
+            
+            <!-- Estatísticas Rápidas -->
+            <section class="stats-grid">
+                <div class="stats-card">
+                    <div class="icon">
+                        <i class="fas fa-calendar-check"></i>
+                    </div>
+                    <div class="value">24</div>
+                    <div class="label">Aulas Hoje</div>
+                </div>
+                <div class="stats-card">
+                    <div class="icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="value">156</div>
+                    <div class="label">Alunos Inscritos</div>
+                </div>
+                <div class="stats-card">
+                    <div class="icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <div class="value">87%</div>
+                    <div class="label">Taxa de Ocupação</div>
+                </div>
+                <div class="stats-card">
+                    <div class="icon">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <div class="value">5</div>
+                    <div class="label">Próximas Aulas</div>
+                </div>
+            </section>
+
+            <!-- Ações Rápidas -->
+            <div style="display: flex; gap: 15px; margin-bottom: 25px; flex-wrap: wrap;">
+                <a href="#" class="action-btn primary" id="novaAulaBtn">
+                    <i class="fas fa-plus-circle"></i>
+                    Nova Aula
+                </a>
+                <a href="#" class="action-btn btn-secondary">
+                    <i class="fas fa-download"></i>
+                    Exportar Relatório
+                </a>
+                <a href="#" class="action-btn btn-secondary">
+                    <i class="fas fa-sync-alt"></i>
+                    Atualizar Agenda
+                </a>
+            </div>
+
+            <!-- Lista de Aulas -->
+            <div class="panel">
+                <h2>Agenda de Aulas</h2>
+                <div class="data-table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Aula</th>
+                                <th>Instrutor</th>
+                                <th>Horário</th>
+                                <th>Vagas</th>
+                                <th>Inscritos</th>
+                                <th>Status</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <strong>Yoga Matinal</strong><br>
+                                    <small>Sala 1</small>
+                                </td>
+                                <td>Ana Silva</td>
+                                <td>07:00 - 08:00</td>
+                                <td>20</td>
+                                <td>18</td>
+                                <td><span class="status-badge status-active">Ativa</span></td>
+                                <td>
+                                    <a href="#" class="action-btn" style="padding: 8px 12px; font-size: 0.8rem; margin-right: 5px;">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <a href="#" class="action-btn btn-danger" style="padding: 8px 12px; font-size: 0.8rem;">
+                                        <i class="fas fa-trash"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <strong>Spinning</strong><br>
+                                    <small>Sala 2</small>
+                                </td>
+                                <td>Carlos Santos</td>
+                                <td>09:00 - 10:00</td>
+                                <td>15</td>
+                                <td>15</td>
+                                <td><span class="status-badge status-completed">Lotada</span></td>
+                                <td>
+                                    <a href="#" class="action-btn" style="padding: 8px 12px; font-size: 0.8rem; margin-right: 5px;">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <a href="#" class="action-btn btn-danger" style="padding: 8px 12px; font-size: 0.8rem;">
+                                        <i class="fas fa-trash"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <strong>Pilates</strong><br>
+                                    <small>Sala 3</small>
+                                </td>
+                                <td>Mariana Costa</td>
+                                <td>14:00 - 15:00</td>
+                                <td>12</td>
+                                <td>8</td>
+                                <td><span class="status-badge status-active">Ativa</span></td>
+                                <td>
+                                    <a href="#" class="action-btn" style="padding: 8px 12px; font-size: 0.8rem; margin-right: 5px;">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <a href="#" class="action-btn btn-danger" style="padding: 8px 12px; font-size: 0.8rem;">
+                                        <i class="fas fa-trash"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <strong>Musculação</strong><br>
+                                    <small>Área Livre</small>
+                                </td>
+                                <td>João Mendes</td>
+                                <td>16:00 - 17:00</td>
+                                <td>25</td>
+                                <td>22</td>
+                                <td><span class="status-badge status-active">Ativa</span></td>
+                                <td>
+                                    <a href="#" class="action-btn" style="padding: 8px 12px; font-size: 0.8rem; margin-right: 5px;">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <a href="#" class="action-btn btn-danger" style="padding: 8px 12px; font-size: 0.8rem;">
+                                        <i class="fas fa-trash"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Próximas Aulas -->
+            <section class="main-content-grid" style="margin-top: 30px;">
+                <div class="panel">
+                    <h2>Próximas Aulas</h2>
+                    <ul class="item-list">
+                        <li>
+                            <div class="icon-placeholder">
+                                <i class="fas fa-dumbbell"></i>
+                            </div>
+                            <div class="item-info">
+                                <span class="name">Musculação Avançada</span>
+                                <span class="time">18:00 - João Mendes</span>
+                            </div>
+                            <span class="time">18:00</span>
+                        </li>
+                        <li>
+                            <div class="icon-placeholder">
+                                <i class="fas fa-running"></i>
+                            </div>
+                            <div class="item-info">
+                                <span class="name">Funcional</span>
+                                <span class="time">19:00 - Carla Souza</span>
+                            </div>
+                            <span class="time">19:00</span>
+                        </li>
+                        <li>
+                            <div class="icon-placeholder">
+                                <i class="fas fa-spa"></i>
+                            </div>
+                            <div class="item-info">
+                                <span class="name">Yoga Noturno</span>
+                                <span class="time">20:00 - Ana Silva</span>
+                            </div>
+                            <span class="time">20:00</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="panel">
+                    <h2>Instrutores</h2>
+                    <ul class="item-list">
+                        <li>
+                            <img src="imagens/images.jpg" alt="Instrutor" class="avatar">
+                            <div class="item-info">
+                                <span class="name">Ana Silva</span>
+                                <span class="time">Yoga, Pilates</span>
+                            </div>
+                            <span class="status-badge status-active">Ativa</span>
+                        </li>
+                        <li>
+                            <img src="imagens/rodrigo-sangion-fundador-e-ceo-da-academia-les-cinq-gym-1757961959753_v2_1x1.jpg" alt="Instrutor" class="avatar">
+                            <div class="item-info">
+                                <span class="name">Carlos Santos</span>
+                                <span class="time">Spinning, Cycling</span>
+                            </div>
+                            <span class="status-badge status-active">Ativo</span>
+                        </li>
+                        <li>
+                            <img src="imagens/istock-1089769128.avif" alt="Instrutor" class="avatar">
+                            <div class="item-info">
+                                <span class="name">Mariana Costa</span>
+                                <span class="time">Pilates, Alongamento</span>
+                            </div>
+                            <span class="status-badge status-active">Ativa</span>
+                        </li>
+                    </ul>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Modal Nova Aula -->
+    <div class="modal" id="novaAulaModal">
+        <div class="modal-content">
+            <button class="modal-close">&times;</button>
+            <h2 style="margin-bottom: 20px;">Nova Aula</h2>
+            <form id="novaAulaForm">
+                <div class="form-group">
+                    <label class="form-label">Nome da Aula</label>
+                    <input type="text" class="form-control" placeholder="Ex: Yoga Matinal" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Instrutor</label>
+                    <select class="form-control" required>
+                        <option value="">Selecione o instrutor</option>
+                        <option value="1">Ana Silva</option>
+                        <option value="2">Carlos Santos</option>
+                        <option value="3">Mariana Costa</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Horário</label>
+                    <input type="time" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Duração (minutos)</label>
+                    <input type="number" class="form-control" value="60" min="30" max="120">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Vagas</label>
+                    <input type="number" class="form-control" value="20" min="1" max="50">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Sala</label>
+                    <input type="text" class="form-control" placeholder="Ex: Sala 1">
+                </div>
+                <button type="submit" class="action-btn" style="width: 100%; margin-top: 20px;">
+                    <i class="fas fa-save"></i>
+                    Criar Aula
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="main-footer">
+        <div class="container">
+            <div class="footer-brand">
+                <img src="imagens/WhatsApp Image 2025-10-02 at 15.15.22.jpeg" alt="Logo da TECHFIT" class="logo-img">
+                <p>Sua Academia do Futuro!</p>
+            </div>
+            <div class="footer-copyright">
+                <p>&copy; 2024 TECHFIT. Todos os direitos reservados.</p>
+            </div>
+            <div class="footer-contact">
+                <a href="#"><i class="fab fa-instagram"></i> TECHFIT_OFC</a>
+                <a href="#"><i class="fab fa-whatsapp"></i> (19) 99936-4328</a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="aulas.js"></script>
+    <script src="header-admin.js"></script>
+</body>
+</html>
