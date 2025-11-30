@@ -32,21 +32,22 @@ document.addEventListener('DOMContentLoaded', () => {
     document.querySelector('.tab[data-tab="login"]').classList.add('active');
   });
 
-  // Login normal
+  // Login normal - VERSÃO CORRIGIDA
   document.getElementById('loginForm').addEventListener('submit', e => {
-    e.preventDefault();
-    const usuario = document.getElementById('loginUsuario').value;
-    const senha = document.getElementById('loginSenha').value;
+    const usuario = document.getElementById('logEmail').value;
+    const senha = document.getElementById('logSenha').value;
     
-    // Simulação de login
-    if (usuario && senha) {
-      alert('Login efetuado com sucesso!');
-      // Redirecionar para área do aluno
-      window.location.href = 'inicio.html';
+    // Validação básica
+    if (!usuario || !senha) {
+        e.preventDefault();
+        alert('Por favor, preencha todos os campos!');
+        return;
     }
+    // Se estiver tudo ok, deixa o formulário ser submetido normalmente para o PHP
   });
 
-  // Cadastro
+  // Cadastro - COMENTADO pois não existe no PHP atual
+  /*
   document.getElementById('cadForm').addEventListener('submit', e => {
     e.preventDefault();
     const usuario = document.getElementById('cadUsuario').value;
@@ -63,8 +64,10 @@ document.addEventListener('DOMContentLoaded', () => {
       document.querySelector('.tab[data-tab="login"]').classList.add('active');
     }
   });
+  */
 
-  // Login admin
+  // Login admin - COMENTADO pois o PHP já faz essa validação
+  /*
   document.getElementById('adminForm').addEventListener('submit', e => {
     e.preventDefault();
     const usuario = document.getElementById('adminUsuario').value;
@@ -84,8 +87,10 @@ document.addEventListener('DOMContentLoaded', () => {
       alert('Credenciais administrativas inválidas!');
     }
   });
+  */
 
-  // Máscara para CPF
+  // Máscara para CPF - COMENTADO pois não existe campo de cadastro no PHP atual
+  /*
   document.getElementById('cadCpf')?.addEventListener('input', function(e) {
     let value = e.target.value.replace(/\D/g, '');
     if (value.length <= 11) {
@@ -95,4 +100,5 @@ document.addEventListener('DOMContentLoaded', () => {
       e.target.value = value;
     }
   });
+  */
 });
