@@ -10,7 +10,7 @@ if (isset($_SESSION['logged_in']) && $_SESSION['logged_in'] === true) {
     if ($_SESSION['tipo_usuario'] === 'funcionario') {
         header('Location: painel_administrativo.php');
     } else {
-        header('Location: inicio.html');
+        header('Location: dashboard_aluno.php');
     }
     exit;
 }
@@ -63,7 +63,7 @@ if (isset($_POST['logar'])) {
             if ($_SESSION['tipo_usuario'] === 'funcionario') {
                 header('Location: painel_administrativo.php');
             } else {
-                header('Location: inicio.html');
+                header('Location: dashboard_aluno.php');
             }
             exit;
         } else {

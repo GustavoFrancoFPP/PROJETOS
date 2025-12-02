@@ -9,21 +9,30 @@ $mensagem = '';
 $controller = new UsuarioController();
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['acao']) && $_POST['acao'] === 'cadastrar') {
-    $nomeUsuario = trim($_POST['nome_usuario']);
-    $senha = $_POST['senha'];
-    $confirmarSenha = $_POST['confirmar_senha'];
+    $nome = trim($_POST['nome'] ?? '');
+    $email = trim($_POST['email'] ?? '');
+    $senha = $_POST['senha'] ?? '';
+    $confirmarSenha = $_POST['confirmar_senha'] ?? '';
+    $endereco = trim($_POST['endereco'] ?? '');
+    $telefone = trim($_POST['telefone'] ?? '');
+    $genero = $_POST['genero'] ?? '';
+    $cpf = trim($_POST['cpf'] ?? '');
 
-    if (empty($nomeUsuario) || empty($senha) || empty($confirmarSenha)) {
+    if (empty($nome) || empty($email) || empty($senha) || empty($confirmarSenha) || empty($endereco) || empty($telefone) || empty($genero) || empty($cpf)) {
         $mensagem = "Erro: Por favor, preencha todos os campos.";
     } elseif ($senha !== $confirmarSenha) {
         $mensagem = "Erro: As senhas não coincidem.";
+    } elseif (strlen($senha) < 6) {
+        $mensagem = "Erro: A senha deve ter pelo menos 6 caracteres.";
+    } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        $mensagem = "Erro: E-mail inválido.";
     } else {
-        $resultado = $controller->cadastrar($nomeUsuario, $senha);
+        $resultado = $controller->cadastrar($nome, $email, $senha, $endereco, $telefone, $genero, $cpf);
         
-        if (is_numeric($resultado)) {
-            $mensagem = 'Sucesso! Usuário cadastrado. Você pode fazer o login agora.';
-            // Redireciona para o login após 3 segundos
-            header('Refresh: 3; URL=login.php'); 
+        if (strpos($resultado, 'Erro') === false && strpos($resultado, 'já') === false) {
+            $mensagem = 'Sucesso! Usuário cadastrado. Você será redirecionado em breve...';
+            // Redireciona para fazer login após 2 segundos
+            header('Refresh: 2; URL=login.php'); 
         } else {
             $mensagem = $resultado; // Mensagem de erro do Controller/DAO
         }
@@ -38,14 +47,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['acao']) && $_POST['ac
     <link rel="stylesheet" href="login.css">
     </head>
 <body>
-    <header class="techfit-header">...</header> <main>
+    <header class="techfit-header">...</header>
+    <main>
         <div class="auth">
             <div class="tabs">
                 <a href="login.php" class="tab">LOGIN</a>
                 <a href="#" class="tab active">CADASTRO</a> 
             </div>
 
-            <form id="cadastroForm" class="form active" method="POST" action="cadastro.php">
+            <form id="cadastroForm" class="form active" method="POST" action="Cadastro.php">
                 <input type="hidden" name="acao" value="cadastrar">
                 
                 <?php if ($mensagem): ?>
@@ -57,13 +67,43 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['acao']) && $_POST['ac
                 <h1>Cadastro de Aluno</h1>
                 
                 <div class="form-group">
-                    <label for="cadNome">Nome de Usuário/E-mail:</label>
-                    <input id="cadNome" name="nome_usuario" type="text" placeholder="Ex: seu.nome@email.com" required value="<?php echo htmlspecialchars($_POST['nome_usuario'] ?? ''); ?>">
+                    <label for="cadNome">Nome Completo:</label>
+                    <input id="cadNome" name="nome" type="text" placeholder="Ex: João Silva" required value="<?php echo isset($_POST['nome']) ? htmlspecialchars($_POST['nome']) : ''; ?>">
+                </div>
+
+                <div class="form-group">
+                    <label for="cadEmail">E-mail:</label>
+                    <input id="cadEmail" name="email" type="email" placeholder="Ex: seu.nome@email.com" required value="<?php echo isset($_POST['email']) ? htmlspecialchars($_POST['email']) : ''; ?>">
+                </div>
+
+                <div class="form-group">
+                    <label for="cadCPF">CPF:</label>
+                    <input id="cadCPF" name="cpf" type="text" placeholder="Ex: 123.456.789-00" required value="<?php echo isset($_POST['cpf']) ? htmlspecialchars($_POST['cpf']) : ''; ?>">
+                </div>
+
+                <div class="form-group">
+                    <label for="cadTelefone">Telefone:</label>
+                    <input id="cadTelefone" name="telefone" type="text" placeholder="Ex: (11) 99999-9999" required value="<?php echo isset($_POST['telefone']) ? htmlspecialchars($_POST['telefone']) : ''; ?>">
+                </div>
+
+                <div class="form-group">
+                    <label for="cadGenero">Gênero:</label>
+                    <select id="cadGenero" name="genero" required>
+                        <option value="">Selecione...</option>
+                        <option value="Masculino" <?php echo (isset($_POST['genero']) && $_POST['genero'] === 'Masculino') ? 'selected' : ''; ?>>Masculino</option>
+                        <option value="Feminino" <?php echo (isset($_POST['genero']) && $_POST['genero'] === 'Feminino') ? 'selected' : ''; ?>>Feminino</option>
+                        <option value="Outro" <?php echo (isset($_POST['genero']) && $_POST['genero'] === 'Outro') ? 'selected' : ''; ?>>Outro</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="cadEndereco">Endereço:</label>
+                    <input id="cadEndereco" name="endereco" type="text" placeholder="Ex: Rua A, 123" required value="<?php echo isset($_POST['endereco']) ? htmlspecialchars($_POST['endereco']) : ''; ?>">
                 </div>
 
                 <div class="form-group">
                     <label for="cadSenha">Senha:</label>
-                    <input id="cadSenha" name="senha" type="password" placeholder="Crie uma senha" required>
+                    <input id="cadSenha" name="senha" type="password" placeholder="Crie uma senha (mín. 6 caracteres)" required>
                 </div>
 
                 <div class="form-group">
