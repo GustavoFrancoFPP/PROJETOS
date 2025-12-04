@@ -278,29 +278,67 @@ class Pagamento {
         btn.disabled = true;
         btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processando...';
 
-        // Simular processamento
-        await new Promise(resolve => setTimeout(resolve, 3000));
+        // Simular pequeno atraso
+        await new Promise(resolve => setTimeout(resolve, 800));
 
-        // Salvar dados do pedido
+        // Monta o objeto de pedido a ser enviado ao servidor
         const pedido = {
-            ...this.dadosCompra,
-            dadosCliente: this.obterDadosCliente(),
-            metodoPagamento: metodoPagamento,
+            itens: this.dadosCompra.itens || [],
+            subtotal: this.dadosCompra.subtotal || 0,
+            frete: this.dadosCompra.frete || 0,
+            desconto: this.dadosCompra.desconto || 0,
+            total: this.dadosCompra.total || 0,
             numeroPedido: this.gerarNumeroPedido(),
-            data: new Date().toISOString()
+            dadosCliente: this.obterDadosCliente(),
         };
 
-        localStorage.setItem('pedidoTechFit', JSON.stringify(pedido));
-        
-        // Limpar carrinho
-        localStorage.removeItem('carrinhoTechFit');
-        localStorage.removeItem('dadosCompraTechFit');
+        // Cria um form oculto para enviar via POST (compatível com PHP)
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = 'pagamento.php';
 
-        this.mostrarSucesso('Pagamento processado com sucesso!');
-        
-        setTimeout(() => {
-            window.location.href = 'confirmacao.html';
-        }, 2000);
+        function addField(name, value) {
+            const input = document.createElement('input');
+            input.type = 'hidden';
+            input.name = name;
+            input.value = typeof value === 'string' ? value : JSON.stringify(value);
+            form.appendChild(input);
+        }
+
+        // Dados do cliente simples
+        const cliente = pedido.dadosCliente;
+        addField('nome', cliente.nome || '');
+        addField('email', cliente.email || '');
+        addField('cpf', cliente.cpf || '');
+        addField('telefone', cliente.telefone || '');
+
+        // Endereço
+        addField('cep', cliente.endereco?.cep || '');
+        addField('endereco', cliente.endereco?.logradouro || '');
+        addField('numero', cliente.endereco?.numero || '');
+        addField('complemento', cliente.endereco?.complemento || '');
+        addField('bairro', cliente.endereco?.bairro || '');
+        addField('cidade', cliente.endereco?.cidade || '');
+        addField('estado', cliente.endereco?.estado || '');
+
+        // Método de pagamento
+        addField('metodo-pagamento', metodoPagamento);
+
+        // Totais e itens
+        addField('pedido_json', JSON.stringify(pedido));
+
+        // Se existem dados de cartão visíveis, envie parcialmente (apenas últimos 4 dígitos)
+        const numeroCartao = document.getElementById('numero-cartao')?.value || '';
+        const nomeCartao = document.getElementById('nome-cartao')?.value || '';
+        const validade = document.getElementById('validade')?.value || '';
+        addField('numero-cartao', numeroCartao);
+        addField('nome-cartao', nomeCartao);
+        addField('validade', validade);
+
+        document.body.appendChild(form);
+
+        // Submete o form para o servidor (o servidor gravará no DB e redirecionará)
+        form.submit();
     }
 
     obterDadosCliente() {
