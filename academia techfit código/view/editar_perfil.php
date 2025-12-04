@@ -1,70 +1,62 @@
 <?php
-require_once 'UsuarioController.php';
+require_once 'modelo/AlunoDAO.php';
 
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 
-// Verifica se o usuário está logado e é aluno
-if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true || $_SESSION['tipo_usuario'] !== 'cliente') {
+// Verifica se o usuário está logado
+if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
     header('Location: login.php');
     exit;
 }
 
-// Dados atuais do aluno
-$nome = $_SESSION['user_nome'] ?? '';
-$email = $_SESSION['user_email'] ?? '';
 $idAluno = $_SESSION['user_id'] ?? '';
+$alunoDAO = new AlunoDAO();
+$infoAluno = $alunoDAO->buscarAlunoPorId($idAluno);
 
-// Buscar dados completos do aluno no banco
-try {
-    require_once 'Database.php';
-    $db = new Database();
-    $conn = $db->getConnection();
-    $stmt = $conn->prepare('SELECT * FROM cliente WHERE id_cliente = ?');
-    $stmt->execute([$idAluno]);
-    $aluno = $stmt->fetch(PDO::FETCH_ASSOC);
-} catch (Exception $e) {
-    $aluno = [];
-}
-
-// Preenche variáveis
-$telefone = $aluno['telefone'] ?? '';
-$endereco = $aluno['endereco'] ?? '';
-$genero = $aluno['genero'] ?? '';
-$cpf = $aluno['cpf'] ?? '';
-
+// Processar atualização
 $mensagem = '';
+$mensagem_tipo = '';
 
-// Atualização de perfil
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['acao']) && $_POST['acao'] === 'editar') {
-    $novoNome = trim($_POST['nome'] ?? '');
-    $novoEmail = trim($_POST['email'] ?? '');
-    $novoTelefone = trim($_POST['telefone'] ?? '');
-    $novoEndereco = trim($_POST['endereco'] ?? '');
-    $novoGenero = $_POST['genero'] ?? '';
-
-    if (empty($novoNome) || empty($novoEmail) || empty($novoTelefone) || empty($novoEndereco) || empty($novoGenero)) {
-        $mensagem = 'Preencha todos os campos.';
-    } elseif (!filter_var($novoEmail, FILTER_VALIDATE_EMAIL)) {
-        $mensagem = 'E-mail inválido.';
-    } else {
-        try {
-            $stmt = $conn->prepare('UPDATE cliente SET nome_cliente = ?, email = ?, telefone = ?, endereco = ?, genero = ? WHERE id_cliente = ?');
-            $stmt->execute([$novoNome, $novoEmail, $novoTelefone, $novoEndereco, $novoGenero, $idAluno]);
-            // Atualiza sessão
-            $_SESSION['user_nome'] = $novoNome;
-            $_SESSION['user_email'] = $novoEmail;
-            $mensagem = 'Perfil atualizado com sucesso!';
-            // Atualiza variáveis locais
-            $nome = $novoNome;
-            $email = $novoEmail;
-            $telefone = $novoTelefone;
-            $endereco = $novoEndereco;
-            $genero = $novoGenero;
-        } catch (Exception $e) {
-            $mensagem = 'Erro ao atualizar perfil.';
-        }
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $nome = $_POST['nome'] ?? '';
+    $email = $_POST['email'] ?? '';
+    $telefone = $_POST['telefone'] ?? '';
+    $endereco = $_POST['endereco'] ?? '';
+    
+    try {
+        $conn = Connection::getInstance();
+        $sql = "UPDATE cliente SET 
+                nome_cliente = :nome,
+                email = :email,
+                telefone = :telefone,
+                endereco = :endereco,
+                data_atualizacao = NOW()
+                WHERE id_cliente = :id";
+        
+        $stmt = $conn->prepare($sql);
+        $stmt->execute([
+            ':nome' => $nome,
+            ':email' => $email,
+            ':telefone' => $telefone,
+            ':endereco' => $endereco,
+            ':id' => $idAluno
+        ]);
+        
+        $mensagem = 'Perfil atualizado com sucesso!';
+        $mensagem_tipo = 'success';
+        
+        // Atualizar dados na sessão
+        $_SESSION['user_nome'] = $nome;
+        $_SESSION['user_email'] = $email;
+        
+        // Recarregar dados
+        $infoAluno = $alunoDAO->buscarAlunoPorId($idAluno);
+        
+    } catch (PDOException $e) {
+        $mensagem = 'Erro ao atualizar perfil: ' . $e->getMessage();
+        $mensagem_tipo = 'error';
     }
 }
 ?>
@@ -73,123 +65,238 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['acao']) && $_POST['ac
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TECHFIT - Editar Perfil</title>
-    <link rel="stylesheet" href="login.css">
+    <title>Editar Perfil - TECHFIT</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     <style>
-        .edit-container {
-            max-width: 500px;
-            margin: 60px auto;
+        :root {
+            --cor-ciano-principal: #00F0E1;
+            --cor-fundo-escuro: #0f1525;
+            --cor-card-escuro: rgba(20, 25, 40, 0.8);
+            --cor-texto-primario: #ffffff;
+            --cor-texto-secundario: #b0b7d9;
+            --cor-verde: #2ecc71;
+            --cor-vermelho: #e74c3c;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: var(--cor-fundo-escuro);
+            color: var(--cor-texto-primario);
+            margin: 0;
+            padding: 0;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+        }
+        
+        .profile-card {
             background: var(--cor-card-escuro);
+            backdrop-filter: blur(15px);
             border-radius: 15px;
-            padding: 40px 30px;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+            padding: 40px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
-        .edit-container h1 {
-            color: var(--cor-ciano-principal);
+        
+        .profile-header {
             text-align: center;
-            margin-bottom: 25px;
+            margin-bottom: 30px;
         }
-        .form-group {
-            margin-bottom: 18px;
+        
+        .profile-header h1 {
+            color: var(--cor-ciano-principal);
+            margin-bottom: 10px;
         }
-        .form-group label {
-            color: var(--cor-texto-primario);
-            font-weight: 500;
-        }
-        .form-group input, .form-group select {
-            width: 100%;
-            padding: 12px;
-            border-radius: 8px;
-            border: 1px solid rgba(255,255,255,0.2);
-            background: rgba(255,255,255,0.1);
-            color: var(--cor-texto-primario);
-            font-size: 15px;
-        }
-        .form-group input[readonly] {
-            background: rgba(255,255,255,0.05);
+        
+        .profile-header p {
             color: var(--cor-texto-secundario);
         }
-        .btn-salvar {
-            background: linear-gradient(135deg, var(--cor-ciano-principal), #00d4ff);
-            color: var(--cor-fundo-escuro);
-            padding: 15px;
-            border: none;
-            border-radius: 8px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            width: 100%;
-            margin-top: 10px;
+        
+        .form-group {
+            margin-bottom: 25px;
         }
-        .btn-voltar {
+        
+        .form-group label {
             display: block;
-            margin: 20px auto 0;
-            text-align: center;
-            color: var(--cor-ciano-principal);
-            text-decoration: none;
+            margin-bottom: 8px;
+            color: var(--cor-texto-secundario);
             font-weight: 500;
         }
-        .mensagem {
+        
+        .form-control {
+            width: 100%;
+            padding: 12px 15px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            color: var(--cor-texto-primario);
+            font-size: 16px;
+            font-family: 'Poppins', sans-serif;
+        }
+        
+        .form-control:focus {
+            outline: none;
+            border-color: var(--cor-ciano-principal);
+            box-shadow: 0 0 0 2px rgba(0, 240, 225, 0.2);
+        }
+        
+        .btn {
+            background: linear-gradient(135deg, var(--cor-ciano-principal), #00d4ff);
+            color: var(--cor-fundo-escuro);
+            padding: 15px 30px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 16px;
+            width: 100%;
+            font-family: 'Poppins', sans-serif;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 209, 178, 0.4);
+        }
+        
+        .alert {
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
             text-align: center;
-            font-weight: bold;
-            margin-bottom: 18px;
-            color: #fff;
-            background: rgba(0,209,178,0.15);
-            border-radius: 6px;
-            padding: 10px;
+        }
+        
+        .alert-success {
+            background: rgba(46, 204, 113, 0.1);
+            border: 1px solid var(--cor-verde);
+            color: var(--cor-verde);
+        }
+        
+        .alert-error {
+            background: rgba(231, 76, 60, 0.1);
+            border: 1px solid var(--cor-vermelho);
+            color: var(--cor-vermelho);
+        }
+        
+        .back-link {
+            display: inline-block;
+            margin-top: 20px;
+            color: var(--cor-ciano-principal);
+            text-decoration: none;
+            font-size: 14px;
+        }
+        
+        .back-link:hover {
+            text-decoration: underline;
+        }
+        
+        .readonly-field {
+            background: rgba(255, 255, 255, 0.03);
+            color: var(--cor-texto-secundario);
         }
     </style>
 </head>
 <body>
-    <header class="techfit-header">
-        <div class="header-container">
-            <a href="dashboard_aluno.php" class="header-logo">
-                <div class="logo-text">TECH<span>FIT</span></div>
+    <div class="container">
+        <div class="profile-card">
+            <div class="profile-header">
+                <h1><i class="fas fa-user-edit"></i> Editar Perfil</h1>
+                <p>Atualize suas informações pessoais</p>
+            </div>
+            
+            <?php if ($mensagem): ?>
+                <div class="alert alert-<?php echo $mensagem_tipo; ?>">
+                    <?php echo $mensagem; ?>
+                </div>
+            <?php endif; ?>
+            
+            <form method="POST" action="">
+                <div class="form-group">
+                    <label for="nome"><i class="fas fa-user"></i> Nome Completo</label>
+                    <input type="text" id="nome" name="nome" class="form-control" 
+                           value="<?php echo htmlspecialchars($infoAluno['nome_cliente'] ?? ''); ?>" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="email"><i class="fas fa-envelope"></i> E-mail</label>
+                    <input type="email" id="email" name="email" class="form-control" 
+                           value="<?php echo htmlspecialchars($infoAluno['email'] ?? ''); ?>" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="telefone"><i class="fas fa-phone"></i> Telefone</label>
+                    <input type="text" id="telefone" name="telefone" class="form-control" 
+                           value="<?php echo htmlspecialchars($infoAluno['telefone'] ?? ''); ?>" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="endereco"><i class="fas fa-map-marker-alt"></i> Endereço</label>
+                    <input type="text" id="endereco" name="endereco" class="form-control" 
+                           value="<?php echo htmlspecialchars($infoAluno['endereco'] ?? ''); ?>" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="cpf"><i class="fas fa-id-card"></i> CPF</label>
+                    <input type="text" id="cpf" class="form-control readonly-field" 
+                           value="<?php echo htmlspecialchars($infoAluno['cpf'] ?? ''); ?>" readonly>
+                    <small style="color: var(--cor-texto-secundario); font-size: 12px;">
+                        CPF não pode ser alterado
+                    </small>
+                </div>
+                
+                <div class="form-group">
+                    <label for="genero"><i class="fas fa-venus-mars"></i> Gênero</label>
+                    <input type="text" id="genero" class="form-control readonly-field" 
+                           value="<?php echo htmlspecialchars($infoAluno['genero'] ?? ''); ?>" readonly>
+                </div>
+                
+                <div class="form-group">
+                    <label for="data_cadastro"><i class="fas fa-calendar-plus"></i> Data de Cadastro</label>
+                    <input type="text" id="data_cadastro" class="form-control readonly-field" 
+                           value="<?php echo isset($infoAluno['data_cadastro']) ? date('d/m/Y H:i', strtotime($infoAluno['data_cadastro'])) : 'Não informada'; ?>" readonly>
+                </div>
+                
+                <button type="submit" class="btn">
+                    <i class="fas fa-save"></i> Salvar Alterações
+                </button>
+            </form>
+            
+            <a href="dashboard_aluno.php" class="back-link">
+                <i class="fas fa-arrow-left"></i> Voltar para o Dashboard
             </a>
         </div>
-    </header>
-    <main>
-        <div class="edit-container">
-            <h1>Editar Perfil</h1>
-            <?php if ($mensagem): ?>
-                <div class="mensagem"> <?php echo htmlspecialchars($mensagem); ?> </div>
-            <?php endif; ?>
-            <form method="POST" action="editar_perfil.php">
-                <input type="hidden" name="acao" value="editar">
-                <div class="form-group">
-                    <label for="nome">Nome:</label>
-                    <input id="nome" name="nome" type="text" required value="<?php echo htmlspecialchars($nome); ?>">
-                </div>
-                <div class="form-group">
-                    <label for="email">E-mail:</label>
-                    <input id="email" name="email" type="email" required value="<?php echo htmlspecialchars($email); ?>">
-                </div>
-                <div class="form-group">
-                    <label for="telefone">Telefone:</label>
-                    <input id="telefone" name="telefone" type="text" required value="<?php echo htmlspecialchars($telefone); ?>">
-                </div>
-                <div class="form-group">
-                    <label for="endereco">Endereço:</label>
-                    <input id="endereco" name="endereco" type="text" required value="<?php echo htmlspecialchars($endereco); ?>">
-                </div>
-                <div class="form-group">
-                    <label for="genero">Gênero:</label>
-                    <select id="genero" name="genero" required>
-                        <option value="">Selecione...</option>
-                        <option value="Masculino" <?php echo ($genero === 'Masculino') ? 'selected' : ''; ?>>Masculino</option>
-                        <option value="Feminino" <?php echo ($genero === 'Feminino') ? 'selected' : ''; ?>>Feminino</option>
-                        <option value="Outro" <?php echo ($genero === 'Outro') ? 'selected' : ''; ?>>Outro</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="cpf">CPF:</label>
-                    <input id="cpf" name="cpf" type="text" value="<?php echo htmlspecialchars($cpf); ?>" readonly>
-                </div>
-                <button type="submit" class="btn-salvar">Salvar Alterações</button>
-            </form>
-            <a href="dashboard_aluno.php" class="btn-voltar"><i class="fas fa-arrow-left"></i> Voltar ao Dashboard</a>
-        </div>
-    </main>
+    </div>
+    
+    <script>
+        // Máscara para telefone
+        document.getElementById('telefone').addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, '');
+            if (value.length <= 11) {
+                if (value.length <= 2) {
+                    value = value.replace(/(\d{0,2})/, '($1');
+                } else if (value.length <= 7) {
+                    value = value.replace(/(\d{2})(\d{0,5})/, '($1) $2');
+                } else {
+                    value = value.replace(/(\d{2})(\d{5})(\d{0,4})/, '($1) $2-$3');
+                }
+                e.target.value = value;
+            }
+        });
+        
+        // Formatar CPF ao carregar
+        document.addEventListener('DOMContentLoaded', function() {
+            const cpfInput = document.getElementById('cpf');
+            if (cpfInput) {
+                let cpf = cpfInput.value.replace(/\D/g, '');
+                if (cpf.length === 11) {
+                    cpf = cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
+                    cpfInput.value = cpf;
+                }
+            }
+        });
+    </script>
 </body>
 </html>
