@@ -2,7 +2,7 @@
 $extra_head = '<link rel="stylesheet" href="pagamento.css">';
 require_once __DIR__ . '/inc/header.php';
 
-// Processa submissão do pagamento (simplesmente armazena em sessão e redireciona)
+// Processa submissão do pagamento e grava no banco
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $order = [];
     $order['nome'] = trim($_POST['nome'] ?? '');
@@ -17,20 +17,116 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $order['cidade'] = trim($_POST['cidade'] ?? '');
     $order['estado'] = trim($_POST['estado'] ?? '');
     $order['metodo_pagamento'] = $_POST['metodo-pagamento'] ?? 'cartao';
-    // Dados do cartão (não persistir em produção sem tokenização)
+
+    // Dados opcionais do cartão (não persistir sensíveis em produção)
     $order['numero_cartao'] = trim($_POST['numero-cartao'] ?? '');
     $order['nome_cartao'] = trim($_POST['nome-cartao'] ?? '');
     $order['validade'] = trim($_POST['validade'] ?? '');
     $order['cvv'] = trim($_POST['cvv'] ?? '');
 
+    // Dados do carrinho vindos do frontend
+    $pedido_json = $_POST['pedido_json'] ?? null; // JSON com itens, subtotal, frete, desconto, total, numero_pedido
+
     // Validação mínima
     if (empty($order['nome']) || empty($order['email']) || empty($order['cpf'])) {
         $erro = 'Por favor, preencha os campos obrigatórios.';
     } else {
-        if (session_status() == PHP_SESSION_NONE) session_start();
-        $_SESSION['order'] = $order;
-        header('Location: confirmacao.php');
-        exit;
+        // Tenta gravar no banco
+        try {
+            require_once __DIR__ . '/Database.php';
+            $db = new Database();
+            $conn = $db->getConnection();
+
+            // Cria tabela simples de pedidos se não existir
+            $conn->exec("CREATE TABLE IF NOT EXISTS pedidos (
+                id_pedido INT AUTO_INCREMENT PRIMARY KEY,
+                numero_pedido VARCHAR(50) DEFAULT NULL,
+                id_cliente INT DEFAULT NULL,
+                dados_cliente JSON DEFAULT NULL,
+                itens JSON DEFAULT NULL,
+                subtotal DECIMAL(10,2) DEFAULT 0,
+                frete DECIMAL(10,2) DEFAULT 0,
+                desconto DECIMAL(10,2) DEFAULT 0,
+                total DECIMAL(10,2) DEFAULT 0,
+                metodo_pagamento VARCHAR(50) DEFAULT NULL,
+                dados_pagamento JSON DEFAULT NULL,
+                status VARCHAR(50) DEFAULT 'pendente',
+                data_pedido DATETIME DEFAULT CURRENT_TIMESTAMP
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4");
+
+            $itens = null;
+            $subtotal = 0;
+            $frete = 0;
+            $desconto = 0;
+            $total = 0;
+            $numeroPedido = null;
+
+            if ($pedido_json) {
+                $pedidoData = json_decode($pedido_json, true);
+                if (json_last_error() === JSON_ERROR_NONE && is_array($pedidoData)) {
+                    $itens = json_encode($pedidoData['itens'] ?? []);
+                    $subtotal = floatval($pedidoData['subtotal'] ?? 0);
+                    $frete = floatval($pedidoData['frete'] ?? 0);
+                    $desconto = floatval($pedidoData['desconto'] ?? 0);
+                    $total = floatval($pedidoData['total'] ?? 0);
+                    $numeroPedido = $pedidoData['numeroPedido'] ?? ($pedidoData['numero_pedido'] ?? null);
+                }
+            }
+
+            // Prepara dados cliente e pagamento
+            $dadosCliente = json_encode([
+                'nome' => $order['nome'],
+                'email' => $order['email'],
+                'cpf' => $order['cpf'],
+                'telefone' => $order['telefone'],
+                'endereco' => [
+                    'cep' => $order['cep'],
+                    'logradouro' => $order['endereco'],
+                    'numero' => $order['numero'],
+                    'complemento' => $order['complemento'],
+                    'bairro' => $order['bairro'],
+                    'cidade' => $order['cidade'],
+                    'estado' => $order['estado']
+                ]
+            ]);
+
+            $dadosPagamento = json_encode([
+                'metodo' => $order['metodo_pagamento'],
+                'cartao' => [
+                    'numero' => $order['numero_cartao'] ? substr($order['numero_cartao'], -4) : null,
+                    'nome' => $order['nome_cartao'],
+                    'validade' => $order['validade']
+                ]
+            ]);
+
+            $stmt = $conn->prepare("INSERT INTO pedidos (numero_pedido, dados_cliente, itens, subtotal, frete, desconto, total, metodo_pagamento, dados_pagamento, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+            $status = 'pendente';
+            $stmt->execute([
+                $numeroPedido,
+                $dadosCliente,
+                $itens,
+                $subtotal,
+                $frete,
+                $desconto,
+                $total,
+                $order['metodo_pagamento'],
+                $dadosPagamento,
+                $status
+            ]);
+
+            $insertId = $conn->lastInsertId();
+
+            if (session_status() == PHP_SESSION_NONE) session_start();
+            $_SESSION['order'] = $order;
+            $_SESSION['pedido_id'] = $insertId;
+
+            // Redireciona para página de confirmação com id do pedido
+            header('Location: confirmacao.php?pedido_id=' . $insertId);
+            exit;
+
+        } catch (Exception $e) {
+            $erro = 'Erro ao processar pagamento: ' . $e->getMessage();
+        }
     }
 }
 ?>
