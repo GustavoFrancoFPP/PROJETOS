@@ -19,14 +19,14 @@ class UsuarioController {
             $stmt = $conn->prepare("SELECT id_cliente FROM cliente WHERE email = ?");
             $stmt->execute([$email]);
             if ($stmt->rowCount() > 0) {
-                return "Email já cadastrado!";
+                return "Erro: Email já cadastrado!";
             }
 
             // Verifica se CPF já existe
             $stmt = $conn->prepare("SELECT id_cliente FROM cliente WHERE cpf = ?");
             $stmt->execute([$cpf]);
             if ($stmt->rowCount() > 0) {
-                return "CPF já cadastrado!";
+                return "Erro: CPF já cadastrado!";
             }
 
             // Insere o cliente
@@ -86,13 +86,6 @@ class UsuarioController {
         $_SESSION['user_email'] = $usuario['email'];
         $_SESSION['tipo_usuario'] = $usuario['tipo_usuario'];
         $_SESSION['nome_usuario'] = $usuario['nome_usuario'];
-        
-        // Debug - mostra na tela (remova depois)
-        echo "<script>console.log('Sessão:', " . json_encode([
-            'user_id' => $_SESSION['user_id'],
-            'user_nome' => $_SESSION['user_nome'],
-            'tipo_usuario' => $_SESSION['tipo_usuario']
-        ]) . ")</script>";
     }
 
     private function gerarNomeUsuario($nome) {

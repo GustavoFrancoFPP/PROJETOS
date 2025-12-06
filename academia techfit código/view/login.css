@@ -419,6 +419,30 @@ input:focus {
     background: rgba(255, 255, 255, 0.15);
 }
 
+select {
+    padding: 15px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 8px;
+    font-size: 14px;
+    outline: none;
+    transition: all 0.3s ease;
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--cor-texto-primario);
+    font-family: var(--font-principal);
+    cursor: pointer;
+}
+
+select option {
+    background: var(--cor-fundo-escuro);
+    color: var(--cor-texto-primario);
+}
+
+select:focus {
+    border-color: var(--cor-ciano-principal);
+    box-shadow: 0 0 0 2px rgba(0, 240, 225, 0.2);
+    background: rgba(255, 255, 255, 0.15);
+}
+
 button[type="submit"] {
     background: linear-gradient(135deg, var(--cor-ciano-principal), #00d4ff);
     color: var(--cor-fundo-escuro);
