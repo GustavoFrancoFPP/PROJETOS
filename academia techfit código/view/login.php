@@ -182,6 +182,28 @@ if (isset($_POST['logar'])) {
         </form>
       </div>
     </div>
+    <form id="cadForm" class="form" method="POST" action="login.php">
+    <h2 class="title">Criar Conta</h2>
+    
+    <div class="input-group">
+        <i class="fas fa-user"></i>
+        <input type="text" name="nome" id="cadNome" placeholder="Nome Completo" required>
+    </div>
+
+    <div class="input-group">
+        <i class="fas fa-envelope"></i>
+        <input type="email" name="email" id="cadEmail" placeholder="Email" required>
+    </div>
+
+    <div class="input-group">
+        <i class="fas fa-lock"></i>
+        <input type="password" name="senha" id="cadSenha" placeholder="Senha" required>
+    </div>
+    
+    <button type="submit" name="cadastrar" class="btn">Cadastrar</button>
+</form>
+
+<script src="js/login.js"></script>
   </main>
 
   <footer class="main-footer">

@@ -1,160 +1,155 @@
+<?php
+session_start();
+// Impede acesso direto sem login
+if (!isset($_SESSION['user_id'])) {
+    header('Location: login.php');
+    exit;
+}
+?>
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-pt">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Confirmação - TECHFIT</title>
+    <title>Compra Confirmada - TECHFIT</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"/>
-    <link rel="stylesheet" href="confirmacao.css">
+    
+    <style>
+        :root {
+            --ciano: #00F0E1;
+            --fundo: #0f1525;
+            --card: #141928;
+            --texto: #ffffff;
+            --verde: #2ecc71;
+        }
+
+        body {
+            background-color: var(--fundo);
+            font-family: 'Poppins', sans-serif;
+            color: var(--texto);
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .confirmacao-box {
+            background: var(--card);
+            padding: 50px;
+            border-radius: 20px;
+            text-align: center;
+            max-width: 500px;
+            width: 90%;
+            /* Efeito Neon */
+            box-shadow: 0 0 30px rgba(0, 240, 225, 0.15);
+            border: 1px solid rgba(0, 240, 225, 0.2);
+            animation: slideUp 0.6s ease;
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(30px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .icon-wrapper {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: rgba(46, 204, 113, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 30px;
+            border: 3px solid var(--verde);
+        }
+
+        .icon-wrapper i {
+            font-size: 50px;
+            color: var(--verde);
+        }
+
+        h1 {
+            color: var(--ciano);
+            font-size: 28px;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        p.descricao {
+            color: #b0b7d9;
+            margin-bottom: 40px;
+            line-height: 1.6;
+        }
+
+        .detalhes-pedido {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 30px;
+            text-align: left;
+        }
+
+        .linha-detalhe {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        .linha-detalhe:last-child { border-bottom: none; }
+
+        .btn-painel {
+            display: inline-block;
+            background: var(--ciano);
+            color: #000;
+            padding: 15px 40px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: 0.3s;
+            box-shadow: 0 5px 15px rgba(0, 240, 225, 0.2);
+        }
+
+        .btn-painel:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(0, 240, 225, 0.4);
+            background: #fff;
+        }
+    </style>
 </head>
 <body>
-    <header class="techfit-header">
-        <div class="header-container">
-            <a href="inicio.html" class="header-logo">
-                <img src="imagens/WhatsApp Image 2025-10-02 at 15.15.22.jpeg" 
-                     alt="TechFit - Academia Inteligente" 
-                     class="logo-image">
-                <div class="logo-text">TECH<span>FIT</span></div>
-            </a>
 
-            <nav class="main-navigation">
-                <ul class="nav-links">
-                    <li><a href="inicio.html" class="nav-link">Início</a></li>
-                    <li><a href="pagina_1.html" class="nav-link">Academias</a></li>
-                    <li><a href="produtos.html" class="nav-link">Produtos</a></li>
-                    <li><a href="agendamento.php" class="nav-link">Agendamento</a></li>
-                    <li><a href="suporte.html" class="nav-link">Suporte</a></li>
-                </ul>
-
-                <div class="header-cta">
-                    <a href="login.php" class="cta-button">Área do Aluno</a>
-                </div>
-            </nav>
-
-            <button class="hamburger-menu" aria-label="Menu">
-                <span class="hamburger-line"></span>
-                <span class="hamburger-line"></span>
-                <span class="hamburger-line"></span>
-            </button>
+    <div class="confirmacao-box">
+        <div class="icon-wrapper">
+            <i class="fas fa-check"></i>
         </div>
-    </header>
+        
+        <h1>Sucesso!</h1>
+        <p class="descricao">A sua compra foi confirmada. Os produtos foram movidos para o seu histórico e o pagamento foi registado.</p>
 
-    <main class="confirmacao-container">
-        <div class="container">
-            <div class="confirmacao-header">
-                <h1><i class="fas fa-check-circle"></i> Pedido Confirmado!</h1>
-                <div class="confirmacao-steps">
-                    <div class="step completed">
-                        <span class="step-number">1</span>
-                        <span class="step-text">Carrinho</span>
-                    </div>
-                    <div class="step completed">
-                        <span class="step-number">2</span>
-                        <span class="step-text">Pagamento</span>
-                    </div>
-                    <div class="step active">
-                        <span class="step-number">3</span>
-                        <span class="step-text">Confirmação</span>
-                    </div>
-                </div>
+        <div class="detalhes-pedido">
+            <div class="linha-detalhe">
+                <span style="color: #888;">Estado:</span>
+                <span style="color: var(--verde); font-weight: bold;">Concluído</span>
             </div>
-
-            <div class="confirmacao-content">
-                <div class="sucesso-card">
-                    <div class="sucesso-icon">
-                        <i class="fas fa-check-circle"></i>
-                    </div>
-                    
-                    <h2>Obrigado pela sua compra!</h2>
-                    <p class="pedido-numero">Seu pedido <strong id="numeroPedido">TECH000000</strong> foi confirmado</p>
-                    
-                    <div class="info-entrega">
-                        <div class="info-item">
-                            <i class="fas fa-shipping-fast"></i>
-                            <div>
-                                <strong>Previsão de Entrega</strong>
-                                <p id="previsaoEntrega">7 dias úteis</p>
-                            </div>
-                        </div>
-                        
-                        <div class="info-item">
-                            <i class="fas fa-envelope"></i>
-                            <div>
-                                <strong>E-mail de Confirmação</strong>
-                                <p id="emailCliente">Enviado para seu e-mail</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="resumo-rapido">
-                        <h3>Resumo do Pedido</h3>
-                        <div class="resumo-detalhes">
-                            <div class="detalhe-item">
-                                <span>Itens:</span>
-                                <span id="totalItens">0</span>
-                            </div>
-                            <div class="detalhe-item">
-                                <span>Total:</span>
-                                <span id="totalPedido">R$ 0,00</span>
-                            </div>
-                            <div class="detalhe-item">
-                                <span>Método:</span>
-                                <span id="metodoPagamento">Cartão</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="acoes-confirmacao">
-                        <a href="produtos.html" class="btn btn-secundario">
-                            <i class="fas fa-shopping-bag"></i>
-                            Continuar Comprando
-                        </a>
-                        <a href="inicio.html" class="btn btn-primario">
-                            <i class="fas fa-home"></i>
-                            Voltar ao Início
-                        </a>
-                    </div>
-
-                    <div class="info-adicional">
-                        <h4><i class="fas fa-info-circle"></i> O que acontece agora?</h4>
-                        <ul>
-                            <li>Você receberá um e-mail com todos os detalhes do pedido</li>
-                            <li>Seu pedido será processado e enviado em até 24h</li>
-                            <li>Acompanhe o status pela Área do Aluno</li>
-                            <li>Dúvidas? Entre em contato pelo WhatsApp</li>
-                        </ul>
-                    </div>
-                </div>
+            <div class="linha-detalhe">
+                <span style="color: #888;">Data:</span>
+                <span><?php echo date('d/m/Y H:i'); ?></span>
+            </div>
+            <div class="linha-detalhe">
+                <span style="color: #888;">Retirada:</span>
+                <span>Recepção TechFit</span>
             </div>
         </div>
-    </main>
 
-    <footer class="footer">
-        <div class="container footer-container">
-            <div class="footer-brand">
-                <a href="#" class="logo">
-                     <img src="imagens/WhatsApp Image 2025-10-02 at 15.15.22.jpeg" alt="TechFit Logo" class="logo-img">
-                     <span>TECHFIT</span>
-                </a>
-                <p>Sua Academia do Futuro!</p>
-            </div>
-            <div class="footer-contact">
-                 <a href="#" class="contact-link">
-                    <i class="fab fa-instagram"></i>
-                    <span>TECHFIT_OFC</span>
-                </a>
-                <a href="#" class="contact-link">
-                    <i class="fab fa-whatsapp"></i>
-                    <span>(19) 99936 - 4328</span>
-                </a>
-            </div>
-        </div>
-        <div class="footer-bottom">
-            <p>&copy; 2024 TECHFIT. Todos os direitos reservados</p>
-        </div>
-    </footer>
+        <a href="dashboard_aluno.php" class="btn-painel">
+            Voltar ao Painel
+        </a>
+    </div>
 
-    <script src="confirmacao.js"></script>
-    <script src="header-carrinho-simples.js"></script>
 </body>
 </html>

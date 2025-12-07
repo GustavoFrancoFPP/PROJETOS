@@ -59,15 +59,14 @@ class AlunoDAO {
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    // Buscar agendamentos futuros do aluno
-    public function buscarAgendamentosDoAluno($idAluno) {
-        $sql = "SELECT a.* 
-                FROM agendamento a
+    // Buscar agendamentos futuros do aluno (CORRIGIDO)
+    public function buscarAgendamentosDoAluno($idAluno): array {
+        $sql = "SELECT * FROM agendamento a
                 WHERE a.id_cliente = :id_aluno
-                AND a.data_agendamento >= NOW()
-                ORDER BY a.data_agendamento ASC
+                AND a.data_aula >= CURDATE()
+                ORDER BY a.data_aula ASC
                 LIMIT 5";
-        
+
         $stmt = $this->conn->prepare($sql);
         $stmt->execute([':id_aluno' => $idAluno]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -117,11 +116,12 @@ class AlunoDAO {
         );
     }
 
-    // Buscar presenças recentes
+    // Buscar presenças recentes (CORRIGIDO PARA O NOVO BANCO)
     public function buscarPresencasDoAluno($idAluno) {
         $sql = "SELECT pr.*, 
                        ag.tipo_aula,
-                       ag.data_agendamento
+                       ag.data_aula,     -- Alterado de data_agendamento para data_aula
+                       ag.horario_aula   -- Adicionado para pegar o horário
                 FROM presenca pr
                 INNER JOIN agendamento ag ON pr.id_agendamento = ag.id_agendamento
                 WHERE pr.id_cliente = :id_aluno
@@ -133,7 +133,7 @@ class AlunoDAO {
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    // Buscar próximos vencimentos - CORRIGIDO
+    // Buscar próximos vencimentos
     public function buscarProximosVencimentos($idAluno) {
         try {
             // Verificar se a tabela fatura existe
