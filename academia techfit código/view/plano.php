@@ -1,5 +1,6 @@
-<?php
-require_once 'modelo/AlunoDAO.php';
+﻿<?php
+require_once 'Connection.php';
+require_once 'AlunoDAO.php';
 
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
@@ -16,7 +17,7 @@ $alunoDAO = new AlunoDAO();
 
 // Buscar planos disponíveis
 $conn = Connection::getInstance();
-$planosDisponiveis = $conn->query("SELECT * FROM planos WHERE status = 'ativo' ORDER BY valor")->fetchAll(PDO::FETCH_ASSOC);
+$planosDisponiveis = $conn->query("SELECT * FROM planos ORDER BY valor")->fetchAll(PDO::FETCH_ASSOC);
 $planosAluno = $alunoDAO->buscarPlanosDoAluno($idAluno);
 ?>
 <!DOCTYPE html>
@@ -25,7 +26,7 @@ $planosAluno = $alunoDAO->buscarPlanosDoAluno($idAluno);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Planos - TECHFIT</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link rel="stylesheet" href="assets/css/https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     <style>
         :root {
             --cor-ciano-principal: #00F0E1;

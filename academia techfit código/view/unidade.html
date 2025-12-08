@@ -1,38 +1,44 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Unidades - TechFit</title>
-    <link rel="stylesheet" href="unidades.css">
+    <link rel="stylesheet" href="assets/css/unidades.css">
     <!-- Leaflet CSS para o mapa -->
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <link rel="stylesheet" href="assets/css/https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
 </head>
 <body class="corpo-1">
     <!-- Header -->
-    <header class="techfit-header">
+   <header class="techfit-header">
         <div class="header-container">
-            <a href="#" class="header-logo">
-                <img src="imagens/logo-techfit.png" alt="TechFit Logo" class="logo-image">
-                <div class="logo-text">Tech<span>Fit</span></div>
+            <!-- Logo -->
+            <a href="inicio.html" class="header-logo">
+                <img src="assets/images/imagens/WhatsApp Image 2025-10-02 at 15.15.22.jpeg" 
+                     alt="TechFit - Academia Inteligente" 
+                     class="logo-image">
+                <div class="logo-text">TECH<span>FIT</span></div>
             </a>
-            
+
+            <!-- Navegação -->
             <nav class="main-navigation">
                 <ul class="nav-links">
-                    <li><a href="index.html" class="nav-link">Início</a></li>
-                    <li><a href="planos.html" class="nav-link">Planos</a></li>
-                    <li><a href="unidades.html" class="nav-link active">Unidades</a></li>
-                    <li><a href="aulas.html" class="nav-link">Aulas</a></li>
-                    <li><a href="sobre.html" class="nav-link">Sobre</a></li>
-                    <li><a href="contato.html" class="nav-link">Contato</a></li>
+                    <li><a href="inicio.html" class="nav-link active">Início</a></li>
+                    <li><a href="pagina_1.html" class="nav-link">Academias</a></li>
+                    <li><a href="Produto.HTML" class="nav-link">Produtos</a></li>
+                    <li><a href="agendamento.php" class="nav-link">Agendamento</a></li>
+                    <li><a href="suporte.html" class="nav-link">Suporte</a></li>
                 </ul>
-                
+
+                <!-- Botão de Ação -->
                 <div class="header-cta">
+                    <!-- Botão do Carrinho (será adicionado pelo JavaScript) -->
                     <a href="login.php" class="cta-button">Área do Aluno</a>
                 </div>
             </nav>
-            
-            <button class="hamburger-menu">
+
+            <!-- Menu Hambúrguer (Mobile) -->
+            <button class="hamburger-menu" aria-label="Menu">
                 <span class="hamburger-line"></span>
                 <span class="hamburger-line"></span>
                 <span class="hamburger-line"></span>
@@ -60,7 +66,7 @@
         <section class="unidades-grid">
             <!-- Unidade 1 - Paulista -->
             <div class="unidade-card" data-cidade="sp">
-                <img src="imagens/unidade-paulista.jpg" alt="TechFit Paulista" class="unidade-imagem">
+                <img src="assets/images/imagens/unidade-paulista.jpg" alt="TechFit Paulista" class="unidade-imagem">
                 <div class="unidade-info">
                     <h3 class="unidade-nome">TechFit Paulista</h3>
                     
@@ -89,7 +95,7 @@
             
             <!-- Unidade 2 - Ipanema -->
             <div class="unidade-card" data-cidade="rj">
-                <img src="imagens/unidade-ipanema.jpg" alt="TechFit Ipanema" class="unidade-imagem">
+                <img src="assets/images/imagens/unidade-ipanema.jpg" alt="TechFit Ipanema" class="unidade-imagem">
                 <div class="unidade-info">
                     <h3 class="unidade-nome">TechFit Ipanema</h3>
                     
@@ -118,7 +124,7 @@
             
             <!-- Unidade 3 - Savassi -->
             <div class="unidade-card" data-cidade="mg">
-                <img src="imagens/unidade-savassi.jpg" alt="TechFit Savassi" class="unidade-imagem">
+                <img src="assets/images/imagens/unidade-savassi.jpg" alt="TechFit Savassi" class="unidade-imagem">
                 <div class="unidade-info">
                     <h3 class="unidade-nome">TechFit Savassi</h3>
                     
@@ -147,7 +153,7 @@
             
             <!-- Unidade 4 - Morumbi -->
             <div class="unidade-card" data-cidade="sp">
-                <img src="imagens/unidade-morumbi.jpg" alt="TechFit Morumbi" class="unidade-imagem">
+                <img src="assets/images/imagens/unidade-morumbi.jpg" alt="TechFit Morumbi" class="unidade-imagem">
                 <div class="unidade-info">
                     <h3 class="unidade-nome">TechFit Morumbi</h3>
                     
@@ -182,7 +188,7 @@
     </main>
     
     <!-- Scripts -->
-    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
-    <script src="unidades.js"></script>
+    <script src="assets/js/https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <script src="assets/js/unidades.js"></script>
 </body>
 </html>

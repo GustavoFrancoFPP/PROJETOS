@@ -1,5 +1,5 @@
-<?php
-require_once 'UsuarioController.php';
+﻿<?php
+require_once __DIR__ . '/../controller/UsuarioController.php';
 
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
@@ -8,7 +8,7 @@ if (session_status() == PHP_SESSION_NONE) {
 // Se o usuário já estiver logado, redireciona
 if (isset($_SESSION['logged_in']) && $_SESSION['logged_in'] === true) {
     if ($_SESSION['tipo_usuario'] === 'funcionario') {
-        header('Location: painel_administrativo.php');
+        header('Location: admin.php');
     } else {
         header('Location: dashboard_aluno.php');
     }
@@ -58,16 +58,18 @@ if (isset($_POST['logar'])) {
     if (empty($nomeUsuario) || empty($senha)) {
         $mensagem_erro = 'Por favor, preencha todos os campos.';
     } else {
-        if ($controller->login($nomeUsuario, $senha)) {
+        $loginResult = $controller->login($nomeUsuario, $senha);
+        
+        if ($loginResult) {
             // Login bem-sucedido - redireciona baseado no tipo de usuário
-            if ($_SESSION['tipo_usuario'] === 'funcionario') {
-                header('Location: painel_administrativo.php');
+            if (isset($_SESSION['tipo_usuario']) && $_SESSION['tipo_usuario'] === 'funcionario') {
+                header('Location: admin.php');
             } else {
                 header('Location: dashboard_aluno.php');
             }
             exit;
         } else {
-            $mensagem_erro = 'Nome de usuário ou senha inválidos.';
+            $mensagem_erro = 'Nome de usuário ou senha inválidos. Verifique suas credenciais.';
         }
     }
 }
@@ -78,8 +80,8 @@ if (isset($_POST['logar'])) {
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>TECHFIT - Login e Cadastro</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"/>
-  <link rel="stylesheet" href="login.css">
+  <link rel="stylesheet" href="assets/css/https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"/>
+  <link rel="stylesheet" href="assets/css/login.css">
 </head>
 <body>
   <header class="techfit-header">
@@ -203,7 +205,7 @@ if (isset($_POST['logar'])) {
     <button type="submit" name="cadastrar" class="btn">Cadastrar</button>
 </form>
 
-<script src="js/login.js"></script>
+<script src="assets/js/js/login.js"></script>
   </main>
 
   <footer class="main-footer">

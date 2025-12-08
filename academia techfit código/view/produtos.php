@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 // Salve dentro da pasta: modelo/
 
 class Produto {

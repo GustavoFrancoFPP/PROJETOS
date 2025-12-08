@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 // Arquivo: modelo/UsuarioDAO.php
 
 // Inclusões DENTRO DA MESMA PASTA

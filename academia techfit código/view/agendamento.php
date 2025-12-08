@@ -1,58 +1,41 @@
 <?php
 session_start();
-require_once 'Connection.php';
+require_once __DIR__ . '/../config/Connection.php';
 
-// --- 1. LÓGICA PHP (Processamento) ---
-// Fica tudo aqui em cima, mas SEM dar echo em nada ainda
-
+// Impede acesso sem login
 if (!isset($_SESSION['user_id'])) {
-    header("Location: login.php");
+    header('Location: login.php');
     exit;
 }
 
-$mensagem_alerta = ""; // Variável para guardar a mensagem
+$mensagem_alerta = '';
+$id_cliente = $_SESSION['user_id'];
 
-if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['agendar_aula'])) {
+// Processa o agendamento
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['agendar_aula'])) {
     try {
         $conn = Connection::getInstance();
-        
-        $id_cliente = $_SESSION['user_id'];
-        $tipo_aula  = $_POST['nome_aula'];
-        $horario    = $_POST['horario'];
-        $dia_semana = $_POST['dia_semana'];
 
-        $dias_map = [
-            'Segunda' => 'Monday', 'Terça' => 'Tuesday', 'Quarta' => 'Wednesday', 
-            'Quinta' => 'Thursday', 'Sexta' => 'Friday', 'Sábado' => 'Saturday', 'Domingo' => 'Sunday'
-        ];
-        $diaIngles = $dias_map[$dia_semana] ?? 'Monday';
-        
-        $hoje_ingles = date('l');
-        if ($hoje_ingles == $diaIngles) {
-             $data_aula = date('Y-m-d');
+        $tipo_aula = trim($_POST['nome_aula'] ?? '');
+        $data_agendamento = trim($_POST['data_agendamento'] ?? '');
+        $horario = trim($_POST['horario'] ?? '');
+
+        if ($tipo_aula === '' || $data_agendamento === '' || $horario === '') {
+            $mensagem_alerta = 'Preencha todos os campos para agendar.';
+        } elseif (strtotime($data_agendamento) < strtotime(date('Y-m-d'))) {
+            $mensagem_alerta = 'Não é possível agendar em datas passadas.';
         } else {
-             $data_aula = date('Y-m-d', strtotime("next $diaIngles"));
+            $dataHoraCompleta = $data_agendamento . ' ' . $horario;
+            $stmt = $conn->prepare('INSERT INTO agendamento (id_cliente, tipo_aula, data_agendamento) VALUES (?, ?, ?)');
+            $stmt->execute([$id_cliente, $tipo_aula, $dataHoraCompleta]);
+            $mensagem_alerta = 'Aula agendada com sucesso! Aguarde confirmação.';
         }
-
-        $sql = "INSERT INTO agendamento (id_cliente, tipo_aula, data_aula, horario_aula, status) 
-                VALUES (:id_cliente, :tipo_aula, :data_aula, :horario_aula, 'pendente')";
-        
-        $stmt = $conn->prepare($sql);
-        $stmt->execute([
-            ':id_cliente' => $id_cliente, 
-            ':tipo_aula' => $tipo_aula, 
-            ':data_aula' => $data_aula, 
-            ':horario_aula' => $horario
-        ]);
-
-        $mensagem_alerta = "Pedido enviado com sucesso! Aguarde a confirmação do professor.";
-
-    } catch (PDOException $e) {
-        $mensagem_alerta = "Erro ao agendar: " . $e->getMessage();
+    } catch (Exception $e) {
+        $mensagem_alerta = 'Erro ao agendar: ' . $e->getMessage();
     }
 }
 
-// Dados da grade para visualização
+// Grade fixa para exibição (layout antigo)
 $grade_aulas = [
     ['horario' => '07:00', 'nome' => 'Yoga Matinal',     'vagas' => 21],
     ['horario' => '09:00', 'nome' => 'Yoga Matinal',     'vagas' => 15],
@@ -62,23 +45,41 @@ $grade_aulas = [
     ['horario' => '19:00', 'nome' => 'Pilates',          'vagas' => 17],
     ['horario' => '21:00', 'nome' => 'HIIT',             'vagas' => 0]
 ];
-?>
 
+// Próximos 30 dias para o calendário
+$diasDisponiveis = [];
+$hoje = new DateTime();
+for ($i = 0; $i < 30; $i++) {
+    $data = clone $hoje;
+    $data->modify("+{$i} day");
+    $diasDisponiveis[] = $data;
+}
+?>
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TECHFIT - Agendamento</title>
-    <link rel="stylesheet" href="agendamento.css">
+    <link rel="stylesheet" href="assets/css/agendamento.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-    
     <style>
-        .week-days { display: flex; justify-content: space-between; padding: 15px 0; border-bottom: 1px solid rgba(255,255,255,0.1); margin-bottom: 20px; }
-        .week-days span { flex: 1; text-align: center; color: #b0b7d9; cursor: pointer; padding: 5px; }
-        .week-days span.active { color: #00F0E1; font-weight: bold; border-bottom: 2px solid #00F0E1; }
         form { display: inline; }
         .full-btn { background-color: #555; color: #ccc; border: none; padding: 10px 20px; border-radius: 5px; cursor: not-allowed; font-weight: bold; }
+        .calendar-box { background: rgba(255,255,255,0.05); border: 1px solid rgba(0,240,225,0.2); border-radius: 12px; padding: 16px; margin-bottom: 20px; }
+        .calendar-header { display: flex; justify-content: space-between; align-items: center; color: #00F0E1; font-weight: 600; margin-bottom: 12px; }
+        .dias-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(90px, 1fr)); gap: 8px; }
+        .dia-btn { background: rgba(255,255,255,0.05); border: 1px solid rgba(0,240,225,0.25); color: #b0b7d9; padding: 10px 6px; border-radius: 8px; cursor: pointer; text-align: center; transition: all 0.2s ease; }
+        .dia-btn:hover { background: rgba(0,240,225,0.1); color: #00F0E1; border-color: #00F0E1; }
+        .dia-btn.selected { background: #00F0E1; color: #0f172a; border-color: #00F0E1; font-weight: 700; }
+        .selected-label { margin-top: 10px; color: #b0b7d9; font-size: 0.95rem; }
+        .selected-label span { color: #00F0E1; font-weight: 600; }
+        .alerta-msg { padding: 12px 14px; border-radius: 8px; margin-bottom: 18px; font-weight: 600; text-align: center; }
+        .alerta-msg.sucesso { background: rgba(0,240,225,0.15); border: 1px solid rgba(0,240,225,0.5); color: #00F0E1; }
+        .alerta-msg.erro { background: rgba(255,99,99,0.15); border: 1px solid rgba(255,99,99,0.5); color: #ff6666; }
+        .schedule-btn.disabled { opacity: 0.55; cursor: not-allowed; background: #2b2b2b; border: 1px dashed rgba(255,255,255,0.25); color: #aaa; }
+        .selected-label.feedback { display: flex; align-items: center; gap: 6px; margin-top: 8px; }
+        .selected-label.feedback.error { color: #ff7b7b; }
     </style>
 </head>
 <body>
@@ -91,8 +92,11 @@ $grade_aulas = [
             <nav class="main-navigation">
                 <ul class="nav-links">
                     <li><a href="inicio.html" class="nav-link">Início</a></li>
+                    <li><a href="dashboard_aluno.php" class="nav-link">Dashboard</a></li>
+                    <li><a href="produtos_loja.php" class="nav-link">Produtos</a></li>
                     <li><a href="agendamento.php" class="nav-link active">Agendamento</a></li>
-                    <li><a href="dashboard_aluno.php" class="nav-link">Área do Aluno</a></li>
+                    <li><a href="suporte.html" class="nav-link">Suporte</a></li>
+                    <li><a href="logout.php" class="nav-link" style="color: #ff4444;">Sair</a></li>
                 </ul>
             </nav>
         </div>
@@ -102,14 +106,30 @@ $grade_aulas = [
         <section class="booking">
             <div class="section-header">
                 <h2>Agendamento de Aulas</h2>
-                <div class="date-nav">
-                    <span class="current-date"><?php echo date('D, d M'); ?></span>
+            </div>
+
+            <?php if ($mensagem_alerta !== ''): ?>
+                <div class="alerta-msg <?php echo strpos($mensagem_alerta, 'sucesso') !== false ? 'sucesso' : 'erro'; ?>">
+                    <?php echo htmlspecialchars($mensagem_alerta); ?>
                 </div>
-                
-                <div class="week-days">
-                    <span>Seg</span><span>Ter</span><span>Qua</span><span>Qui</span>
-                    <span class="active">Sex</span><span>Sab</span><span>Dom</span>
+            <?php endif; ?>
+
+            <div class="calendar-box">
+                <div class="calendar-header">
+                    <span><i class="fas fa-calendar-alt"></i> Escolha a data</span>
+                    <span>Próximos 30 dias</span>
                 </div>
+                <div class="dias-grid">
+                    <?php foreach ($diasDisponiveis as $dataObj): ?>
+                        <?php $dataStr = $dataObj->format('Y-m-d'); ?>
+                        <button type="button" class="dia-btn" data-data="<?php echo $dataStr; ?>">
+                            <div><?php echo $dataObj->format('d/m'); ?></div>
+                            <small><?php echo $dataObj->format('D'); ?></small>
+                        </button>
+                    <?php endforeach; ?>
+                </div>
+                <div class="selected-label">Data selecionada: <span id="data-selecionada-label">nenhuma</span></div>
+                <div class="selected-label feedback" id="calendar-feedback"></div>
             </div>
 
             <ul class="class-list">
@@ -117,15 +137,15 @@ $grade_aulas = [
                     <li class="class-item">
                         <span class="time"><?php echo $aula['horario']; ?></span>
                         <div class="class-details">
-                            <h3 class="name"><?php echo $aula['nome']; ?></h3>
+                            <h3 class="name"><?php echo htmlspecialchars($aula['nome']); ?></h3>
                             <p class="spots"><?php echo $aula['vagas'] > 0 ? $aula['vagas'] . ' vagas' : 'Esgotado'; ?></p>
                         </div>
-                        <?php if($aula['vagas'] > 0): ?>
-                            <form method="POST">
-                                <input type="hidden" name="nome_aula" value="<?php echo $aula['nome']; ?>">
-                                <input type="hidden" name="horario" value="<?php echo $aula['horario'] . ':00'; ?>">
-                                <input type="hidden" name="dia_semana" value="Sexta">
-                                <button type="submit" name="agendar_aula" class="schedule-btn">Agendar</button>
+                        <?php if ($aula['vagas'] > 0): ?>
+                            <form method="POST" class="form-agendar">
+                                <input type="hidden" name="nome_aula" value="<?php echo htmlspecialchars($aula['nome']); ?>">
+                                <input type="hidden" name="horario" value="<?php echo $aula['horario']; ?>">
+                                <input type="hidden" name="data_agendamento" class="input-data-agendamento" value="">
+                                <button type="submit" name="agendar_aula" class="schedule-btn" aria-disabled="true">Agendar</button>
                             </form>
                         <?php else: ?>
                             <button class="full-btn" disabled>LOTADO</button>
@@ -136,19 +156,61 @@ $grade_aulas = [
         </section>
     </main>
 
-    <?php if (!empty($mensagem_alerta)): ?>
     <script>
-        // Pequeno atraso de 100ms para garantir que o navegador desenhou a tela
-        setTimeout(function() {
-            alert("<?php echo $mensagem_alerta; ?>");
-            // Limpa o histórico para não reenviar formulário ao atualizar
-            if ( window.history.replaceState ) {
-                window.history.replaceState( null, null, window.location.href );
-            }
-        }, 100);
-    </script>
-    <?php endif; ?>
+        const dayButtons = document.querySelectorAll('.dia-btn');
+        const dataLabel = document.getElementById('data-selecionada-label');
+        const feedback = document.getElementById('calendar-feedback');
+        const scheduleButtons = document.querySelectorAll('.schedule-btn');
+        let dataSelecionada = '';
 
-    <script src="script.js"></script>
+        // Começa com botões desabilitados até escolher uma data
+        scheduleButtons.forEach(btn => {
+            btn.classList.add('disabled');
+            btn.setAttribute('disabled', 'disabled');
+            btn.setAttribute('title', 'Escolha uma data no calendário primeiro');
+        });
+
+        dayButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                dayButtons.forEach(b => b.classList.remove('selected'));
+                btn.classList.add('selected');
+                dataSelecionada = btn.dataset.data;
+                dataLabel.textContent = new Date(dataSelecionada + 'T00:00:00').toLocaleDateString('pt-BR', { weekday: 'short', day: '2-digit', month: '2-digit', year: 'numeric' });
+                document.querySelectorAll('.input-data-agendamento').forEach(input => {
+                    input.value = dataSelecionada;
+                });
+                feedback.textContent = '';
+                scheduleButtons.forEach(button => {
+                    button.classList.remove('disabled');
+                    button.removeAttribute('disabled');
+                    button.removeAttribute('aria-disabled');
+                    button.removeAttribute('title');
+                });
+            });
+        });
+
+        document.querySelectorAll('.form-agendar').forEach(form => {
+            form.addEventListener('submit', (e) => {
+                const hiddenDate = form.querySelector('.input-data-agendamento');
+                if (!hiddenDate.value) {
+                    e.preventDefault();
+                    feedback.textContent = 'Escolha a data para liberar o agendamento.';
+                    feedback.classList.add('error');
+                    feedback.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                } else {
+                    const selected = new Date(hiddenDate.value + 'T00:00:00');
+                    const today = new Date();
+                    today.setHours(0, 0, 0, 0);
+                    if (selected < today) {
+                        e.preventDefault();
+                        feedback.textContent = 'Não é possível agendar para uma data passada.';
+                        feedback.classList.add('error');
+                        feedback.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }
+                }
+            });
+        });
+    </script>
+    <script src="assets/js/script.js"></script>
 </body>
 </html>

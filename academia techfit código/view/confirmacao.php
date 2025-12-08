@@ -1,5 +1,5 @@
-<?php
-$extra_head = '<link rel="stylesheet" href="confirmacao.css">';
+﻿<?php
+$extra_head = '<link rel="stylesheet" href="assets/css/confirmacao.css">';
 require_once __DIR__ . '/inc/header.php';
 
 if (session_status() == PHP_SESSION_NONE) session_start();

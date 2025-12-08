@@ -88,27 +88,40 @@ class Carrinho {
             if (carrinhoVazio) carrinhoVazio.style.display = 'none';
             
             if (listaItens) {
-                listaItens.innerHTML = this.itens.map(item => `
-                    <div class="item-carrinho" data-id="${item.id}">
-                        <img src="${item.imagem}" alt="${item.nome}" class="item-imagem" 
-                             onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgdmlld0JveD0iMCAwIDEwMCAxMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxMDAiIGhlaWdodD0iMTAwIiBmaWxsPSIjMkEyQTJBIi8+Cjx0ZXh0IHg9IjUwIiB5PSI1MCIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjE0IiBmaWxsPSIjN0E3QTdBIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBkeT0iMC4zNWVtIj5TZW0gSW1hZ2VtPC90ZXh0Pgo8L3N2Zz4K'">
+                listaItens.innerHTML = this.itens.map(item => {
+                    const ehPlano = item.tipo === 'plano';
+                    const tipoBadge = ehPlano ? 'Plano' : 'Produto';
+                    const imgPlaceholder = ehPlano ? 
+                        'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgdmlld0JveD0iMCAwIDEwMCAxMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxMDAiIGhlaWdodD0iMTAwIiBmaWxsPSIjMDAyZjRiIi8+Cjwvc3ZnPgo=' :
+                        'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgdmlld0JveD0iMCAwIDEwMCAxMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxMDAiIGhlaWdodD0iMTAwIiBmaWxsPSIjMkEyQTJBIi8+Cjwvc3ZnPgo=';
+                    
+                    return `
+                    <div class="item-carrinho" data-id="${item.id}" data-tipo="${item.tipo || 'produto'}">
+                        <img src="${item.imagem || imgPlaceholder}" alt="${item.nome}" class="item-imagem" 
+                             onerror="this.src='${imgPlaceholder}'">
+                        <div class="item-badge" style="position: absolute; top: 10px; right: 10px; background: ${ehPlano ? '#00F0E1' : '#888'}; color: #000; padding: 4px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: 700;">
+                            ${tipoBadge}
+                        </div>
                         <div class="item-info">
                             <h4 class="item-nome">${item.nome}</h4>
-                            <p class="item-descricao">${item.descricao || 'Produto premium TECHFIT'}</p>
+                            <p class="item-descricao">${item.descricao || (ehPlano ? 'Plano de academia' : 'Produto premium TECHFIT')}</p>
                             <p class="item-preco">R$ ${item.preco.toFixed(2)}</p>
                             <div class="item-controles">
+                                ${!ehPlano ? `
                                 <div class="quantidade-controle">
                                     <button class="quantidade-btn diminuir" onclick="carrinho.alterarQuantidade('${item.id}', -1)">-</button>
                                     <span class="quantidade">${item.quantidade}</span>
                                     <button class="quantidade-btn aumentar" onclick="carrinho.alterarQuantidade('${item.id}', 1)">+</button>
                                 </div>
+                                ` : `<div style="color: #b0b7d9; font-size: 0.9rem;">Renovação mensal</div>`}
                                 <button class="remover-item" onclick="carrinho.removerItem('${item.id}')">
                                     <i class="fas fa-trash"></i> Remover
                                 </button>
                             </div>
                         </div>
                     </div>
-                `).join('');
+                    `;
+                }).join('');
             }
         }
 

@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 require_once __DIR__ . '/UsuarioController.php';
 
 if (session_status() == PHP_SESSION_NONE) {
@@ -44,7 +44,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['acao']) && $_POST['ac
 <head>
     <meta charset="UTF-8">
     <title>TECHFIT - Cadastro</title>
-    <link rel="stylesheet" href="login.css">
+    <link rel="stylesheet" href="assets/css/login.css">
     </head>
 <body>
     <header class="techfit-header">...</header>
@@ -118,6 +118,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['acao']) && $_POST['ac
         </div>
     </main>
     
-    <script src="login.js"></script>
+    <script src="assets/js/login.js"></script>
 </body>
 </html>

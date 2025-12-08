@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
@@ -10,8 +10,8 @@ if (session_status() == PHP_SESSION_NONE) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"/>
-    <link rel="stylesheet" href="/view/inicio.css">
+    <link rel="stylesheet" href="assets/css/https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"/>
+    <link rel="stylesheet" href="assets/css//view/inicio.css">
     <?php echo $extra_head ?? ''; ?>
     <title>TECHFIT</title>
 </head>
@@ -19,7 +19,7 @@ if (session_status() == PHP_SESSION_NONE) {
     <header class="techfit-header">
         <div class="header-container">
             <a href="inicio.html" class="header-logo">
-                <img src="imagens/WhatsApp Image 2025-10-02 at 15.15.22.jpeg" alt="TechFit" class="logo-image">
+                <img src="assets/images/imagens/WhatsApp Image 2025-10-02 at 15.15.22.jpeg" alt="TechFit" class="logo-image">
                 <div class="logo-text">TECH<span>FIT</span></div>
             </a>
 
@@ -34,7 +34,7 @@ if (session_status() == PHP_SESSION_NONE) {
 
                 <div class="header-cta">
                     <?php if (!empty($_SESSION['logged_in']) && $_SESSION['logged_in'] === true): ?>
-                        <a href="perfil.php" class="cta-button"><?php echo htmlspecialchars($_SESSION['nome_usuario'] ?? 'Área do Aluno'); ?></a>
+                        <a href="editar_perfil.php" class="cta-button"><?php echo htmlspecialchars($_SESSION['nome_usuario'] ?? 'Área do Aluno'); ?></a>
                     <?php else: ?>
                         <a href="login.php" class="cta-button">Área do Aluno</a>
                     <?php endif; ?>

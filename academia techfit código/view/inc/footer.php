@@ -1,9 +1,9 @@
-    </main>
+﻿    </main>
     <footer class="footer">
         <div class="container footer-container">
             <div class="footer-brand">
                 <a href="#" class="logo">
-                     <img src="imagens/WhatsApp Image 2025-10-02 at 15.15.22.jpeg" alt="TechFit Logo" class="logo-img">
+                     <img src="assets/images/imagens/WhatsApp Image 2025-10-02 at 15.15.22.jpeg" alt="TechFit Logo" class="logo-img">
                      <span>TECHFIT</span>
                 </a>
                 <p>Sua Academia do Futuro!</p>
@@ -24,7 +24,7 @@
         </div>
     </footer>
 
-    <script src="pagamento.js"></script>
-    <script src="header-carrinho-simples.js"></script>
+    <script src="assets/js/pagamento.js"></script>
+    <script src="assets/js/header-carrinho-simples.js"></script>
 </body>
 </html>

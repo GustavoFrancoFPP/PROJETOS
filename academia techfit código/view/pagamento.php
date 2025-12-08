@@ -1,6 +1,17 @@
-<?php
-$extra_head = '<link rel="stylesheet" href="pagamento.css">';
+﻿<?php
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+}
+
+$extra_head = '<link rel="stylesheet" href="assets/css/pagamento.css">';
 require_once __DIR__ . '/inc/header.php';
+
+// Adiciona informação de debug (pode remover depois)
+if (isset($_SESSION['user_id'])) {
+    error_log("Usuário logado no pagamento: ID=" . $_SESSION['user_id']);
+} else {
+    error_log("AVISO: Usuário NÃO está logado ao acessar pagamento");
+}
 
 // Processa submissão do pagamento e grava no banco
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -99,10 +110,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 ]
             ]);
 
-            $stmt = $conn->prepare("INSERT INTO pedidos (numero_pedido, dados_cliente, itens, subtotal, frete, desconto, total, metodo_pagamento, dados_pagamento, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+            // Pega o ID do cliente se estiver logado
+            $idClienteLogado = $_SESSION['user_id'] ?? null;
+            
+            $stmt = $conn->prepare("INSERT INTO pedidos (numero_pedido, id_cliente, dados_cliente, itens, subtotal, frete, desconto, total, metodo_pagamento, dados_pagamento, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
             $status = 'pendente';
             $stmt->execute([
                 $numeroPedido,
+                $idClienteLogado,
                 $dadosCliente,
                 $itens,
                 $subtotal,
@@ -115,6 +130,62 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             ]);
 
             $insertId = $conn->lastInsertId();
+            error_log("Pedido criado: ID=$insertId, Cliente=$idClienteLogado");
+
+            // NOVO: Registra cada produto/plano na tabela venda para aparecer no dashboard
+            // Tenta pegar o ID do cliente da sessão ou do POST
+            $idCliente = $_SESSION['user_id'] ?? $_SESSION['id_cliente'] ?? null;
+            
+            if ($pedido_json && $idCliente) {
+                $pedidoData = json_decode($pedido_json, true);
+                if (json_last_error() === JSON_ERROR_NONE && isset($pedidoData['itens']) && is_array($pedidoData['itens'])) {
+                    $stmtVenda = $conn->prepare("INSERT INTO venda (id_cliente, id_produtos, quantidade, valor_total, data_venda) VALUES (?, ?, ?, ?, NOW())");
+                    
+                    $vendasInseridas = 0;
+                    foreach ($pedidoData['itens'] as $item) {
+                        $idItem = $item['id'] ?? null;
+                        $tipoItem = $item['tipo'] ?? 'produto'; // 'produto' ou 'plano'
+                        $quantidade = $item['quantidade'] ?? 1;
+                        $valorTotalItem = $item['preco'] * $quantidade;
+                        
+                        // Para planos, usa ID como string (ex: 'plano-sigma', 'plano-alpha', etc)
+                        // Para produtos, valida se é numérico
+                        if ($idItem) {
+                            try {
+                                if ($tipoItem === 'plano') {
+                                    // Planos: armazenam como string no id_produtos
+                                    $stmtVenda->execute([
+                                        $idCliente,
+                                        $idItem,  // Ex: 'plano-sigma', 'plano-alpha', 'plano-beta'
+                                        1, // Planos sempre quantidade 1 (renovação mensal)
+                                        $valorTotalItem
+                                    ]);
+                                    $vendasInseridas++;
+                                    error_log("✓ Plano registrado: Cliente=$idCliente, Plano=$idItem, Valor=$valorTotalItem");
+                                } elseif (is_numeric($idItem) && intval($idItem) > 0) {
+                                    // Produtos: apenas numéricos
+                                    $stmtVenda->execute([
+                                        $idCliente,
+                                        intval($idItem),
+                                        $quantidade,
+                                        $valorTotalItem
+                                    ]);
+                                    $vendasInseridas++;
+                                    error_log("✓ Venda registrada: Cliente=$idCliente, Produto=$idItem, Qtd=$quantidade, Valor=$valorTotalItem");
+                                } else {
+                                    error_log("⚠ ID inválido ignorado: " . ($idItem ?? 'null'));
+                                }
+                            } catch (PDOException $e) {
+                                // Log erro mas continua processamento do pedido
+                                error_log("✗ Erro ao inserir venda: " . $e->getMessage());
+                            }
+                        }
+                    }
+                    error_log("Total de vendas inseridas no histórico: $vendasInseridas de " . count($pedidoData['itens']) . " itens");
+                }
+            } else {
+                error_log("Não foi possível registrar vendas. ID Cliente: " . ($idCliente ?? 'null') . ", Pedido JSON: " . ($pedido_json ? 'presente' : 'ausente'));
+            }
 
             if (session_status() == PHP_SESSION_NONE) session_start();
             $_SESSION['order'] = $order;

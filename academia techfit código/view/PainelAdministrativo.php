@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 // Inicia a sessão se ainda não estiver iniciada
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
@@ -10,14 +10,15 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
     exit;
 }
 
-$nome_usuario_logado = $_SESSION['user_nome'];
-$tipo_usuario_logado = $_SESSION['user_tipo'];
-// A regra de redirecionamento é baseada no nome de usuário 'techfit'
-$is_admin = ($nome_usuario_logado === 'techfit');
+$nome_usuario_logado = $_SESSION['user_nome'] ?? '';
+$tipo_usuario_logado = $_SESSION['tipo_usuario'] ?? 'cliente';
 
-// Restrição para o painel administrativo: Apenas o "techfit" pode acessar.
+// Verifica se é funcionário/admin
+$is_admin = ($tipo_usuario_logado === 'funcionario');
+
+// Restrição para o painel administrativo: Apenas funcionários podem acessar
 if (basename($_SERVER['PHP_SELF']) === 'painel_administrativo.php' && !$is_admin) {
-    header('Location: index.php');
+    header('Location: dashboard_aluno.php');
     exit;
 }
 

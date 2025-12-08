@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 // Arquivo: modelo/AlunoDAO.php
 
 require_once 'Connection.php';
@@ -12,13 +12,9 @@ class AlunoDAO {
 
     // Buscar informações completas do aluno
     public function buscarAlunoPorId($idAluno) {
-        $sql = "SELECT c.*, 
-                       l.nome_usuario,
-                       l.tipo_usuario
+        $sql = "SELECT c.*
                 FROM cliente c
-                LEFT JOIN login l ON c.id_cliente = l.id_cliente
-                WHERE c.id_cliente = :id_aluno
-                AND c.status = 'ativo'";
+                WHERE c.id_cliente = :id_aluno";
         
         $stmt = $this->conn->prepare($sql);
         $stmt->execute([':id_aluno' => $idAluno]);
@@ -27,14 +23,10 @@ class AlunoDAO {
 
     // Buscar planos do aluno
     public function buscarPlanosDoAluno($idAluno) {
-        $sql = "SELECT p.*, 
-                       pg.data_pagamento,
-                       pg.status_pagamento
+        $sql = "SELECT p.*
                 FROM planos p
-                LEFT JOIN pagamento pg ON p.id_planos = pg.id_planos
                 WHERE p.id_cliente = :id_aluno
-                AND p.status = 'ativo'
-                ORDER BY pg.data_pagamento DESC";
+                ORDER BY p.id_planos DESC";
         
         $stmt = $this->conn->prepare($sql);
         $stmt->execute([':id_aluno' => $idAluno]);
@@ -43,15 +35,10 @@ class AlunoDAO {
 
     // Buscar produtos comprados pelo aluno
     public function buscarProdutosDoAluno($idAluno) {
-        $sql = "SELECT v.*, 
-                       p.nome_produto,
-                       p.tipo_produto,
-                       p.categoria,
-                       p.preco
-                FROM venda v
-                INNER JOIN produtos p ON v.id_produtos = p.id_produtos
-                WHERE v.id_cliente = :id_aluno
-                ORDER BY v.data_venda DESC
+        $sql = "SELECT p.*
+                FROM produtos p
+                WHERE p.id_cliente = :id_aluno
+                ORDER BY p.id_produtos DESC
                 LIMIT 10";
         
         $stmt = $this->conn->prepare($sql);
@@ -63,8 +50,8 @@ class AlunoDAO {
     public function buscarAgendamentosDoAluno($idAluno): array {
         $sql = "SELECT * FROM agendamento a
                 WHERE a.id_cliente = :id_aluno
-                AND a.data_aula >= CURDATE()
-                ORDER BY a.data_aula ASC
+                AND a.data_agendamento >= CURDATE()
+                ORDER BY a.data_agendamento ASC
                 LIMIT 5";
 
         $stmt = $this->conn->prepare($sql);
@@ -90,16 +77,15 @@ class AlunoDAO {
 
     // Calcular total gasto pelo aluno
     public function calcularTotalGasto($idAluno) {
-        // Soma dos pagamentos de planos
-        $sqlPlanos = "SELECT COALESCE(SUM(pg.valor_pago), 0) as total_planos
-                      FROM pagamento pg
-                      WHERE pg.id_cliente = :id_aluno
-                      AND pg.status_pagamento = 'pago'";
+        // Soma dos planos
+        $sqlPlanos = "SELECT COALESCE(SUM(p.valor), 0) as total_planos
+                      FROM planos p
+                      WHERE p.id_cliente = :id_aluno";
         
         // Soma dos produtos
-        $sqlProdutos = "SELECT COALESCE(SUM(v.valor_total), 0) as total_produtos
-                        FROM venda v
-                        WHERE v.id_cliente = :id_aluno";
+        $sqlProdutos = "SELECT COALESCE(SUM(p.preco * p.quantidade), 0) as total_produtos
+                        FROM produtos p
+                        WHERE p.id_cliente = :id_aluno";
         
         $stmt = $this->conn->prepare($sqlPlanos);
         $stmt->execute([':id_aluno' => $idAluno]);
@@ -116,115 +102,32 @@ class AlunoDAO {
         );
     }
 
-    // Buscar presenças recentes (CORRIGIDO PARA O NOVO BANCO)
+    // Buscar presenças recentes (tabela presenca não existe, retorna array vazio)
     public function buscarPresencasDoAluno($idAluno) {
-        $sql = "SELECT pr.*, 
-                       ag.tipo_aula,
-                       ag.data_aula,     -- Alterado de data_agendamento para data_aula
-                       ag.horario_aula   -- Adicionado para pegar o horário
-                FROM presenca pr
-                INNER JOIN agendamento ag ON pr.id_agendamento = ag.id_agendamento
-                WHERE pr.id_cliente = :id_aluno
-                ORDER BY pr.data_presenca DESC
-                LIMIT 10";
-        
-        $stmt = $this->conn->prepare($sql);
-        $stmt->execute([':id_aluno' => $idAluno]);
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        // A tabela presenca não existe no banco atual
+        // Retornando array vazio para evitar erros
+        return [];
     }
 
-    // Buscar próximos vencimentos
+    // Buscar próximos vencimentos (tabelas fatura/pagamento não existem)
     public function buscarProximosVencimentos($idAluno) {
-        try {
-            // Verificar se a tabela fatura existe
-            $tabelaFatura = $this->conn->query("SHOW TABLES LIKE 'fatura'")->rowCount();
-            
-            if ($tabelaFatura > 0) {
-                $sql = "SELECT f.*,
-                               pl.nome_planos,
-                               pl.valor as valor_plano,
-                               pl.descricao
-                        FROM fatura f
-                        INNER JOIN pagamento pg ON f.id_pagamento = pg.id_pagamento
-                        INNER JOIN planos pl ON pg.id_planos = pl.id_planos
-                        WHERE f.id_cliente = :id_aluno
-                        AND (f.status = 'aberta' OR f.status = 'vencida')
-                        AND f.vencimento >= CURDATE()
-                        ORDER BY f.vencimento ASC
-                        LIMIT 3";
-                
-                $stmt = $this->conn->prepare($sql);
-                $stmt->execute([':id_aluno' => $idAluno]);
-                $resultados = $stmt->fetchAll(PDO::FETCH_ASSOC);
-                
-                return $resultados;
-            } else {
-                // Se não existir tabela fatura, use pagamento como base
-                $sql = "SELECT pg.*,
-                               pl.nome_planos,
-                               pl.valor as valor_plano,
-                               pl.descricao,
-                               DATE_ADD(pg.data_pagamento, INTERVAL 30 DAY) as vencimento
-                        FROM pagamento pg
-                        INNER JOIN planos pl ON pg.id_planos = pl.id_planos
-                        WHERE pg.id_cliente = :id_aluno
-                        AND pg.status_pagamento = 'pago'
-                        AND DATE_ADD(pg.data_pagamento, INTERVAL 30 DAY) >= CURDATE()
-                        ORDER BY pg.data_pagamento DESC
-                        LIMIT 3";
-                
-                $stmt = $this->conn->prepare($sql);
-                $stmt->execute([':id_aluno' => $idAluno]);
-                $resultados = $stmt->fetchAll(PDO::FETCH_ASSOC);
-                
-                // Adicionar campos para compatibilidade
-                foreach ($resultados as &$resultado) {
-                    $resultado['valor_total'] = $resultado['valor_pago'];
-                    $resultado['status'] = 'aberta';
-                }
-                
-                return $resultados;
-            }
-        } catch (PDOException $e) {
-            error_log("Erro em buscarProximosVencimentos: " . $e->getMessage());
-            return [];
-        }
+        // As tabelas fatura e pagamento não existem no banco atual
+        // Retornando array vazio para evitar erros
+        return [];
     }
 
-    // Buscar treinos do aluno
+    // Buscar treinos do aluno (tabela treinos não existe)
     public function buscarTreinosDoAluno($idAluno) {
-        try {
-            $sql = "SELECT t.*, 
-                           f.nome_funcionario as instrutor
-                    FROM treinos t
-                    LEFT JOIN funcionario f ON t.id_funcionario = f.id_funcionario
-                    WHERE t.id_cliente = :id_aluno
-                    ORDER BY t.data_inicio DESC
-                    LIMIT 3";
-            
-            $stmt = $this->conn->prepare($sql);
-            $stmt->execute([':id_aluno' => $idAluno]);
-            return $stmt->fetchAll(PDO::FETCH_ASSOC);
-        } catch (PDOException $e) {
-            error_log("Erro em buscarTreinosDoAluno: " . $e->getMessage());
-            return [];
-        }
+        // A tabela treinos não existe no banco atual
+        // Retornando array vazio para evitar erros
+        return [];
     }
 
-    // Buscar exercícios do treino
+    // Buscar exercícios do treino (tabela exercicio não existe)
     public function buscarExerciciosDoTreino($idTreino) {
-        try {
-            $sql = "SELECT * FROM exercicio 
-                    WHERE id_treino = :id_treino
-                    ORDER BY id_exercicio";
-            
-            $stmt = $this->conn->prepare($sql);
-            $stmt->execute([':id_treino' => $idTreino]);
-            return $stmt->fetchAll(PDO::FETCH_ASSOC);
-        } catch (PDOException $e) {
-            error_log("Erro em buscarExerciciosDoTreino: " . $e->getMessage());
-            return [];
-        }
+        // A tabela exercicio não existe no banco atual
+        // Retornando array vazio para evitar erros
+        return [];
     }
 
     // Verificar existência de tabelas (para debug)

@@ -1,5 +1,6 @@
-<?php
-require_once 'modelo/AlunoDAO.php';
+﻿<?php
+require_once 'AlunoDAO.php';
+require_once __DIR__ . '/../config/Connection.php';
 
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
@@ -27,12 +28,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     
     try {
         $conn = Connection::getInstance();
+        // NOTA: coluna data_atualizacao não existe na tabela cliente
         $sql = "UPDATE cliente SET 
                 nome_cliente = :nome,
                 email = :email,
                 telefone = :telefone,
-                endereco = :endereco,
-                data_atualizacao = NOW()
+                endereco = :endereco
                 WHERE id_cliente = :id";
         
         $stmt = $conn->prepare($sql);
@@ -66,7 +67,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Editar Perfil - TECHFIT</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link rel="stylesheet" href="assets/css/https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     <style>
         :root {
             --cor-ciano-principal: #00F0E1;
