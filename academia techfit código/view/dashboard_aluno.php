@@ -65,27 +65,17 @@ try {
     $stmt->execute([$idAluno]);
     $agendamentosAluno = $stmt->fetchAll();
 
-    // Histórico de compras (produtos E planos)
+    // Histórico de compras (produtos)
     $stmt = $conn->prepare("
         SELECT 
             v.id_venda,
-            CASE 
-                WHEN v.id_produtos LIKE 'plano-%' THEN CONCAT('Plano ', UPPER(SUBSTRING(v.id_produtos, 7)))
-                ELSE p.nome_produto
-            END as nome_item,
-            CASE 
-                WHEN v.id_produtos LIKE 'plano-%' THEN 'Plano'
-                ELSE 'Produto'
-            END as tipo_item,
-            CASE 
-                WHEN v.id_produtos LIKE 'plano-%' THEN 'Renovação Mensal'
-                ELSE p.categoria
-            END as categoria,
+            p.nome_produto,
+            p.categoria,
             v.quantidade,
             v.valor_total,
             DATE_FORMAT(v.data_venda, '%d/%m/%Y %H:%i') as data_compra
         FROM venda v
-        LEFT JOIN produtos p ON v.id_produtos = p.id_produtos
+        INNER JOIN produtos p ON v.id_produtos = p.id_produtos
         WHERE v.id_cliente = ?
         ORDER BY v.data_venda DESC
         LIMIT 5
@@ -285,7 +275,7 @@ try {
                 <?php endif; ?>
             </div>
 
-            <!-- Histórico de Compras e Planos -->
+            <!-- Histórico de Compras -->
             <div class="dashboard-card">
                 <div class="card-header">
                     <h2><i class="fas fa-shopping-bag"></i> Histórico de Compras</h2>
@@ -295,12 +285,7 @@ try {
                         <?php foreach ($historicoCompras as $compra): ?>
                             <li>
                                 <div class="item-info">
-                                    <span class="name">
-                                        <?php echo htmlspecialchars($compra['nome_item']); ?>
-                                        <span style="margin-left: 10px; background: <?php echo $compra['tipo_item'] === 'Plano' ? '#00F0E1' : '#888'; ?>; color: #000; padding: 2px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: 700;">
-                                            <?php echo $compra['tipo_item']; ?>
-                                        </span>
-                                    </span>
+                                    <span class="name"><?php echo htmlspecialchars($compra['nome_produto']); ?></span>
                                     <span class="detail">
                                         <?php echo $compra['data_compra']; ?> • 
                                         Qtd: <?php echo $compra['quantidade']; ?>

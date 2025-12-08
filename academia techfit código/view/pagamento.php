@@ -132,7 +132,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $insertId = $conn->lastInsertId();
             error_log("Pedido criado: ID=$insertId, Cliente=$idClienteLogado");
 
-            // NOVO: Registra cada produto/plano na tabela venda para aparecer no dashboard
+            // NOVO: Registra cada produto na tabela venda para aparecer no dashboard
             // Tenta pegar o ID do cliente da sessão ou do POST
             $idCliente = $_SESSION['user_id'] ?? $_SESSION['id_cliente'] ?? null;
             
@@ -143,38 +143,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     
                     $vendasInseridas = 0;
                     foreach ($pedidoData['itens'] as $item) {
-                        $idItem = $item['id'] ?? null;
-                        $tipoItem = $item['tipo'] ?? 'produto'; // 'produto' ou 'plano'
+                        $idProduto = $item['id'] ?? null;
                         $quantidade = $item['quantidade'] ?? 1;
                         $valorTotalItem = $item['preco'] * $quantidade;
                         
-                        // Para planos, usa ID como string (ex: 'plano-sigma', 'plano-alpha', etc)
-                        // Para produtos, valida se é numérico
-                        if ($idItem) {
+                        // Valida se o ID é numérico (produtos do banco)
+                        if ($idProduto && is_numeric($idProduto) && intval($idProduto) > 0) {
                             try {
-                                if ($tipoItem === 'plano') {
-                                    // Planos: armazenam como string no id_produtos
-                                    $stmtVenda->execute([
-                                        $idCliente,
-                                        $idItem,  // Ex: 'plano-sigma', 'plano-alpha', 'plano-beta'
-                                        1, // Planos sempre quantidade 1 (renovação mensal)
-                                        $valorTotalItem
-                                    ]);
-                                    $vendasInseridas++;
-                                    error_log("✓ Plano registrado: Cliente=$idCliente, Plano=$idItem, Valor=$valorTotalItem");
-                                } elseif (is_numeric($idItem) && intval($idItem) > 0) {
-                                    // Produtos: apenas numéricos
-                                    $stmtVenda->execute([
-                                        $idCliente,
-                                        intval($idItem),
-                                        $quantidade,
-                                        $valorTotalItem
-                                    ]);
-                                    $vendasInseridas++;
-                                    error_log("✓ Venda registrada: Cliente=$idCliente, Produto=$idItem, Qtd=$quantidade, Valor=$valorTotalItem");
-                                } else {
-                                    error_log("⚠ ID inválido ignorado: " . ($idItem ?? 'null'));
-                                }
+                                $stmtVenda->execute([
+                                    $idCliente,
+                                    intval($idProduto),
+                                    $quantidade,
+                                    $valorTotalItem
+                                ]);
+                                $vendasInseridas++;
+                                error_log("✓ Venda registrada: Cliente=$idCliente, Produto=$idProduto, Qtd=$quantidade, Valor=$valorTotalItem");
                             } catch (PDOException $e) {
                                 // Log erro mas continua processamento do pedido
                                 error_log("✗ Erro ao inserir venda: " . $e->getMessage());

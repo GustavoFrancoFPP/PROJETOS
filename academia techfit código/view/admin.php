@@ -35,18 +35,19 @@ if (isset($_POST['action'])) {
             case 'cadastrar_aluno':
                 $conn->beginTransaction();
                 
-                $stmt = $conn->prepare("INSERT INTO cliente (nome_cliente, email, cpf, telefone, plano, data_cadastro) VALUES (?, ?, ?, ?, ?, NOW())");
+                $stmt = $conn->prepare("INSERT INTO cliente (nome_cliente, email, cpf, telefone, endereco, genero, status) VALUES (?, ?, ?, ?, ?, ?, 'ativo')");
                 $stmt->execute([
                     $_POST['nome'],
                     $_POST['email'],
                     $_POST['cpf'],
                     $_POST['telefone'],
-                    $_POST['plano']
+                    $_POST['endereco'] ?? '',
+                    $_POST['genero'] ?? 'Outro'
                 ]);
                 $id_cliente = $conn->lastInsertId();
                 
                 $senha_hash = password_hash($_POST['senha'], PASSWORD_DEFAULT);
-                $stmt = $conn->prepare("INSERT INTO login (id_cliente, email, senha, tipo_usuario) VALUES (?, ?, ?, 'cliente')");
+                $stmt = $conn->prepare("INSERT INTO login (id_cliente, nome_usuario, senha_usuario, tipo_usuario) VALUES (?, ?, ?, 'cliente')");
                 $stmt->execute([$id_cliente, $_POST['email'], $senha_hash]);
                 
                 $conn->commit();
@@ -54,16 +55,17 @@ if (isset($_POST['action'])) {
                 break;
                 
             case 'editar_aluno':
-                $stmt = $conn->prepare("UPDATE cliente SET nome_cliente = ?, email = ?, telefone = ?, plano = ? WHERE id_cliente = ?");
+                $stmt = $conn->prepare("UPDATE cliente SET nome_cliente = ?, email = ?, telefone = ?, endereco = ?, genero = ? WHERE id_cliente = ?");
                 $stmt->execute([
                     $_POST['nome'],
                     $_POST['email'],
                     $_POST['telefone'],
-                    $_POST['plano'],
+                    $_POST['endereco'] ?? '',
+                    $_POST['genero'] ?? 'Outro',
                     $_POST['id_cliente']
                 ]);
                 
-                $stmt = $conn->prepare("UPDATE login SET email = ? WHERE id_cliente = ?");
+                $stmt = $conn->prepare("UPDATE login SET nome_usuario = ? WHERE id_cliente = ?");
                 $stmt->execute([$_POST['email'], $_POST['id_cliente']]);
                 
                 $mensagem = "Aluno atualizado com sucesso!";
@@ -76,9 +78,7 @@ if (isset($_POST['action'])) {
                 $conn->exec("DELETE FROM agendamento WHERE id_cliente = $id");
                 $conn->exec("DELETE FROM venda WHERE id_cliente = $id");
                 $conn->exec("DELETE FROM pagamento WHERE id_cliente = $id");
-                $conn->exec("DELETE FROM planos WHERE id_cliente = $id");
                 $conn->exec("DELETE FROM notificacao WHERE id_cliente = $id");
-                $conn->exec("DELETE FROM presenca WHERE id_cliente = $id");
                 $conn->exec("DELETE FROM login WHERE id_cliente = $id");
                 $conn->exec("DELETE FROM cliente WHERE id_cliente = $id");
                 
@@ -88,7 +88,7 @@ if (isset($_POST['action'])) {
                 
             // ============ CRUD AULAS ============
             case 'cadastrar_aula':
-                $stmt = $conn->prepare("INSERT INTO aulas (nome_aula, dia_semana, horario, instrutor, vagas_totais, descricao, status) VALUES (?, ?, ?, ?, ?, ?, 'ativa')");
+                $stmt = $conn->prepare("INSERT INTO aulas (nome_aula, dia_semana, horario, professor, vagas_totais, descricao, status) VALUES (?, ?, ?, ?, ?, ?, 'ativa')");
                 $stmt->execute([
                     $_POST['nome_aula'],
                     $_POST['dia_semana'],
@@ -101,7 +101,7 @@ if (isset($_POST['action'])) {
                 break;
                 
             case 'editar_aula':
-                $stmt = $conn->prepare("UPDATE aulas SET nome_aula = ?, dia_semana = ?, horario = ?, instrutor = ?, vagas_totais = ?, descricao = ? WHERE id_aula = ?");
+                $stmt = $conn->prepare("UPDATE aulas SET nome_aula = ?, dia_semana = ?, horario = ?, professor = ?, vagas_totais = ?, descricao = ? WHERE id_aula = ?");
                 $stmt->execute([
                     $_POST['nome_aula'],
                     $_POST['dia_semana'],
@@ -122,7 +122,7 @@ if (isset($_POST['action'])) {
                 
             // ============ CRUD PRODUTOS ============
             case 'cadastrar_produto':
-                $stmt = $conn->prepare("INSERT INTO produtos (nome_produto, tipo_produto, categoria, preco, quantidade, url_imagem, descricao) VALUES (?, ?, ?, ?, ?, ?, ?)");
+                $stmt = $conn->prepare("INSERT INTO produtos (nome_produto, tipo_produto, categoria, preco, quantidade_estoque, url_imagem, descricao, status) VALUES (?, ?, ?, ?, ?, ?, ?, 'ativo')");
                 $stmt->execute([
                     $_POST['nome_produto'],
                     $_POST['tipo_produto'],
@@ -136,7 +136,7 @@ if (isset($_POST['action'])) {
                 break;
                 
             case 'editar_produto':
-                $stmt = $conn->prepare("UPDATE produtos SET nome_produto = ?, tipo_produto = ?, categoria = ?, preco = ?, quantidade = ?, url_imagem = ?, descricao = ? WHERE id_produtos = ?");
+                $stmt = $conn->prepare("UPDATE produtos SET nome_produto = ?, tipo_produto = ?, categoria = ?, preco = ?, quantidade_estoque = ?, url_imagem = ?, descricao = ? WHERE id_produtos = ?");
                 $stmt->execute([
                     $_POST['nome_produto'],
                     $_POST['tipo_produto'],
@@ -160,15 +160,17 @@ if (isset($_POST['action'])) {
             case 'cadastrar_funcionario':
                 $conn->beginTransaction();
                 
-                $stmt = $conn->prepare("INSERT INTO funcionario (nome_funcionario, cpf) VALUES (?, ?)");
+                $stmt = $conn->prepare("INSERT INTO funcionario (nome_funcionario, email, cpf, cargo, status) VALUES (?, ?, ?, ?, 'ativo')");
                 $stmt->execute([
                     $_POST['nome_funcionario'],
-                    $_POST['cpf']
+                    $_POST['email'],
+                    $_POST['cpf'],
+                    $_POST['cargo'] ?? 'personal_trainer'
                 ]);
                 $id_funcionario = $conn->lastInsertId();
                 
                 $senha_hash = password_hash($_POST['senha'], PASSWORD_DEFAULT);
-                $stmt = $conn->prepare("INSERT INTO login (id_funcionario, email, senha, tipo_usuario) VALUES (?, ?, ?, 'funcionario')");
+                $stmt = $conn->prepare("INSERT INTO login (id_funcionario, nome_usuario, senha_usuario, tipo_usuario) VALUES (?, ?, ?, 'funcionario')");
                 $stmt->execute([$id_funcionario, $_POST['email'], $senha_hash]);
                 
                 $conn->commit();
@@ -329,11 +331,15 @@ $notificacoes = $conn->query("SELECT * FROM notificacao ORDER BY data_envio DESC
                                 <input type="text" name="telefone" class="form-control">
                             </div>
                             <div class="form-group">
-                                <label class="form-label">Plano</label>
-                                <select name="plano" class="form-select">
-                                    <option value="Plano Mensal">Plano Mensal</option>
-                                    <option value="Plano Trimestral">Plano Trimestral</option>
-                                    <option value="Plano Semestral">Plano Semestral</option>
+                                <label class="form-label">Endereço</label>
+                                <input type="text" name="endereco" class="form-control">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Gênero</label>
+                                <select name="genero" class="form-select">
+                                    <option value="Masculino">Masculino</option>
+                                    <option value="Feminino">Feminino</option>
+                                    <option value="Outro">Outro</option>
                                 </select>
                             </div>
                             <div class="form-group">
@@ -358,7 +364,6 @@ $notificacoes = $conn->query("SELECT * FROM notificacao ORDER BY data_envio DESC
                                         <th>Nome</th>
                                         <th>Email</th>
                                         <th>Telefone</th>
-                                        <th>Plano</th>
                                         <th>Status</th>
                                         <th>Agendamentos</th>
                                         <th>Ações</th>
@@ -371,7 +376,6 @@ $notificacoes = $conn->query("SELECT * FROM notificacao ORDER BY data_envio DESC
                                             <td><?php echo htmlspecialchars($aluno['nome_cliente']); ?></td>
                                             <td><?php echo htmlspecialchars($aluno['email']); ?></td>
                                             <td><?php echo htmlspecialchars($aluno['telefone'] ?? '-'); ?></td>
-                                            <td><span class="badge badge-success"><?php echo strtoupper($aluno['plano'] ?? 'BÁSICO'); ?></span></td>
                                             <td>
                                                 <span class="badge badge-<?php echo $aluno['status'] === 'ativo' ? 'success' : 'danger'; ?>">
                                                     <?php echo strtoupper($aluno['status']); ?>
@@ -474,7 +478,7 @@ $notificacoes = $conn->query("SELECT * FROM notificacao ORDER BY data_envio DESC
                                             <td><?php echo htmlspecialchars($aula['nome_aula']); ?></td>
                                             <td><?php echo $aula['dia_semana']; ?></td>
                                             <td><?php echo date('H:i', strtotime($aula['horario'])); ?></td>
-                                            <td><?php echo htmlspecialchars($aula['instrutor'] ?? ''); ?></td>
+                                            <td><?php echo htmlspecialchars($aula['professor'] ?? ''); ?></td>
                                             <td><?php echo ($aula['vagas_totais'] - $aula['vagas_ocupadas']); ?> / <?php echo $aula['vagas_totais']; ?></td>
                                             <td>
                                                 <?php 
@@ -580,7 +584,7 @@ $notificacoes = $conn->query("SELECT * FROM notificacao ORDER BY data_envio DESC
                                             <td>R$ <?php echo number_format($produto['preco'], 2, ',', '.'); ?></td>
                                             <td>
                                                 <?php 
-                                                    $estoque = $produto['quantidade'] ?? 0;
+                                                    $estoque = $produto['quantidade_estoque'] ?? 0;
                                                     $badgeClass = $estoque < 10 ? 'danger' : ($estoque < 30 ? 'warning' : 'success');
                                                 ?>
                                                 <span class="badge badge-<?php echo $badgeClass; ?>">
@@ -795,7 +799,8 @@ $notificacoes = $conn->query("SELECT * FROM notificacao ORDER BY data_envio DESC
             const nome = prompt('Nome:', aluno.nome_cliente);
             const email = prompt('Email:', aluno.email);
             const telefone = prompt('Telefone:', aluno.telefone);
-            const plano = prompt('Plano (Plano Mensal/Plano Trimestral/Plano Semestral):', aluno.plano);
+            const endereco = prompt('Endereço:', aluno.endereco || '');
+            const genero = prompt('Gênero (Masculino/Feminino/Outro):', aluno.genero || 'Outro');
             
             if (nome && email) {
                 const form = document.createElement('form');
@@ -806,7 +811,8 @@ $notificacoes = $conn->query("SELECT * FROM notificacao ORDER BY data_envio DESC
                     <input type="hidden" name="nome" value="${nome}">
                     <input type="hidden" name="email" value="${email}">
                     <input type="hidden" name="telefone" value="${telefone}">
-                    <input type="hidden" name="plano" value="${plano}">
+                    <input type="hidden" name="endereco" value="${endereco}">
+                    <input type="hidden" name="genero" value="${genero}">
                 `;
                 document.body.appendChild(form);
                 form.submit();
