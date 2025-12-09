@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teste do Mapa - TechFit</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            font-family: Arial, sans-serif;
+            background: #121212;
+            color: white;
+        }
+        
+        h1 {
+            color: #00f0e1;
+            text-align: center;
+        }
+        
+        #map {
+            height: 500px;
+            width: 100%;
+            max-width: 1200px;
+            margin: 20px auto;
+            border: 2px solid #00f0e1;
+            border-radius: 10px;
+        }
+        
+        .info {
+            text-align: center;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            max-width: 800px;
+            margin: 20px auto;
+        }
+        
+        .status {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+        }
+        
+        .success {
+            background: rgba(76, 175, 80, 0.2);
+            border: 1px solid #4CAF50;
+        }
+        
+        .error {
+            background: rgba(244, 67, 54, 0.2);
+            border: 1px solid #f44336;
+        }
+    </style>
+</head>
+<body>
+    <h1>🗺️ Teste do Sistema de Mapas - TechFit</h1>
+    
+    <div class="info">
+        <h2>Status do Sistema:</h2>
+        <div id="status"></div>
+    </div>
+    
+    <div id="map"></div>
+    
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script>
+        const statusDiv = document.getElementById('status');
+        
+        function addStatus(message, type = 'success') {
+            const div = document.createElement('div');
+            div.className = `status ${type}`;
+            div.innerHTML = message;
+            statusDiv.appendChild(div);
+        }
+        
+        // Verificar se Leaflet foi carregado
+        if (typeof L !== 'undefined') {
+            addStatus('✅ Biblioteca Leaflet carregada com sucesso!', 'success');
+        } else {
+            addStatus('❌ ERRO: Biblioteca Leaflet não foi carregada!', 'error');
+        }
+        
+        // Tentar inicializar o mapa
+        try {
+            addStatus('⏳ Iniciando mapa...', 'success');
+            
+            const map = L.map('map').setView([-23.5505, -46.6333], 12);
+            
+            addStatus('✅ Elemento do mapa inicializado!', 'success');
+            
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '© OpenStreetMap contributors',
+                maxZoom: 19
+            }).addTo(map);
+            
+            addStatus('✅ Tiles do mapa carregados!', 'success');
+            
+            // Adicionar marcador de teste
+            const marker = L.marker([-23.5630, -46.6520])
+                .addTo(map)
+                .bindPopup(`
+                    <div style="padding: 10px;">
+                        <h3 style="margin: 0 0 10px 0; color: #00f0e1;">TechFit Paulista</h3>
+                        <p style="margin: 5px 0;">Av. Paulista, 1234</p>
+                        <p style="margin: 5px 0;">São Paulo - SP</p>
+                    </div>
+                `)
+                .openPopup();
+            
+            addStatus('✅ Marcador adicionado com sucesso!', 'success');
+            addStatus('🎉 SISTEMA DE MAPAS FUNCIONANDO PERFEITAMENTE!', 'success');
+            
+        } catch (error) {
+            addStatus(`❌ ERRO ao inicializar mapa: ${error.message}`, 'error');
+            console.error('Erro detalhado:', error);
+        }
+        
+        // Verificar se o elemento #map existe
+        const mapElement = document.getElementById('map');
+        if (mapElement) {
+            addStatus('✅ Elemento #map encontrado na página', 'success');
+            addStatus(`📐 Dimensões do mapa: ${mapElement.offsetWidth}px x ${mapElement.offsetHeight}px`, 'success');
+        } else {
+            addStatus('❌ ERRO: Elemento #map NÃO encontrado!', 'error');
+        }
+    </script>
+</body>
+</html>

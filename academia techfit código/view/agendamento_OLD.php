@@ -75,7 +75,7 @@ $grade_aulas = [
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TECHFIT - Agendamento</title>
     <link rel="stylesheet" href="assets/css/agendamento.css">
-    <link rel="stylesheet" href="assets/css/https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     
     <style>
         .week-days { display: flex; justify-content: space-between; padding: 15px 0; border-bottom: 1px solid rgba(255,255,255,0.1); margin-bottom: 20px; }
