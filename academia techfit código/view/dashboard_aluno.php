@@ -38,12 +38,22 @@ try {
         $nomeAluno = $infoAluno['nome_cliente'];
     }
 
-    // Planos do aluno
+    // Planos ativos do aluno (corrigido para buscar pela tabela pagamento)
     $stmt = $conn->prepare("
-        SELECT p.*, DATE_FORMAT(pg.data_pagamento, '%d/%m/%Y') as data_contratacao
-        FROM planos p
-        LEFT JOIN pagamento pg ON p.id_planos = pg.id_planos
-        WHERE p.id_cliente = ?
+        SELECT 
+            pg.id_pagamento,
+            p.nome_planos,
+            p.descricao,
+            p.valor,
+            pg.valor_pago,
+            pg.status_pagamento,
+            DATE_FORMAT(pg.data_pagamento, '%d/%m/%Y') as data_contratacao,
+            DATE_ADD(pg.data_pagamento, INTERVAL 1 MONTH) as data_vencimento,
+            DATEDIFF(DATE_ADD(pg.data_pagamento, INTERVAL 1 MONTH), NOW()) as dias_restantes
+        FROM pagamento pg
+        INNER JOIN planos p ON pg.id_planos = p.id_planos
+        WHERE pg.id_cliente = ? 
+        AND pg.status_pagamento = 'pago'
         ORDER BY pg.data_pagamento DESC
     ");
     $stmt->execute([$idAluno]);
@@ -147,7 +157,11 @@ try {
         .empty-state p { margin: 0; }
         .btn-action { display: inline-block; background: #00F0E1; color: #0a0e27; padding: 12px 25px; border-radius: 10px; text-decoration: none; font-weight: 600; margin-top: 15px; transition: all 0.3s; }
         .btn-action:hover { background: #00A8CC; transform: translateY(-2px); }
+        .btn-cancelar-plano { background: #ff4444; color: #fff; border: none; padding: 8px 15px; border-radius: 8px; font-size: 0.85rem; cursor: pointer; transition: all 0.3s; display: flex; align-items: center; gap: 5px; }
+        .btn-cancelar-plano:hover { background: #cc0000; transform: translateY(-2px); }
+        .btn-cancelar-plano i { font-size: 0.9rem; }
     </style>
+    <link rel="icon" type="image/x-icon" href="assets/images/imagens/favicon.ico">
 </head>
 <body>
     <!-- Header -->
@@ -233,7 +247,12 @@ try {
                                         <span class="detail">Desde: <?php echo $plano['data_contratacao']; ?></span>
                                     <?php endif; ?>
                                 </div>
-                                <span class="item-value">R$ <?php echo number_format($plano['valor'], 2, ',', '.'); ?></span>
+                                <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 10px;">
+                                    <span class="item-value">R$ <?php echo number_format($plano['valor'], 2, ',', '.'); ?></span>
+                                    <button class="btn-cancelar-plano" data-id="<?php echo $plano['id_pagamento']; ?>">
+                                        <i class="fas fa-times-circle"></i> Cancelar
+                                    </button>
+                                </div>
                             </li>
                         <?php endforeach; ?>
                     </ul>
@@ -241,7 +260,7 @@ try {
                     <div class="empty-state">
                         <i class="fas fa-info-circle"></i>
                         <p>Você ainda não possui planos ativos</p>
-                        <a href="plano.php" class="btn-action">Contratar Plano</a>
+                        <a href="planos.php" class="btn-action">Contratar Plano</a>
                     </div>
                 <?php endif; ?>
             </div>
@@ -329,5 +348,41 @@ try {
     </main>
     
     <script src="assets/js/inicio.js"></script>
+    <script>
+        // Função para cancelar plano
+        document.querySelectorAll('.btn-cancelar-plano').forEach(btn => {
+            btn.addEventListener('click', async function() {
+                const idPagamento = this.getAttribute('data-id');
+                
+                if (!confirm('Tem certeza que deseja cancelar este plano? Esta ação não pode ser desfeita.')) {
+                    return;
+                }
+                
+                try {
+                    const response = await fetch('cancelar_plano.php', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            id_pagamento: idPagamento
+                        })
+                    });
+                    
+                    const resultado = await response.json();
+                    
+                    if (resultado.sucesso) {
+                        alert(resultado.mensagem);
+                        location.reload(); // Recarrega a página para atualizar a lista
+                    } else {
+                        alert('Erro: ' + resultado.mensagem);
+                    }
+                } catch (erro) {
+                    console.error('Erro ao cancelar plano:', erro);
+                    alert('Erro ao processar solicitação. Tente novamente.');
+                }
+            });
+        });
+    </script>
 </body>
 </html>

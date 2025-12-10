@@ -278,67 +278,43 @@ class Pagamento {
         btn.disabled = true;
         btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processando...';
 
-        // Simular pequeno atraso
-        await new Promise(resolve => setTimeout(resolve, 800));
+        try {
+            // Envia dados para o servidor via AJAX
+            const response = await fetch('processar_pagamento.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    metodoPagamento: metodoPagamento,
+                    dadosCompra: this.dadosCompra,
+                    dadosCliente: this.obterDadosCliente()
+                })
+            });
 
-        // Monta o objeto de pedido a ser enviado ao servidor
-        const pedido = {
-            itens: this.dadosCompra.itens || [],
-            subtotal: this.dadosCompra.subtotal || 0,
-            frete: this.dadosCompra.frete || 0,
-            desconto: this.dadosCompra.desconto || 0,
-            total: this.dadosCompra.total || 0,
-            numeroPedido: this.gerarNumeroPedido(),
-            dadosCliente: this.obterDadosCliente(),
-        };
+            const result = await response.json();
 
-        // Cria um form oculto para enviar via POST (compatível com PHP)
-        const form = document.createElement('form');
-        form.method = 'POST';
-        form.action = 'pagamento.php';
-
-        function addField(name, value) {
-            const input = document.createElement('input');
-            input.type = 'hidden';
-            input.name = name;
-            input.value = typeof value === 'string' ? value : JSON.stringify(value);
-            form.appendChild(input);
+            if (result.sucesso) {
+                // Limpa localStorage
+                localStorage.removeItem('dadosCompraTechFit');
+                localStorage.removeItem('carrinhoTechFit');
+                
+                // Mostra sucesso e redireciona
+                this.mostrarSucesso('Pagamento processado com sucesso!');
+                
+                setTimeout(() => {
+                    window.location.href = 'confirmacao.php?success=1&total=' + result.total;
+                }, 1500);
+            } else {
+                throw new Error(result.mensagem || 'Erro ao processar pagamento');
+            }
+        } catch (error) {
+            console.error('Erro ao processar pagamento:', error);
+            this.mostrarErro(error.message || 'Erro ao processar pagamento. Tente novamente.');
+            
+            btn.disabled = false;
+            btn.innerHTML = 'Confirmar Pagamento';
         }
-
-        // Dados do cliente simples
-        const cliente = pedido.dadosCliente;
-        addField('nome', cliente.nome || '');
-        addField('email', cliente.email || '');
-        addField('cpf', cliente.cpf || '');
-        addField('telefone', cliente.telefone || '');
-
-        // Endereço
-        addField('cep', cliente.endereco?.cep || '');
-        addField('endereco', cliente.endereco?.logradouro || '');
-        addField('numero', cliente.endereco?.numero || '');
-        addField('complemento', cliente.endereco?.complemento || '');
-        addField('bairro', cliente.endereco?.bairro || '');
-        addField('cidade', cliente.endereco?.cidade || '');
-        addField('estado', cliente.endereco?.estado || '');
-
-        // Método de pagamento
-        addField('metodo-pagamento', metodoPagamento);
-
-        // Totais e itens
-        addField('pedido_json', JSON.stringify(pedido));
-
-        // Se existem dados de cartão visíveis, envie parcialmente (apenas últimos 4 dígitos)
-        const numeroCartao = document.getElementById('numero-cartao')?.value || '';
-        const nomeCartao = document.getElementById('nome-cartao')?.value || '';
-        const validade = document.getElementById('validade')?.value || '';
-        addField('numero-cartao', numeroCartao);
-        addField('nome-cartao', nomeCartao);
-        addField('validade', validade);
-
-        document.body.appendChild(form);
-
-        // Submete o form para o servidor (o servidor gravará no DB e redirecionará)
-        form.submit();
     }
 
     obterDadosCliente() {

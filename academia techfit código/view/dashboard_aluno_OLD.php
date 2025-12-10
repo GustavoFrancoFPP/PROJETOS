@@ -55,6 +55,7 @@ $agendamentosAluno = $alunoDAO->buscarAgendamentosDoAluno($idAluno);
         .btn-primary { background: #00F0E1; color: #000; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; font-weight: bold; width: 100%; margin-top: 10px; }
         .empty-state { text-align: center; color: #888; padding: 20px; }
     </style>
+    <link rel="icon" type="image/x-icon" href="assets/images/imagens/favicon.ico">
 </head>
 <body>
 

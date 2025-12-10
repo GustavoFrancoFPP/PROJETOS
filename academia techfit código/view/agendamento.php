@@ -81,6 +81,7 @@ for ($i = 0; $i < 30; $i++) {
         .selected-label.feedback { display: flex; align-items: center; gap: 6px; margin-top: 8px; }
         .selected-label.feedback.error { color: #ff7b7b; }
     </style>
+    <link rel="icon" type="image/x-icon" href="assets/images/imagens/favicon.ico">
 </head>
 <body>
 

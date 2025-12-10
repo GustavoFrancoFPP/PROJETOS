@@ -199,6 +199,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             color: var(--cor-texto-secundario);
         }
     </style>
+    <link rel="icon" type="image/x-icon" href="assets/images/imagens/favicon.ico">
 </head>
 <body>
     <div class="container">

@@ -84,6 +84,7 @@ $grade_aulas = [
         form { display: inline; }
         .full-btn { background-color: #555; color: #ccc; border: none; padding: 10px 20px; border-radius: 5px; cursor: not-allowed; font-weight: bold; }
     </style>
+    <link rel="icon" type="image/x-icon" href="assets/images/imagens/favicon.ico">
 </head>
 <body>
 

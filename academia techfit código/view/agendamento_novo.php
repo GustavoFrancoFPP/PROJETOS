@@ -237,6 +237,7 @@ for ($i = 1; $i <= 30; $i++) {
             background: rgba(0, 240, 225, 0.2);
         }
     </style>
+    <link rel="icon" type="image/x-icon" href="assets/images/imagens/favicon.ico">
 </head>
 <body>
     <div class="container">

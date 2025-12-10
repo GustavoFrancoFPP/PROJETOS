@@ -2,7 +2,7 @@
 session_start();
 require_once __DIR__ . '/../config/Connection.php';
 
-// Dados dos planos
+// Dados dos planos (exatamente como na imagem)
 $planos = [
     [
         'id' => 'plano-sigma',
@@ -22,13 +22,13 @@ $planos = [
         'id' => 'plano-alpha',
         'nome' => 'Plano Alpha',
         'preco' => 139.90,
-        'descricao' => 'Ideal para todos da casa, acesso completo a academia para múltiplos membros com benefícios especiais para cada família.',
+        'descricao' => 'Ideal para todos da casa, acesso completo à academia para múltiplos membros com benefícios especiais para cada família.',
         'beneficios' => [
             'Acesso a todas as academias TechFit',
             'Todos os tipos de aulas disponíveis',
             'Suplementos disponíveis',
             'Avaliação física disponível',
-            'Acompanhamento Nutricional'
+            'Acompanhamento Nutricional (não incluído)'
         ],
         'destaque' => true
     ],
@@ -36,7 +36,7 @@ $planos = [
         'id' => 'plano-beta',
         'nome' => 'Plano Beta',
         'preco' => 89.90,
-        'descricao' => 'Essencial para quem quer manter a forma, com acesso dos equipamentos e treinos básicos sem complicação.',
+        'descricao' => 'Essencial para quem quer manter a forma, com acesso aos equipamentos e treinos básicos sem complicação.',
         'beneficios' => [
             'Acesso a todas as academias TechFit',
             'Todos os tipos de aulas disponíveis',
@@ -249,6 +249,7 @@ $user_logado = isset($_SESSION['user_id']);
             }
         }
     </style>
+    <link rel="icon" type="image/x-icon" href="assets/images/imagens/favicon.ico">
 </head>
 <body>
 
@@ -305,7 +306,7 @@ $user_logado = isset($_SESSION['user_id']);
                             <div class="plano-preco">R$<?php echo number_format($plano['preco'], 2, ',', '.'); ?></div>
                             <p class="plano-periodo">por mês</p>
 
-                            <button class="btn-contratar" onclick="adicionarAoCarrinho('<?php echo $plano['id']; ?>', '<?php echo htmlspecialchars($plano['nome']); ?>', <?php echo $plano['preco']; ?>)">
+                            <button class="btn-contratar" onclick="adicionarAoCarrinho('<?php echo $plano['id']; ?>', '<?php echo htmlspecialchars($plano['nome']); ?>', <?php echo $plano['preco']; ?>, '<?php echo htmlspecialchars($plano['descricao']); ?>')">
                                 SAIBA MAIS!
                             </button>
 
@@ -351,31 +352,42 @@ $user_logado = isset($_SESSION['user_id']);
     </footer>
 
     <script>
-        function adicionarAoCarrinho(planoId, planoNome, planoPreco) {
-            // Recupera carrinho atual
-            let carrinho = JSON.parse(localStorage.getItem('carrinho') || '{"itens": [], "subtotal": 0}');
+        /**
+         * Adiciona plano ao carrinho usando AJAX e redireciona imediatamente
+         */
+        async function adicionarAoCarrinho(planoId, planoNome, planoPreco, planoDescricao) {
+            try {
+                // Prepara dados do plano
+                const planoData = {
+                    action: 'adicionar_plano',
+                    id: planoId,
+                    nome: planoNome,
+                    preco: parseFloat(planoPreco),
+                    descricao: planoDescricao || ''
+                };
 
-            // Adiciona o plano como item
-            const item = {
-                id: planoId,
-                tipo: 'plano',
-                nome: planoNome,
-                preco: planoPreco,
-                quantidade: 1,
-                subtotal: planoPreco
-            };
+                // Envia requisição AJAX para o controller
+                const response = await fetch('CarrinhoController.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(planoData)
+                });
 
-            carrinho.itens.push(item);
-            carrinho.subtotal += planoPreco;
+                const result = await response.json();
 
-            // Salva carrinho
-            localStorage.setItem('carrinho', JSON.stringify(carrinho));
-
-            // Feedback ao usuário
-            alert(`${planoNome} adicionado ao carrinho!`);
-
-            // Redireciona para carrinho
-            window.location.href = 'carrinho.html';
+                if (result.sucesso) {
+                    // Redireciona diretamente para o carrinho
+                    window.location.href = 'carrinho.php';
+                } else {
+                    // Mostra mensagem de erro
+                    alert(result.mensagem || 'Erro ao adicionar plano ao carrinho');
+                }
+            } catch (error) {
+                console.error('Erro na requisição:', error);
+                alert('Erro ao adicionar plano ao carrinho. Tente novamente.');
+            }
         }
     </script>
 </body>

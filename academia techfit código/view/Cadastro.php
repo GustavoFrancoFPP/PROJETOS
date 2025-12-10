@@ -45,7 +45,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['acao']) && $_POST['ac
     <meta charset="UTF-8">
     <title>TECHFIT - Cadastro</title>
     <link rel="stylesheet" href="assets/css/login.css">
-    </head>
+        <link rel="icon" type="image/x-icon" href="assets/images/imagens/favicon.ico">
+</head>
 <body>
     <header class="techfit-header">...</header>
     <main>

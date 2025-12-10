@@ -66,19 +66,29 @@ if ($pedido_id) {
                     </div>
                 </div>
 
-                <?php if (!empty($itensPedido)): ?>
+                <?php if (!empty($order['itens']) || !empty($itensPedido)): ?>
                 <div class="resumo-card">
                     <h3><i class="fas fa-shopping-bag"></i> Itens do Pedido</h3>
                     <div class="itens-pedido">
-                        <?php foreach ($itensPedido as $item): ?>
+                        <?php 
+                        $itensExibir = !empty($order['itens']) ? $order['itens'] : $itensPedido;
+                        $totalExibir = !empty($order['total']) ? $order['total'] : $totalPedido;
+                        
+                        foreach ($itensExibir as $item): 
+                            $tipoItem = $item['tipo'] ?? 'produto';
+                            $icone = $tipoItem === 'plano' ? 'fa-crown' : 'fa-box';
+                        ?>
                             <div class="item-pedido">
-                                <span class="item-nome"><?php echo htmlspecialchars($item['nome'] ?? 'Produto'); ?></span>
+                                <span class="item-nome">
+                                    <i class="fas <?php echo $icone; ?>"></i>
+                                    <?php echo htmlspecialchars($item['nome'] ?? 'Produto'); ?>
+                                </span>
                                 <span class="item-qtd">Qtd: <?php echo intval($item['quantidade'] ?? 1); ?></span>
                                 <span class="item-preco">R$ <?php echo number_format($item['preco'] ?? 0, 2, ',', '.'); ?></span>
                             </div>
                         <?php endforeach; ?>
                         <div class="total-pedido">
-                            <strong>Total: R$ <?php echo number_format($totalPedido, 2, ',', '.'); ?></strong>
+                            <strong>Total: R$ <?php echo number_format($totalExibir, 2, ',', '.'); ?></strong>
                         </div>
                     </div>
                 </div>

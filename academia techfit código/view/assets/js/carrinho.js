@@ -3,7 +3,11 @@ class Carrinho {
     constructor() {
         this.itens = JSON.parse(localStorage.getItem('carrinhoTechFit')) || [];
         this.cupomAplicado = null;
-        this.init();
+        
+        // Não inicializar automaticamente se estiver em modo PHP
+        if (!window.CARRINHO_PHP_MODE) {
+            this.init();
+        }
     }
 
     init() {
@@ -80,12 +84,24 @@ class Carrinho {
         const listaItens = document.getElementById('listaItens');
         const carrinhoVazio = document.getElementById('carrinhoVazio');
 
-        if (this.itens.length === 0) {
-            if (listaItens) listaItens.style.display = 'none';
-            if (carrinhoVazio) carrinhoVazio.style.display = 'block';
+        // Se estiver em modo PHP (com planos na sessão), não modificar visibilidade
+        if (window.CARRINHO_PHP_MODE) {
+            // Apenas renderiza produtos do localStorage, não mexe no carrinhoVazio
+            if (this.itens.length > 0 && listaItens) {
+                listaItens.style.display = 'block';
+            }
         } else {
-            if (listaItens) listaItens.style.display = 'block';
-            if (carrinhoVazio) carrinhoVazio.style.display = 'none';
+            // Modo normal (apenas localStorage)
+            if (this.itens.length === 0) {
+                if (listaItens) listaItens.style.display = 'none';
+                if (carrinhoVazio) carrinhoVazio.style.display = 'block';
+            } else {
+                if (listaItens) listaItens.style.display = 'block';
+                if (carrinhoVazio) carrinhoVazio.style.display = 'none';
+            }
+        }
+        
+        if (this.itens.length > 0) {
             
             if (listaItens) {
                 listaItens.innerHTML = this.itens.map(item => `
@@ -520,8 +536,18 @@ class Carrinho {
     }
 }
 
-// Inicializar carrinho
-const carrinho = new Carrinho();
+// Inicializar carrinho (apenas se não estiver em modo PHP)
+let carrinho;
+if (window.CARRINHO_PHP_MODE) {
+    // Em modo PHP, apenas cria instância sem inicializar (para uso de métodos)
+    carrinho = new Carrinho();
+    carrinho.configurarHeader();
+    carrinho.configurarEventos();
+    console.log('🛒 Carrinho em modo PHP - não renderizando automaticamente');
+} else {
+    // Modo normal - inicializa completo
+    carrinho = new Carrinho();
+}
 
 // Adicionar CSS para animações
 const style = document.createElement('style');

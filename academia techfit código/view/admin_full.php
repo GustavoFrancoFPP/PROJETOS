@@ -326,6 +326,7 @@ $notificacoes = $conn->query("SELECT * FROM notificacao WHERE tipo = 'geral' ORD
             .tabs { flex-direction: column; }
         }
     </style>
+    <link rel="icon" type="image/x-icon" href="assets/images/imagens/favicon.ico">
 </head>
 <body>
     <!-- Header -->
