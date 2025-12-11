@@ -81,7 +81,7 @@ function addUnitMarkers() {
                     <h3 class="map-popup-title">${unidade.title}</h3>
                     <p class="map-popup-address">${unidade.info}</p>
                     <div style="display: flex; gap: 10px;">
-                        <a href="agendamento2.html" class="map-popup-btn">Agendar Aula</a>
+                        <a href="agendamento.php" class="map-popup-btn">Agendar Aula</a>
                         <a href="detalhes-unidade.html?unidade=${unidade.unidadeId}" class="map-popup-btn" style="background: #666;">Detalhes</a>
                     </div>
                 </div>

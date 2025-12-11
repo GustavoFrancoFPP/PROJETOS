@@ -29,7 +29,7 @@ if (session_status() == PHP_SESSION_NONE) {
                     <li><a href="inicio.html" class="nav-link">Início</a></li>
                     <li><a href="pagina_1.html" class="nav-link">Academias</a></li>
                     <li><a href="produtos.php" class="nav-link">Produtos</a></li>
-                    <li><a href="agendamento2.html" class="nav-link">Agendamento</a></li>
+                    <li><a href="agendamento.php" class="nav-link">Agendamento</a></li>
                     <li><a href="suporte.html" class="nav-link">Suporte</a></li>
                 </ul>
 
