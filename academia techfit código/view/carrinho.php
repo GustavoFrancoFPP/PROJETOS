@@ -214,8 +214,8 @@ error_log("📦 Carrinho.php - Subtotal: " . $planosCarrinho['subtotal']);
                             <button id="aplicarCupom">Aplicar</button>
                         </div>
 
-                        <button class="btn-finalizar" id="btnFinalizar" <?php echo count($planosCarrinho['itens']) == 0 ? 'disabled style="opacity: 0.5; cursor: not-allowed;"' : ''; ?>>
-                            <?php echo count($planosCarrinho['itens']) > 0 ? 'Finalizar Compra' : 'Carrinho Vazio'; ?>
+                        <button class="btn-finalizar" id="btnFinalizar">
+                            Finalizar Compra
                         </button>
 
                         <div class="opcoes-pagamento">
@@ -307,49 +307,76 @@ error_log("📦 Carrinho.php - Subtotal: " . $planosCarrinho['subtotal']);
             const produtosLocalStorage = JSON.parse(localStorage.getItem('carrinhoTechFit')) || [];
             console.log('📦 Produtos no localStorage:', produtosLocalStorage.length);
             
-            if (produtosLocalStorage.length > 0) {
-                document.getElementById('produtosTitle').style.display = 'flex';
-                document.getElementById('listaItens').style.display = 'block';
+            // Função para renderizar produtos
+            function renderizarProdutos() {
+                const produtosAtuais = JSON.parse(localStorage.getItem('carrinhoTechFit')) || [];
                 
-                // Renderiza produtos manualmente
-                const listaItens = document.getElementById('listaItens');
-                if (listaItens && typeof carrinho !== 'undefined') {
-                    carrinho.itens = produtosLocalStorage;
-                    listaItens.innerHTML = produtosLocalStorage.map(item => `
-                        <div class="item-carrinho" data-id="${item.id}">
-                            <img src="${item.imagem}" alt="${item.nome}" class="item-imagem" 
-                                 onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgdmlld0JveD0iMCAwIDEwMCAxMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxMDAiIGhlaWdodD0iMTAwIiBmaWxsPSIjMkEyQTJBIi8+Cjx0ZXh0IHg9IjUwIiB5PSI1MCIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjE0IiBmaWxsPSIjN0E3QTdBIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBkeT0iMC4zNWVtIj5TZW0gSW1hZ2VtPC90ZXh0Pgo8L3N2Zz4K'">
-                            <div class="item-info">
-                                <h4 class="item-nome">${item.nome}</h4>
-                                <p class="item-descricao">${item.descricao || 'Produto premium TECHFIT'}</p>
-                                <p class="item-preco">R$ ${item.preco.toFixed(2)}</p>
-                                <div class="item-controles">
-                                    <div class="quantidade-controle">
-                                        <button class="quantidade-btn diminuir" onclick="carrinho.alterarQuantidade('${item.id}', -1)">-</button>
-                                        <span class="quantidade">${item.quantidade}</span>
-                                        <button class="quantidade-btn aumentar" onclick="carrinho.alterarQuantidade('${item.id}', 1)">+</button>
+                if (produtosAtuais.length > 0) {
+                    document.getElementById('produtosTitle').style.display = 'flex';
+                    document.getElementById('listaItens').style.display = 'block';
+                    
+                    const listaItens = document.getElementById('listaItens');
+                    if (listaItens) {
+                        listaItens.innerHTML = produtosAtuais.map(item => `
+                            <div class="item-carrinho" data-id="${item.id}">
+                                <img src="${item.imagem}" alt="${item.nome}" class="item-imagem" 
+                                     onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgdmlld0JveD0iMCAwIDEwMCAxMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxMDAiIGhlaWdodD0iMTAwIiBmaWxsPSIjMkEyQTJBIi8+Cjx0ZXh0IHg9IjUwIiB5PSI1MCIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjE0IiBmaWxsPSIjN0E3QTdBIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBkeT0iMC4zNWVtIj5TZW0gSW1hZ2VtPC90ZXh0Pgo8L3N2Zz4K'">
+                                <div class="item-info">
+                                    <h4 class="item-nome">${item.nome}</h4>
+                                    <p class="item-descricao">${item.descricao || 'Produto premium TECHFIT'}</p>
+                                    <p class="item-preco">R$ ${item.preco.toFixed(2)}</p>
+                                    <div class="item-controles">
+                                        <div class="quantidade-controle">
+                                            <button class="quantidade-btn diminuir" onclick="alterarQuantidadeProduto('${item.id}', -1)">-</button>
+                                            <span class="quantidade">${item.quantidade}</span>
+                                            <button class="quantidade-btn aumentar" onclick="alterarQuantidadeProduto('${item.id}', 1)">+</button>
+                                        </div>
+                                        <button class="remover-item" onclick="removerProduto('${item.id}')">
+                                            <i class="fas fa-trash"></i> Remover
+                                        </button>
                                     </div>
-                                    <button class="remover-item" onclick="carrinho.removerItem('${item.id}')">
-                                        <i class="fas fa-trash"></i> Remover
-                                    </button>
                                 </div>
                             </div>
-                        </div>
-                    `).join('');
+                        `).join('');
+                    }
+                } else {
+                    document.getElementById('produtosTitle').style.display = 'none';
+                    document.getElementById('listaItens').style.display = 'none';
                 }
-            }
-
-            // Controla visibilidade do carrinho vazio
-            const carrinhoVazio = document.getElementById('carrinhoVazio');
-            if (temPlanos || produtosLocalStorage.length > 0) {
-                if (carrinhoVazio) carrinhoVazio.style.display = 'none';
-            } else {
-                if (carrinhoVazio) carrinhoVazio.style.display = 'block';
+                
+                // Atualiza totais
+                atualizarTotais();
             }
             
-            // Calcula e atualiza totais
-            if (typeof carrinho !== 'undefined') {
-                const subtotalProdutos = produtosLocalStorage.reduce((sum, item) => sum + (item.preco * item.quantidade), 0);
+            // Função para remover produto
+            window.removerProduto = function(id) {
+                let produtos = JSON.parse(localStorage.getItem('carrinhoTechFit')) || [];
+                produtos = produtos.filter(item => item.id !== id);
+                localStorage.setItem('carrinhoTechFit', JSON.stringify(produtos));
+                renderizarProdutos();
+            };
+            
+            // Função para alterar quantidade
+            window.alterarQuantidadeProduto = function(id, mudanca) {
+                let produtos = JSON.parse(localStorage.getItem('carrinhoTechFit')) || [];
+                const produto = produtos.find(item => item.id === id);
+                
+                if (produto) {
+                    produto.quantidade += mudanca;
+                    
+                    if (produto.quantidade <= 0) {
+                        produtos = produtos.filter(item => item.id !== id);
+                    }
+                    
+                    localStorage.setItem('carrinhoTechFit', JSON.stringify(produtos));
+                    renderizarProdutos();
+                }
+            };
+            
+            // Função para atualizar totais
+            function atualizarTotais() {
+                const produtosAtuais = JSON.parse(localStorage.getItem('carrinhoTechFit')) || [];
+                const subtotalProdutos = produtosAtuais.reduce((sum, item) => sum + (item.preco * item.quantidade), 0);
                 const frete = subtotalProdutos > 0 ? 15.90 : 0;
                 const totalGeral = subtotalPlanosPhp + subtotalProdutos + frete;
                 
@@ -357,12 +384,46 @@ error_log("📦 Carrinho.php - Subtotal: " . $planosCarrinho['subtotal']);
                 document.getElementById('frete').textContent = `R$ ${frete.toFixed(2).replace('.', ',')}`;
                 document.getElementById('total').textContent = `R$ ${totalGeral.toFixed(2).replace('.', ',')}`;
                 
-                console.log('💰 Totais calculados:', {
-                    planos: subtotalPlanosPhp,
-                    produtos: subtotalProdutos,
-                    frete: frete,
-                    total: totalGeral
-                });
+                // Atualiza botão finalizar
+                atualizarBotaoFinalizar();
+                
+                // Controla visibilidade do carrinho vazio
+                const carrinhoVazio = document.getElementById('carrinhoVazio');
+                if (temPlanos || produtosAtuais.length > 0) {
+                    if (carrinhoVazio) carrinhoVazio.style.display = 'none';
+                } else {
+                    if (carrinhoVazio) carrinhoVazio.style.display = 'block';
+                }
+            }
+            
+            // Renderiza inicialmente
+            renderizarProdutos();
+            
+            // Função para atualizar estado do botão
+            function atualizarBotaoFinalizar() {
+                const planosPhp = <?php echo json_encode($planosCarrinho['itens']); ?>;
+                const produtosJs = JSON.parse(localStorage.getItem('carrinhoTechFit')) || [];
+                const btnFinalizar = document.getElementById('btnFinalizar');
+                
+                const temItens = planosPhp.length > 0 || produtosJs.length > 0;
+                
+                if (temItens) {
+                    btnFinalizar.disabled = false;
+                    btnFinalizar.style.opacity = '1';
+                    btnFinalizar.style.cursor = 'pointer';
+                    
+                    // Calcula total para exibir no botão
+                    const subtotalProdutos = produtosJs.reduce((sum, item) => sum + (item.preco * item.quantidade), 0);
+                    const frete = subtotalProdutos > 0 ? 15.90 : 0;
+                    const totalGeral = subtotalPlanosPhp + subtotalProdutos + frete;
+                    
+                    btnFinalizar.textContent = `Finalizar Compra - R$ ${totalGeral.toFixed(2).replace('.', ',')}`;
+                } else {
+                    btnFinalizar.disabled = true;
+                    btnFinalizar.style.opacity = '0.5';
+                    btnFinalizar.style.cursor = 'not-allowed';
+                    btnFinalizar.textContent = 'Carrinho Vazio';
+                }
             }
             
             // Override do botão Finalizar Compra para incluir planos
@@ -408,6 +469,9 @@ error_log("📦 Carrinho.php - Subtotal: " . $planosCarrinho['subtotal']);
                     // Redireciona para pagamento.html
                     window.location.href = 'pagamento.html';
                 });
+                
+                // Atualiza botão quando o carrinho mudar
+                atualizarBotaoFinalizar();
             }
         });
     </script>

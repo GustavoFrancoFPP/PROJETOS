@@ -120,39 +120,55 @@ $user_logado = isset($_SESSION['user_id']);
 
         .plano-card.destaque {
             border: 2px solid #00F0E1;
-            background: #1a1a1a;
+            background: linear-gradient(135deg, #1a1a1a 0%, #1f2937 100%);
             box-shadow: 0 0 30px rgba(0, 240, 225, 0.3);
         }
 
+        .plano-destaque-badge {
+            position: absolute;
+            top: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #00F0E1;
+            color: #000;
+            padding: 6px 20px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
         .plano-nome {
-            font-size: 1.5rem;
+            font-size: 2rem;
             color: #fff;
-            margin: 0 0 15px 0;
-            font-weight: 600;
+            margin: 20px 0 15px 0;
+            font-weight: 700;
             text-align: center;
         }
 
         .plano-descricao {
-            color: #aaa;
-            font-size: 0.9rem;
+            color: #999;
+            font-size: 0.95rem;
             line-height: 1.6;
             margin-bottom: 30px;
             text-align: center;
-            min-height: 80px;
+            min-height: 85px;
         }
 
         .plano-preco {
-            font-size: 2.8rem;
+            font-size: 3.5rem;
             color: #fff;
             font-weight: 700;
             margin-bottom: 5px;
             text-align: center;
+            line-height: 1;
         }
 
         .plano-periodo {
-            color: #666;
-            font-size: 0.85rem;
-            margin-bottom: 30px;
+            color: #777;
+            font-size: 1rem;
+            margin-bottom: 35px;
             text-align: center;
         }
 
@@ -160,15 +176,15 @@ $user_logado = isset($_SESSION['user_id']);
             background: #00F0E1;
             color: #000;
             border: none;
-            padding: 15px 40px;
-            border-radius: 25px;
-            font-size: 0.95rem;
+            padding: 18px 40px;
+            border-radius: 30px;
+            font-size: 1rem;
             font-weight: 700;
             cursor: pointer;
             transition: all 0.3s ease;
             text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 30px;
+            letter-spacing: 1.5px;
+            margin-bottom: 35px;
             width: 100%;
         }
 

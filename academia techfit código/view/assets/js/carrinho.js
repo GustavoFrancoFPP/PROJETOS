@@ -70,7 +70,7 @@ class Carrinho {
 
     destacarLinkAtivo() {
         const navLinks = document.querySelectorAll('.nav-link');
-        const currentPage = window.location.pathname.split('/').pop() || 'carrinho.html';
+        const currentPage = window.location.pathname.split('/').pop() || 'carrinho.php';
         
         navLinks.forEach(link => {
             link.classList.remove('active');

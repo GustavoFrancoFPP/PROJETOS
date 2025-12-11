@@ -8,7 +8,7 @@ class Pagamento {
     init() {
         if (!this.dadosCompra) {
             this.mostrarErro('Dados do carrinho não encontrados. Redirecionando...');
-            setTimeout(() => window.location.href = 'carrinho.html', 2000);
+            setTimeout(() => window.location.href = 'carrinho.php', 2000);
             return;
         }
 

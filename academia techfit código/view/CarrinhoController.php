@@ -67,14 +67,16 @@ switch ($data['action']) {
  * Adiciona um plano ao carrinho
  */
 function adicionarPlano($data) {
-    // Verifica se já existe um plano no carrinho (apenas 1 plano permitido)
-    if (count($_SESSION['carrinho_planos']['itens']) > 0) {
-        echo json_encode([
-            'sucesso' => false,
-            'mensagem' => 'Você já possui um plano no carrinho. Remova-o antes de adicionar outro.',
-            'carrinho' => $_SESSION['carrinho_planos']
-        ]);
-        return;
+    // Verifica se o plano já está no carrinho (evitar duplicatas)
+    foreach ($_SESSION['carrinho_planos']['itens'] as $item) {
+        if (isset($item['id']) && $item['id'] == $data['id']) {
+            echo json_encode([
+                'sucesso' => false,
+                'mensagem' => 'Este plano já está no carrinho',
+                'carrinho' => $_SESSION['carrinho_planos']
+            ]);
+            return;
+        }
     }
 
     // Busca dados do plano no banco de dados
@@ -150,7 +152,7 @@ function adicionarPlano($data) {
 
         // Adiciona ao carrinho
         $_SESSION['carrinho_planos']['itens'][] = $item;
-        $_SESSION['carrinho_planos']['subtotal'] = floatval($planoDB['valor']);
+        $_SESSION['carrinho_planos']['subtotal'] += floatval($planoDB['valor']);
 
         echo json_encode([
             'sucesso' => true,

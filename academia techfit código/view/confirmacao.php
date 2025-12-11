@@ -74,21 +74,61 @@ if ($pedido_id) {
                         $itensExibir = !empty($order['itens']) ? $order['itens'] : $itensPedido;
                         $totalExibir = !empty($order['total']) ? $order['total'] : $totalPedido;
                         
-                        foreach ($itensExibir as $item): 
+                        // Separar planos e produtos
+                        $planos = [];
+                        $produtos = [];
+                        foreach ($itensExibir as $item) {
                             $tipoItem = $item['tipo'] ?? 'produto';
-                            $icone = $tipoItem === 'plano' ? 'fa-crown' : 'fa-box';
+                            if ($tipoItem === 'plano') {
+                                $planos[] = $item;
+                            } else {
+                                $produtos[] = $item;
+                            }
+                        }
+                        
+                        // Exibir planos primeiro
+                        if (!empty($planos)):
                         ?>
-                            <div class="item-pedido">
-                                <span class="item-nome">
-                                    <i class="fas <?php echo $icone; ?>"></i>
-                                    <?php echo htmlspecialchars($item['nome'] ?? 'Produto'); ?>
-                                </span>
-                                <span class="item-qtd">Qtd: <?php echo intval($item['quantidade'] ?? 1); ?></span>
-                                <span class="item-preco">R$ <?php echo number_format($item['preco'] ?? 0, 2, ',', '.'); ?></span>
+                            <div class="secao-planos">
+                                <h4 style="color: #00F0E1; font-size: 1.1rem; margin-bottom: 15px; border-bottom: 2px solid #00F0E1; padding-bottom: 10px;">
+                                    <i class="fas fa-crown"></i> Planos Contratados
+                                </h4>
+                                <?php foreach ($planos as $plano): ?>
+                                    <div class="item-pedido plano-item" style="background: rgba(0, 240, 225, 0.1); border-left: 4px solid #00F0E1; padding: 15px; margin-bottom: 10px;">
+                                        <span class="item-nome" style="font-weight: 700; color: #00F0E1;">
+                                            <i class="fas fa-crown"></i>
+                                            <?php echo htmlspecialchars($plano['nome'] ?? 'Plano'); ?>
+                                        </span>
+                                        <span class="item-qtd">Duração: <?php echo intval($plano['duracao_meses'] ?? 1); ?> mês(es)</span>
+                                        <span class="item-preco" style="font-weight: 700; color: #00F0E1;">R$ <?php echo number_format($plano['preco'] ?? 0, 2, ',', '.'); ?></span>
+                                    </div>
+                                <?php endforeach; ?>
                             </div>
-                        <?php endforeach; ?>
-                        <div class="total-pedido">
-                            <strong>Total: R$ <?php echo number_format($totalExibir, 2, ',', '.'); ?></strong>
+                        <?php endif; ?>
+                        
+                        <?php 
+                        // Exibir produtos
+                        if (!empty($produtos)):
+                        ?>
+                            <div class="secao-produtos" style="margin-top: 20px;">
+                                <h4 style="color: #fff; font-size: 1.1rem; margin-bottom: 15px; border-bottom: 2px solid #333; padding-bottom: 10px;">
+                                    <i class="fas fa-box"></i> Produtos
+                                </h4>
+                                <?php foreach ($produtos as $produto): ?>
+                                    <div class="item-pedido">
+                                        <span class="item-nome">
+                                            <i class="fas fa-box"></i>
+                                            <?php echo htmlspecialchars($produto['nome'] ?? 'Produto'); ?>
+                                        </span>
+                                        <span class="item-qtd">Qtd: <?php echo intval($produto['quantidade'] ?? 1); ?></span>
+                                        <span class="item-preco">R$ <?php echo number_format($produto['preco'] ?? 0, 2, ',', '.'); ?></span>
+                                    </div>
+                                <?php endforeach; ?>
+                            </div>
+                        <?php endif; ?>
+                        
+                        <div class="total-pedido" style="margin-top: 20px; padding-top: 20px; border-top: 2px solid #00F0E1;">
+                            <strong style="font-size: 1.3rem; color: #00F0E1;">Total: R$ <?php echo number_format($totalExibir, 2, ',', '.'); ?></strong>
                         </div>
                     </div>
                 </div>
@@ -120,17 +160,44 @@ if ($pedido_id) {
             <?php else: ?>
                 <div class="alert alert-warning">
                     <i class="fas fa-exclamation-triangle"></i>
-                    <p>Nenhum pedido encontrado. Por favor, volte ao <a href="carrinho.html">carrinho</a> e tente novamente.</p>
+                    <p>Nenhum pedido encontrado. Por favor, volte ao <a href="carrinho.php">carrinho</a> e tente novamente.</p>
                 </div>
             <?php endif; ?>
         </div>
     </div>
 </div>
 
+<footer class="footer">
+    <div class="container footer-container">
+        <div class="footer-brand">
+            <a href="#" class="logo">
+                <img src="assets/images/imagens/WhatsApp Image 2025-10-02 at 15.15.22.jpeg" alt="TechFit Logo" class="logo-img">
+                <span>TECHFIT</span>
+            </a>
+            <p>Sua Academia do Futuro!</p>
+        </div>
+        <div class="footer-contact">
+            <a href="#" class="contact-link">
+                <i class="fab fa-instagram"></i>
+                <span>TECHFIT_OFC</span>
+            </a>
+            <a href="#" class="contact-link">
+                <i class="fab fa-whatsapp"></i>
+                <span>(19) 99936 - 4328</span>
+            </a>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        <p>&copy; 2024 TECHFIT. Todos os direitos reservados</p>
+    </div>
+</footer>
+
 <script>
 // Limpa o carrinho do localStorage após confirmar o pedido
 if (typeof localStorage !== 'undefined') {
     localStorage.removeItem('carrinhoTechFit');
+    localStorage.removeItem('pedidoTechFit');
+    localStorage.removeItem('dadosCompraTechFit');
     console.log('✓ Carrinho limpo após confirmação do pedido');
 }
 </script>
@@ -141,4 +208,6 @@ unset($_SESSION['order']);
 unset($_SESSION['pedido_id']);
 ?>
 
-<?php require_once __DIR__ . '/inc/footer.php'; ?>
+<script src="assets/js/header-carrinho-simples.js"></script>
+</body>
+</html>

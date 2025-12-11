@@ -40,7 +40,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Função auxiliar para criar o elemento do carrinho
     function criarElementoCarrinho() {
         const cartLink = document.createElement('a');
-        cartLink.href = 'carrinho.html';
+        cartLink.href = 'carrinho.php';
         cartLink.className = 'cart-button';
         cartLink.innerHTML = `
             <i class="fas fa-shopping-cart"></i>
