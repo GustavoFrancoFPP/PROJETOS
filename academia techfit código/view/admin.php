@@ -1,16 +1,9 @@
 ﻿<?php
-/**
- * ========================================
- * PAINEL ADMINISTRATIVO COMPLETO - TECHFIT
- * CRUD: Alunos | Aulas | Produtos | Funcionários | Notificações
- * ========================================
- */
 
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 
-// SEGURANÇA: Apenas funcionários
 if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true || $_SESSION['tipo_usuario'] !== 'funcionario') {
     header('Location: login.php');
     exit;
@@ -22,44 +15,72 @@ $conn = Connection::getInstance();
 $mensagem = '';
 $tipo_mensagem = 'success';
 
-// ========================================
-// PROCESSAMENTO DE AÇÕES POST
-// ========================================
-
 if (isset($_POST['action'])) {
     $action = $_POST['action'];
     
     try {
         switch ($action) {
-            // ============ CRUD ALUNOS ============
             case 'cadastrar_aluno':
-                $conn->beginTransaction();
-                
-                $stmt = $conn->prepare("INSERT INTO cliente (nome_cliente, email, cpf, telefone, endereco, genero, status) VALUES (?, ?, ?, ?, ?, ?, 'ativo')");
-                $stmt->execute([
-                    $_POST['nome'],
-                    $_POST['email'],
-                    $_POST['cpf'],
-                    $_POST['telefone'],
-                    $_POST['endereco'] ?? '',
-                    $_POST['genero'] ?? 'Outro'
-                ]);
-                $id_cliente = $conn->lastInsertId();
-                
-                $senha_hash = password_hash($_POST['senha'], PASSWORD_DEFAULT);
-                $stmt = $conn->prepare("INSERT INTO login (id_cliente, nome_usuario, senha_usuario, tipo_usuario) VALUES (?, ?, ?, 'cliente')");
-                $stmt->execute([$id_cliente, $_POST['email'], $senha_hash]);
-                
-                $conn->commit();
-                $mensagem = "Aluno cadastrado com sucesso!";
+                try {
+                    $conn->beginTransaction();
+                    
+                    // Limpar e validar CPF
+                    $cpf_limpo = preg_replace('/[^0-9]/', '', trim($_POST['cpf']));
+                    if (strlen($cpf_limpo) != 11) {
+                        throw new Exception("CPF inválido! Deve conter exatamente 11 dígitos. Você digitou {$cpf_limpo} com " . strlen($cpf_limpo) . " dígitos.");
+                    }
+                    
+                    // Limpar telefone
+                    $telefone_limpo = preg_replace('/[^0-9]/', '', trim($_POST['telefone'] ?? ''));
+                    
+                    $stmt = $conn->prepare("SELECT COUNT(*) FROM cliente WHERE email = ?");
+                    $stmt->execute([trim($_POST['email'])]);
+                    if ($stmt->fetchColumn() > 0) {
+                        throw new Exception("Email já cadastrado no sistema!");
+                    }
+                    
+                    $stmt = $conn->prepare("SELECT COUNT(*) FROM cliente WHERE cpf = ?");
+                    $stmt->execute([$cpf_limpo]);
+                    if ($stmt->fetchColumn() > 0) {
+                        throw new Exception("CPF já cadastrado no sistema!");
+                    }
+                    
+                    $stmt = $conn->prepare("INSERT INTO cliente (nome_cliente, email, cpf, telefone, endereco, genero, status) VALUES (?, ?, ?, ?, ?, ?, 'ativo')");
+                    $stmt->execute([
+                        trim($_POST['nome']),
+                        trim($_POST['email']),
+                        $cpf_limpo,
+                        $telefone_limpo,
+                        trim($_POST['endereco'] ?? ''),
+                        trim($_POST['genero'] ?? 'Outro')
+                    ]);
+                    $id_cliente = $conn->lastInsertId();
+                    
+                    $senha_hash = password_hash($_POST['senha'], PASSWORD_DEFAULT);
+                    $stmt = $conn->prepare("INSERT INTO login (id_cliente, nome_usuario, senha_usuario, tipo_usuario) VALUES (?, ?, ?, 'cliente')");
+                    $stmt->execute([$id_cliente, trim($_POST['email']), $senha_hash]);
+                    
+                    $conn->commit();
+                    $email_usuario = trim($_POST['email']);
+                    $mensagem = "<strong>✅ Aluno cadastrado com sucesso!</strong><br><br>👤 <strong>Usuário (Login):</strong> <span style='color: #00F0E1; font-size: 1.1em;'>{$email_usuario}</span><br>🔑 <strong>Senha:</strong> " . $_POST['senha'];
+                    
+                } catch (Exception $e) {
+                    if ($conn->inTransaction()) {
+                        $conn->rollBack();
+                    }
+                    $mensagem = "❌ " . $e->getMessage();
+                    $tipo_mensagem = 'error';
+                }
                 break;
                 
             case 'editar_aluno':
+                $telefone_limpo = preg_replace('/[^0-9]/', '', $_POST['telefone'] ?? '');
+                
                 $stmt = $conn->prepare("UPDATE cliente SET nome_cliente = ?, email = ?, telefone = ?, endereco = ?, genero = ? WHERE id_cliente = ?");
                 $stmt->execute([
                     $_POST['nome'],
                     $_POST['email'],
-                    $_POST['telefone'],
+                    $telefone_limpo,
                     $_POST['endereco'] ?? '',
                     $_POST['genero'] ?? 'Outro',
                     $_POST['id_cliente']
@@ -86,7 +107,6 @@ if (isset($_POST['action'])) {
                 $mensagem = "Aluno excluído com sucesso!";
                 break;
                 
-            // ============ CRUD AULAS ============
             case 'cadastrar_aula':
                 $stmt = $conn->prepare("INSERT INTO aulas (nome_aula, dia_semana, horario, professor, vagas_totais, descricao, status) VALUES (?, ?, ?, ?, ?, ?, 'ativa')");
                 $stmt->execute([
@@ -120,7 +140,6 @@ if (isset($_POST['action'])) {
                 $mensagem = "Aula cancelada com sucesso!";
                 break;
                 
-            // ============ CRUD PRODUTOS ============
             case 'cadastrar_produto':
                 $stmt = $conn->prepare("INSERT INTO produtos (nome_produto, tipo_produto, categoria, preco, quantidade_estoque, url_imagem, descricao, status) VALUES (?, ?, ?, ?, ?, ?, ?, 'ativo')");
                 $stmt->execute([
@@ -156,37 +175,69 @@ if (isset($_POST['action'])) {
                 $mensagem = "Produto desativado com sucesso!";
                 break;
                 
-            // ============ CRUD FUNCIONÁRIOS ============
             case 'cadastrar_funcionario':
-                $conn->beginTransaction();
-                
-                $stmt = $conn->prepare("INSERT INTO funcionario (nome_funcionario, email, cpf, cargo, status) VALUES (?, ?, ?, ?, 'ativo')");
-                $stmt->execute([
-                    $_POST['nome_funcionario'],
-                    $_POST['email'],
-                    $_POST['cpf'],
-                    $_POST['cargo'] ?? 'personal_trainer'
-                ]);
-                $id_funcionario = $conn->lastInsertId();
-                
-                $senha_hash = password_hash($_POST['senha'], PASSWORD_DEFAULT);
-                $stmt = $conn->prepare("INSERT INTO login (id_funcionario, nome_usuario, senha_usuario, tipo_usuario) VALUES (?, ?, ?, 'funcionario')");
-                $stmt->execute([$id_funcionario, $_POST['email'], $senha_hash]);
-                
-                $conn->commit();
-                $mensagem = "Funcionário cadastrado com sucesso!";
+                try {
+                    $conn->beginTransaction();
+                    
+                    // Limpar e validar CPF
+                    $cpf_limpo = preg_replace('/[^0-9]/', '', trim($_POST['cpf']));
+                    if (strlen($cpf_limpo) != 11) {
+                        throw new Exception("CPF inválido! Deve conter exatamente 11 dígitos. Você digitou {$cpf_limpo} com " . strlen($cpf_limpo) . " dígitos.");
+                    }
+                    
+                    // Limpar telefone
+                    $telefone_limpo = preg_replace('/[^0-9]/', '', trim($_POST['telefone'] ?? ''));
+                    
+                    // Validar email único
+                    $stmt = $conn->prepare("SELECT COUNT(*) FROM funcionario WHERE email = ?");
+                    $stmt->execute([trim($_POST['email'])]);
+                    if ($stmt->fetchColumn() > 0) {
+                        throw new Exception("Email já cadastrado no sistema!");
+                    }
+                    
+                    // Validar CPF único
+                    $stmt = $conn->prepare("SELECT COUNT(*) FROM funcionario WHERE cpf = ?");
+                    $stmt->execute([$cpf_limpo]);
+                    if ($stmt->fetchColumn() > 0) {
+                        throw new Exception("CPF já cadastrado no sistema!");
+                    }
+                    
+                    // Inserir funcionário
+                    $stmt = $conn->prepare("INSERT INTO funcionario (nome_funcionario, email, cpf, telefone, cargo, status) VALUES (?, ?, ?, ?, ?, 'ativo')");
+                    $stmt->execute([
+                        trim($_POST['nome_funcionario']),
+                        trim($_POST['email']),
+                        $cpf_limpo,
+                        $telefone_limpo,
+                        $_POST['cargo'] ?? 'personal_trainer'
+                    ]);
+                    $id_funcionario = $conn->lastInsertId();
+                    
+                    // Criar login
+                    $senha_hash = password_hash($_POST['senha'], PASSWORD_DEFAULT);
+                    $stmt = $conn->prepare("INSERT INTO login (id_funcionario, nome_usuario, senha_usuario, tipo_usuario) VALUES (?, ?, ?, 'funcionario')");
+                    $stmt->execute([$id_funcionario, trim($_POST['email']), $senha_hash]);
+                    
+                    $conn->commit();
+                    $email_usuario = trim($_POST['email']);
+                    $mensagem = "<strong>✅ Funcionário cadastrado com sucesso!</strong><br><br>👤 <strong>Usuário (Login):</strong> <span style='color: #00F0E1; font-size: 1.1em;'>{$email_usuario}</span><br>🔑 <strong>Senha:</strong> (a que foi definida)";
+                    
+                } catch (Exception $e) {
+                    if ($conn->inTransaction()) {
+                        $conn->rollBack();
+                    }
+                    $mensagem = "❌ " . $e->getMessage();
+                    $tipo_mensagem = 'error';
+                }
                 break;
                 
             case 'desativar_funcionario':
-                // Como não existe coluna status, vamos apenas deletar o funcionário
                 $stmt = $conn->prepare("DELETE FROM funcionario WHERE id_funcionario = ?");
                 $stmt->execute([$_POST['id_funcionario']]);
                 $mensagem = "Funcionário removido com sucesso!";
                 break;
                 
-            // ============ NOTIFICAÇÕES ============
             case 'enviar_notificacao':
-                // Notificação requer id_cliente, então vamos enviar para todos os alunos
                 $alunos = $conn->query("SELECT id_cliente FROM cliente")->fetchAll();
                 $stmt = $conn->prepare("INSERT INTO notificacao (id_cliente, titulo, mensagem) VALUES (?, ?, ?)");
                 foreach ($alunos as $aluno) {
@@ -199,18 +250,16 @@ if (isset($_POST['action'])) {
                 $mensagem = "Notificação enviada com sucesso para todos os alunos!";
                 break;
         }
-    } catch (PDOException $e) {
+    } catch (Exception $e) {
         if (isset($conn) && $conn->inTransaction()) {
             $conn->rollBack();
         }
-        $mensagem = "Erro: " . $e->getMessage();
-        $tipo_mensagem = 'error';
+        if (empty($mensagem)) {
+            $mensagem = "❌ Erro: " . $e->getMessage();
+            $tipo_mensagem = 'error';
+        }
     }
 }
-
-// ========================================
-// BUSCA DE DADOS
-// ========================================
 
 // Estatísticas
 $totalAlunos = $conn->query("SELECT COUNT(*) as total FROM cliente")->fetch(PDO::FETCH_ASSOC)['total'] ?? 0;
@@ -264,7 +313,7 @@ $notificacoes = $conn->query("SELECT * FROM notificacao ORDER BY data_envio DESC
         <?php if ($mensagem): ?>
             <div class="alert alert-<?php echo $tipo_mensagem; ?>">
                 <i class="fas fa-<?php echo $tipo_mensagem === 'success' ? 'check-circle' : 'exclamation-triangle'; ?>"></i>
-                <span><?php echo $mensagem; ?></span>
+                <div style="margin-left: 10px;"><?php echo $mensagem; ?></div>
             </div>
         <?php endif; ?>
         
@@ -325,11 +374,11 @@ $notificacoes = $conn->query("SELECT * FROM notificacao ORDER BY data_envio DESC
                             </div>
                             <div class="form-group">
                                 <label class="form-label">CPF*</label>
-                                <input type="text" name="cpf" class="form-control" required>
+                                <input type="text" name="cpf" class="form-control cpf-mask" maxlength="14" placeholder="000.000.000-00" required>
                             </div>
                             <div class="form-group">
                                 <label class="form-label">Telefone</label>
-                                <input type="text" name="telefone" class="form-control">
+                                <input type="text" name="telefone" class="form-control telefone-mask" maxlength="15" placeholder="(00) 00000-0000">
                             </div>
                             <div class="form-group">
                                 <label class="form-label">Endereço</label>
@@ -632,11 +681,11 @@ $notificacoes = $conn->query("SELECT * FROM notificacao ORDER BY data_envio DESC
                             </div>
                             <div class="form-group">
                                 <label class="form-label">CPF*</label>
-                                <input type="text" name="cpf" class="form-control" required>
+                                <input type="text" name="cpf" class="form-control cpf-mask" maxlength="14" placeholder="000.000.000-00" required>
                             </div>
                             <div class="form-group">
                                 <label class="form-label">Telefone</label>
-                                <input type="text" name="telefone" class="form-control">
+                                <input type="text" name="telefone" class="form-control telefone-mask" maxlength="15" placeholder="(00) 00000-0000">
                             </div>
                             <div class="form-group">
                                 <label class="form-label">Cargo*</label>
@@ -829,6 +878,79 @@ $notificacoes = $conn->query("SELECT * FROM notificacao ORDER BY data_envio DESC
                 setTimeout(() => alert.remove(), 500);
             });
         }, 5000);
+
+        // Máscara de CPF
+        document.querySelectorAll('.cpf-mask').forEach(input => {
+            input.addEventListener('input', function(e) {
+                // Remove tudo que não é número
+                let value = e.target.value.replace(/\D/g, '');
+                
+                // Limita a 11 dígitos
+                if (value.length > 11) {
+                    value = value.substring(0, 11);
+                }
+                
+                // Aplica a máscara
+                if (value.length <= 11) {
+                    value = value.replace(/(\d{3})(\d)/, '$1.$2');
+                    value = value.replace(/(\d{3})(\d)/, '$1.$2');
+                    value = value.replace(/(\d{3})(\d{1,2})$/, '$1-$2');
+                }
+                
+                e.target.value = value;
+                
+                // Validação visual
+                const cpfDigits = value.replace(/\D/g, '');
+                if (cpfDigits.length === 11) {
+                    e.target.classList.remove('invalid');
+                    e.target.classList.add('valid');
+                } else if (cpfDigits.length > 0) {
+                    e.target.classList.remove('valid');
+                    e.target.classList.add('invalid');
+                } else {
+                    e.target.classList.remove('valid', 'invalid');
+                }
+            });
+        });
+        
+        // Validação no submit dos formulários com CPF
+        document.querySelectorAll('form').forEach(form => {
+            form.addEventListener('submit', function(e) {
+                const cpfInput = form.querySelector('.cpf-mask');
+                if (cpfInput && cpfInput.value) {
+                    const cpfValue = cpfInput.value.replace(/\D/g, '');
+                    if (cpfValue.length !== 11) {
+                        e.preventDefault();
+                        alert('❌ CPF INVÁLIDO!\n\n✓ CPF deve ter exatamente 11 dígitos\n✗ Você digitou: ' + cpfValue + ' (' + cpfValue.length + ' dígitos)\n\nPor favor, corrija o CPF antes de continuar.');
+                        cpfInput.focus();
+                        cpfInput.select();
+                        return false;
+                    }
+                }
+            });
+        });
+
+        // Máscara de Telefone
+        document.querySelectorAll('.telefone-mask').forEach(input => {
+            input.addEventListener('input', function(e) {
+                let value = e.target.value.replace(/\D/g, '');
+                if (value.length <= 11) {
+                    value = value.replace(/(\d{2})(\d)/, '($1) $2');
+                    value = value.replace(/(\d{5})(\d)/, '$1-$2');
+                    e.target.value = value;
+                }
+            });
+            
+            // Validação adicional no submit
+            input.closest('form').addEventListener('submit', function(e) {
+                const telValue = input.value.replace(/\D/g, '');
+                if (telValue.length > 0 && telValue.length < 10) {
+                    e.preventDefault();
+                    alert('Telefone deve ter pelo menos 10 dígitos (com DDD)!');
+                    input.focus();
+                }
+            });
+        });
     </script>
 </body>
 </html>

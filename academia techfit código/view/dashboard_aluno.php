@@ -111,6 +111,21 @@ try {
     $stmt->execute([$idAluno]);
     $totalNotificacoes = $stmt->fetch()['total_notif'] ?? 0;
 
+    // Buscar notificações recentes
+    $stmt = $conn->prepare("
+        SELECT 
+            titulo,
+            mensagem,
+            DATE_FORMAT(data_envio, '%d/%m/%Y %H:%i') as data_formatada,
+            status
+        FROM notificacao
+        WHERE id_cliente = ?
+        ORDER BY data_envio DESC
+        LIMIT 5
+    ");
+    $stmt->execute([$idAluno]);
+    $notificacoesRecentes = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
 } catch (PDOException $e) {
     error_log("Erro no dashboard: " . $e->getMessage());
     $planosAluno = [];
@@ -118,6 +133,7 @@ try {
     $historicoCompras = [];
     $totalGasto = 0;
     $totalNotificacoes = 0;
+    $notificacoesRecentes = [];
 }
 ?>
 <!DOCTYPE html>
@@ -323,6 +339,47 @@ try {
                         <i class="fas fa-shopping-cart"></i>
                         <p>Você ainda não realizou compras</p>
                         <a href="produtos_loja.php" class="btn-action">Ver Produtos</a>
+                    </div>
+                <?php endif; ?>
+            </div>
+
+            <!-- Notificações -->
+            <div class="dashboard-card">
+                <div class="card-header">
+                    <h2><i class="fas fa-bell"></i> Notificações</h2>
+                    <?php if ($totalNotificacoes > 0): ?>
+                        <span style="background: #ff4444; color: #fff; padding: 5px 12px; border-radius: 20px; font-size: 0.85rem; font-weight: 600;">
+                            <?php echo $totalNotificacoes; ?> nova(s)
+                        </span>
+                    <?php endif; ?>
+                </div>
+                <?php if (!empty($notificacoesRecentes)): ?>
+                    <ul class="item-list">
+                        <?php foreach ($notificacoesRecentes as $notif): ?>
+                            <li style="flex-direction: column; align-items: flex-start; gap: 8px;">
+                                <div style="display: flex; justify-content: space-between; width: 100%; align-items: center;">
+                                    <span class="name" style="color: #00F0E1; font-weight: 600;">
+                                        <?php echo htmlspecialchars($notif['titulo']); ?>
+                                    </span>
+                                    <?php if ($notif['status'] === 'não lida'): ?>
+                                        <span style="background: #ff4444; color: #fff; padding: 3px 8px; border-radius: 10px; font-size: 0.75rem;">
+                                            Nova
+                                        </span>
+                                    <?php endif; ?>
+                                </div>
+                                <p style="margin: 0; color: #ccc; font-size: 0.9rem; line-height: 1.5;">
+                                    <?php echo htmlspecialchars($notif['mensagem']); ?>
+                                </p>
+                                <span class="detail" style="color: #888; font-size: 0.85rem;">
+                                    <i class="fas fa-clock"></i> <?php echo $notif['data_formatada']; ?>
+                                </span>
+                            </li>
+                        <?php endforeach; ?>
+                    </ul>
+                <?php else: ?>
+                    <div class="empty-state">
+                        <i class="fas fa-bell-slash"></i>
+                        <p>Nenhuma notificação</p>
                     </div>
                 <?php endif; ?>
             </div>

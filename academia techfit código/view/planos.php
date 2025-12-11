@@ -60,22 +60,26 @@ $user_logado = isset($_SESSION['user_id']);
     <link rel="stylesheet" href="assets/css/inicio.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     <style>
+        body {
+            background: #000;
+            margin: 0;
+            padding: 0;
+        }
+
         .planos-section {
-            padding: 80px 20px;
-            background: linear-gradient(135deg, #0f172a 0%, #1a1a2e 100%);
-            position: relative;
-            overflow: hidden;
+            padding: 60px 20px 100px;
+            background: #000;
+            min-height: 100vh;
         }
 
         .planos-container {
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
         }
 
         .planos-header {
             text-align: center;
-            margin-bottom: 60px;
-            animation: fadeInDown 0.8s ease;
+            margin-bottom: 80px;
         }
 
         .planos-header h2 {
@@ -87,165 +91,138 @@ $user_logado = isset($_SESSION['user_id']);
 
         .planos-header p {
             font-size: 1.2rem;
-            color: #b0b7d9;
+            color: #888;
         }
 
         .planos-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-            gap: 30px;
-            position: relative;
-            z-index: 2;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 40px;
+            max-width: 1200px;
+            margin: 0 auto;
         }
 
         .plano-card {
-            background: rgba(30, 30, 30, 0.6);
-            border: 2px solid rgba(0, 240, 225, 0.15);
-            border-radius: 15px;
+            background: #1a1a1a;
+            border: 1px solid #333;
+            border-radius: 12px;
             padding: 40px 30px;
             position: relative;
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transition: all 0.3s ease;
             display: flex;
             flex-direction: column;
         }
 
         .plano-card:hover {
-            transform: translateY(-10px);
-            border-color: rgba(0, 240, 225, 0.4);
-            box-shadow: 0 20px 40px rgba(0, 240, 225, 0.2);
+            transform: translateY(-5px);
+            border-color: #00F0E1;
         }
 
         .plano-card.destaque {
             border: 2px solid #00F0E1;
-            background: rgba(0, 240, 225, 0.08);
-            transform: scale(1.05);
-        }
-
-        .plano-card.destaque:hover {
-            box-shadow: 0 30px 60px rgba(0, 240, 225, 0.3);
-        }
-
-        .plano-destaque-badge {
-            position: absolute;
-            top: -12px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: #00F0E1;
-            color: #0f172a;
-            padding: 6px 20px;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 1px;
+            background: #1a1a1a;
+            box-shadow: 0 0 30px rgba(0, 240, 225, 0.3);
         }
 
         .plano-nome {
-            font-size: 1.8rem;
+            font-size: 1.5rem;
             color: #fff;
-            margin: 20px 0 10px;
-            font-weight: 700;
+            margin: 0 0 15px 0;
+            font-weight: 600;
+            text-align: center;
         }
 
         .plano-descricao {
-            color: #b0b7d9;
-            font-size: 0.95rem;
+            color: #aaa;
+            font-size: 0.9rem;
             line-height: 1.6;
-            margin-bottom: 25px;
-            flex-grow: 1;
+            margin-bottom: 30px;
+            text-align: center;
+            min-height: 80px;
         }
 
         .plano-preco {
-            font-size: 2.5rem;
-            color: #00F0E1;
+            font-size: 2.8rem;
+            color: #fff;
             font-weight: 700;
             margin-bottom: 5px;
+            text-align: center;
         }
 
         .plano-periodo {
-            color: #888;
-            font-size: 0.9rem;
-            margin-bottom: 25px;
+            color: #666;
+            font-size: 0.85rem;
+            margin-bottom: 30px;
+            text-align: center;
         }
 
         .btn-contratar {
-            background: linear-gradient(135deg, #00F0E1 0%, #00d4b4 100%);
-            color: #0f172a;
+            background: #00F0E1;
+            color: #000;
             border: none;
-            padding: 14px 30px;
-            border-radius: 8px;
-            font-size: 1rem;
+            padding: 15px 40px;
+            border-radius: 25px;
+            font-size: 0.95rem;
             font-weight: 700;
             cursor: pointer;
             transition: all 0.3s ease;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin-bottom: 25px;
+            letter-spacing: 1px;
+            margin-bottom: 30px;
+            width: 100%;
         }
 
         .btn-contratar:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 25px rgba(0, 240, 225, 0.3);
-        }
-
-        .btn-contratar:active {
-            transform: translateY(0);
+            background: #00d9cc;
+            transform: scale(1.05);
         }
 
         .plano-beneficios {
             list-style: none;
             padding: 0;
+            margin: 0;
         }
 
         .plano-beneficios li {
-            color: #b0b7d9;
-            font-size: 0.95rem;
-            padding: 10px 0;
+            color: #ccc;
+            font-size: 0.9rem;
+            padding: 12px 0;
             display: flex;
-            align-items: center;
-            gap: 12px;
+            align-items: flex-start;
+            gap: 10px;
+            border-bottom: 1px solid #2a2a2a;
+        }
+
+        .plano-beneficios li:last-child {
+            border-bottom: none;
         }
 
         .plano-beneficios li::before {
             content: '✓';
             color: #00F0E1;
             font-weight: 700;
-            font-size: 1.2rem;
+            font-size: 1.1rem;
+            flex-shrink: 0;
         }
 
         .plano-beneficios li.nao-incluso::before {
             content: '✕';
-            color: #ff6b6b;
+            color: #ff4444;
         }
 
         .plano-beneficios li.nao-incluso {
-            color: #888;
-            opacity: 0.7;
+            color: #666;
         }
 
-        @keyframes fadeInDown {
-            from {
-                opacity: 0;
-                transform: translateY(-30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        @media (max-width: 768px) {
-            .planos-header h2 {
-                font-size: 2rem;
+        @media (max-width: 1024px) {
+            .planos-grid {
+                grid-template-columns: 1fr;
+                gap: 30px;
+                max-width: 400px;
             }
 
             .plano-card.destaque {
-                transform: scale(1.02);
-            }
-
-            .planos-grid {
-                grid-template-columns: 1fr;
-                gap: 20px;
+                order: -1;
             }
         }
     </style>
