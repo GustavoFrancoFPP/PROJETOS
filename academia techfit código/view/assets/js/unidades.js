@@ -1,4 +1,4 @@
-// unidades.js - CORREÇÃO
+// unidades.js
 function showUnitDetails(unidade) {
     // Redirecionar para a página de detalhes com o parâmetro da unidade
     window.location.href = `detalhes-unidade.html?unidade=${unidade}`;
