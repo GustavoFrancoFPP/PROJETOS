@@ -100,7 +100,7 @@ function adicionarPlano($data) {
 
     // Adiciona ao carrinho
     $_SESSION['carrinho_planos']['itens'][] = $item;
-    $_SESSION['carrinho_planos']['subtotal'] = floatval($data['preco']);
+    $_SESSION['carrinho_planos']['subtotal'] += floatval($data['preco']);
 
     echo json_encode([
         'sucesso' => true,

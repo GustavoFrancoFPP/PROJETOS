@@ -61,52 +61,12 @@ switch ($data['action']) {
  * Adiciona um plano ao carrinho
  */
 function adicionarPlano($data) {
-    // Garante que o carrinho está inicializado corretamente
-    if (!isset($_SESSION['carrinho_planos']) || !is_array($_SESSION['carrinho_planos'])) {
-        $_SESSION['carrinho_planos'] = [
-            'itens' => [],
-            'subtotal' => 0
-        ];
-    }
-    
-    if (!isset($_SESSION['carrinho_planos']['itens']) || !is_array($_SESSION['carrinho_planos']['itens'])) {
-        $_SESSION['carrinho_planos']['itens'] = [];
-    }
-    
-    // LIMPA ITENS INVÁLIDOS antes de verificar
-    $itensValidos = [];
-    foreach ($_SESSION['carrinho_planos']['itens'] as $item) {
-        if (is_array($item) && isset($item['tipo']) && isset($item['id']) && isset($item['nome']) && 
-            !empty($item['id']) && !empty($item['nome'])) {
-            $itensValidos[] = $item;
-        }
-    }
-    $_SESSION['carrinho_planos']['itens'] = $itensValidos;
-    
-    // Verifica se já existe um plano VÁLIDO no carrinho (apenas 1 plano permitido)
-    $temPlano = false;
-    $indexPlanoExistente = -1;
-    
-    foreach ($_SESSION['carrinho_planos']['itens'] as $index => $item) {
-        // Verifica se é realmente um item válido com tipo plano
-        if (is_array($item) && 
-            isset($item['tipo']) && 
-            $item['tipo'] === 'plano' && 
-            isset($item['id']) && 
-            !empty($item['id']) &&
-            isset($item['nome']) &&
-            !empty($item['nome'])) {
-            $temPlano = true;
-            $indexPlanoExistente = $index;
-            break;
-        }
-    }
-    
-    if ($temPlano) {
+    // Verifica se já existe um plano no carrinho (apenas 1 plano permitido)
+    if (count($_SESSION['carrinho_planos']['itens']) > 0) {
         echo json_encode([
             'sucesso' => false,
             'mensagem' => 'Você já possui um plano no carrinho. Remova-o antes de adicionar outro.',
-            'plano_existente' => $_SESSION['carrinho_planos']['itens'][$indexPlanoExistente]['nome']
+            'carrinho' => $_SESSION['carrinho_planos']
         ]);
         return;
     }
@@ -164,13 +124,7 @@ function adicionarPlano($data) {
 
         // Adiciona ao carrinho
         $_SESSION['carrinho_planos']['itens'][] = $item;
-        
-        // Recalcula o subtotal somando todos os itens
-        $novoSubtotal = 0;
-        foreach ($_SESSION['carrinho_planos']['itens'] as $itemCarrinho) {
-            $novoSubtotal += floatval($itemCarrinho['subtotal']);
-        }
-        $_SESSION['carrinho_planos']['subtotal'] = $novoSubtotal;
+        $_SESSION['carrinho_planos']['subtotal'] = floatval($planoDB['valor']);
 
         echo json_encode([
             'sucesso' => true,
