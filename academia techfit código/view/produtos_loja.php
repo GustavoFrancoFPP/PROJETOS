@@ -8,9 +8,9 @@ require_once __DIR__ . '/../config/Connection.php';
 // Buscar produtos do banco de dados
 try {
     $conn = Connection::getInstance();
-    $stmt = $conn->prepare("SELECT id_produtos, nome_produto, tipo_produto, categoria, preco, url_imagem, descricao, quantidade_estoque 
+    $stmt = $conn->prepare("SELECT id_produtos, nome_produto, tipo_produto, categoria, preco, quantidade 
                             FROM produtos 
-                            WHERE status = 'ativo' AND quantidade_estoque > 0
+                            WHERE quantidade > 0
                             ORDER BY nome_produto");
     $stmt->execute();
     $produtos = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -32,6 +32,29 @@ try {
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"/>
     <link rel="stylesheet" href="assets/css/produto.css">
     <link rel="icon" type="image/x-icon" href="assets/images/imagens/favicon.ico">
+    <style>
+        @keyframes slideIn {
+            from {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+        
+        @keyframes slideOut {
+            from {
+                transform: translateX(0);
+                opacity: 1;
+            }
+            to {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+        }
+    </style>
 </head>
 <body>
 
@@ -57,6 +80,7 @@ try {
 
                 <!-- Botão de Ação -->
                 <div class="header-cta">
+                    <!-- Botão do Carrinho (será adicionado pelo JavaScript) -->
                     <a href="login.php" class="cta-button">Área do Aluno</a>
                 </div>
             </nav>
@@ -91,10 +115,9 @@ try {
                     <div class="product-grid">
                         <?php foreach ($produtos as $produto): ?>
                             <div class="product-card" data-id="<?php echo htmlspecialchars($produto['id_produtos']); ?>">
-                                <img src="<?php echo htmlspecialchars($produto['url_imagem'] ?: 'assets/images/imagens/remove_watermark_image_20251112_134903.png'); ?>" 
+                                <img src="assets/images/imagens/remove_watermark_image_20251112_134903.png" 
                                      alt="<?php echo htmlspecialchars($produto['nome_produto']); ?>" 
-                                     class="product-image"
-                                     onerror="this.src='assets/images/imagens/remove_watermark_image_20251112_134903.png'">
+                                     class="product-image">
                                 <div class="product-info">
                                     <div class="product-rating">
                                         <i class="fas fa-star"></i>
@@ -104,13 +127,13 @@ try {
                                         <i class="fas fa-star"></i>
                                     </div>
                                     <h3 class="product-name"><?php echo htmlspecialchars($produto['nome_produto']); ?></h3>
-                                    <p class="product-description"><?php echo htmlspecialchars($produto['descricao'] ?: 'Produto premium TECHFIT'); ?></p>
+                                    <p class="product-description"><?php echo htmlspecialchars($produto['tipo_produto'] . ' - ' . $produto['categoria']); ?></p>
                                     <p class="product-price">R$ <?php echo number_format($produto['preco'], 2, ',', '.'); ?></p>
-                                    <?php if ($produto['quantidade_estoque'] > 0): ?>
+                                    <?php if ($produto['quantidade'] > 0): ?>
                                         <button class="btn-add-to-cart">Adicionar ao carrinho</button>
-                                        <?php if ($produto['quantidade_estoque'] < 10): ?>
+                                        <?php if ($produto['quantidade'] < 10): ?>
                                             <p style="color: #f39c12; font-size: 0.85rem; margin-top: 5px;">
-                                                Apenas <?php echo $produto['quantidade_estoque']; ?> em estoque!
+                                                Apenas <?php echo $produto['quantidade']; ?> em estoque!
                                             </p>
                                         <?php endif; ?>
                                     <?php else: ?>

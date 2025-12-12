@@ -40,7 +40,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Função auxiliar para criar o elemento do carrinho
     function criarElementoCarrinho() {
         const cartLink = document.createElement('a');
-        cartLink.href = 'carrinho.html';
+        cartLink.href = 'carrinho.php';
         cartLink.className = 'cart-button';
         cartLink.innerHTML = `
             <i class="fas fa-shopping-cart"></i>
@@ -49,25 +49,33 @@ document.addEventListener('DOMContentLoaded', function() {
         return cartLink;
     }
 
-    // 2. Atualizar contador do carrinho
-    function atualizarContadorCarrinho() {
+    // 2. Atualizar contador do carrinho via AJAX
+    async function atualizarContadorCarrinho() {
         const cartCount = document.querySelector('.cart-count');
         if (!cartCount) return;
 
         try {
-            const carrinho = JSON.parse(localStorage.getItem('carrinhoTechFit')) || [];
-            const totalItens = carrinho.reduce((total, item) => total + item.quantidade, 0);
+            // Busca o carrinho da sessão PHP via AJAX
+            const response = await fetch('CarrinhoController.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ action: 'obter_carrinho' })
+            });
             
-            cartCount.textContent = totalItens;
+            const result = await response.json();
             
-            if (totalItens > 0) {
-                cartCount.style.display = 'flex';
+            if (result.sucesso && result.carrinho) {
+                const totalItens = result.carrinho.itens.length;
+                cartCount.textContent = totalItens;
             } else {
-                cartCount.style.display = 'none';
+                cartCount.textContent = '0';
             }
             
         } catch (error) {
             console.error('Erro ao atualizar contador:', error);
+            cartCount.textContent = '0';
         }
     }
 

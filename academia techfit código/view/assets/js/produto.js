@@ -6,79 +6,115 @@ function configurarBotoesCarrinho() {
     const addToCartButtons = document.querySelectorAll('.btn-add-to-cart');
     
     addToCartButtons.forEach(button => {
-        button.addEventListener('click', function() {
+        button.addEventListener('click', async function() {
             const productCard = this.closest('.product-card');
             const product = {
-                id: productCard.dataset.id || Math.random().toString(36).substr(2, 9),
-                nome: productCard.querySelector('.product-name').textContent,
-                descricao: productCard.querySelector('.product-description').textContent,
-                preco: parseFloat(productCard.querySelector('.product-price').textContent.replace('R$ ', '').replace(',', '.')),
-                imagem: productCard.querySelector('.product-image').src
+                action: 'adicionar_produto',
+                id: productCard.dataset.id,
+                quantidade: 1
             };
             
-            // Adicionar ao carrinho
-            if (typeof carrinho !== 'undefined') {
-                carrinho.adicionarItem(product);
-            } else {
-                // Se o carrinho não estiver carregado, usar localStorage diretamente
-                adicionarAoCarrinhoLocal(product);
+            // Desabilita o botão temporariamente
+            this.disabled = true;
+            const textoOriginal = this.textContent;
+            this.textContent = 'Adicionando...';
+            
+            try {
+                // Envia via AJAX para o CarrinhoController
+                const response = await fetch('CarrinhoController.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(product)
+                });
+                
+                const result = await response.json();
+                
+                if (result.sucesso) {
+                    // Efeito visual de sucesso
+                    this.textContent = '✓ Adicionado!';
+                    this.style.background = '#4CAF50';
+                    
+                    // Mostra notificação
+                    mostrarNotificacao(result.mensagem, 'success');
+                    
+                    // Atualiza contador do carrinho se existir
+                    atualizarContadorCarrinho();
+                    
+                    setTimeout(() => {
+                        this.textContent = textoOriginal;
+                        this.style.background = '';
+                        this.disabled = false;
+                    }, 2000);
+                } else {
+                    throw new Error(result.mensagem || 'Erro ao adicionar produto');
+                }
+            } catch (error) {
+                console.error('Erro:', error);
+                mostrarNotificacao(error.message, 'error');
+                this.textContent = textoOriginal;
+                this.disabled = false;
             }
-            
-            // Efeito visual
-            this.textContent = '✓ Adicionado!';
-            this.style.background = '#4CAF50';
-            
-            setTimeout(() => {
-                this.textContent = 'Adicionar ao carrinho';
-                this.style.background = '';
-            }, 2000);
         });
     });
 }
 
-// Função auxiliar para quando o carrinho não está carregado
-function adicionarAoCarrinhoLocal(product) {
-    let carrinho = JSON.parse(localStorage.getItem('carrinhoTechFit')) || [];
-    const itemExistente = carrinho.find(item => item.id === product.id);
-    
-    if (itemExistente) {
-        itemExistente.quantidade += 1;
-    } else {
-        carrinho.push({
-            ...product,
-            quantidade: 1
-        });
-    }
-    
-    localStorage.setItem('carrinhoTechFit', JSON.stringify(carrinho));
-    
-    // Mostrar notificação
+// Função para mostrar notificação
+function mostrarNotificacao(mensagem, tipo = 'success') {
     const notification = document.createElement('div');
-    notification.textContent = `${product.nome} adicionado ao carrinho!`;
+    notification.textContent = mensagem;
     notification.style.cssText = `
         position: fixed;
         top: 100px;
         right: 20px;
-        background: #4CAF50;
+        background: ${tipo === 'success' ? '#4CAF50' : '#f44336'};
         color: white;
         padding: 15px 20px;
         border-radius: 10px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.3);
         z-index: 10000;
+        animation: slideIn 0.3s ease;
     `;
     document.body.appendChild(notification);
-    setTimeout(() => notification.remove(), 3000);
+    setTimeout(() => {
+        notification.style.animation = 'slideOut 0.3s ease';
+        setTimeout(() => notification.remove(), 300);
+    }, 3000);
+}
+
+// Função para atualizar contador do carrinho
+async function atualizarContadorCarrinho() {
+    try {
+        const response = await fetch('CarrinhoController.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ action: 'obter_carrinho' })
+        });
+        
+        const result = await response.json();
+        
+        if (result.sucesso && result.carrinho) {
+            const totalItens = result.carrinho.itens.length;
+            const badge = document.querySelector('.cart-badge');
+            if (badge) {
+                badge.textContent = totalItens;
+                badge.style.display = totalItens > 0 ? 'block' : 'none';
+            }
+        }
+    } catch (error) {
+        console.error('Erro ao atualizar contador:', error);
+    }
 }
 
 // Chamar a função quando a página carregar
 document.addEventListener('DOMContentLoaded', function() {
     configurarBotoesCarrinho();
     
-    // Adicionar data-id aos cards de produto se não existir
-    document.querySelectorAll('.product-card').forEach((card, index) => {
-        if (!card.dataset.id) {
-            card.dataset.id = `produto-${index + 1}`;
-        }
-    });
+    // Atualizar contador do carrinho ao carregar
+    atualizarContadorCarrinho();
 });
 document.addEventListener('DOMContentLoaded', function() {
     // Header e navegação (mantenha o código existente)

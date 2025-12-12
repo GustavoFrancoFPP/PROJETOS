@@ -242,12 +242,17 @@ body {
 /* ===== FORMULÁRIOS ===== */
 .form-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    grid-template-columns: repeat(2, 1fr);
     gap: 20px;
+    align-items: start;
 }
 
 .form-group {
     margin-bottom: 20px;
+}
+
+.form-group:last-child {
+    margin-bottom: 0;
 }
 
 .form-label {
@@ -255,6 +260,8 @@ body {
     margin-bottom: 8px;
     color: var(--cor-texto-secundario);
     font-weight: 600;
+    font-size: 0.9rem;
+    min-height: 20px;
 }
 
 .form-control,
@@ -268,6 +275,8 @@ body {
     font-size: 1rem;
     transition: all 0.3s;
     font-family: var(--font-principal);
+    height: 52px;
+    box-sizing: border-box;
 }
 
 .form-control:focus,
@@ -276,6 +285,12 @@ body {
     border-color: var(--cor-ciano-principal);
     background: rgba(255, 255, 255, 0.08);
     box-shadow: 0 0 0 3px rgba(0, 209, 178, 0.1);
+}
+
+.form-select option {
+    background: #1a1a2e;
+    color: #ffffff;
+    padding: 10px;
 }
 
 textarea.form-control {

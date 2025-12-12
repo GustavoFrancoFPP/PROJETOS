@@ -53,7 +53,7 @@ try {
         FROM pagamento pg
         INNER JOIN planos p ON pg.id_planos = p.id_planos
         WHERE pg.id_cliente = ? 
-        AND pg.status_pagamento = 'pago'
+        AND pg.status_pagamento IN ('pago', 'pendente')
         ORDER BY pg.data_pagamento DESC
     ");
     $stmt->execute([$idAluno]);
@@ -102,22 +102,49 @@ try {
     $stmt->execute([$idAluno]);
     $totalGasto = $stmt->fetch()['total_gasto'] ?? 0;
 
-    // Notificações não lidas
-    $stmt = $conn->prepare("
-        SELECT COUNT(*) as total_notif
-        FROM notificacao
-        WHERE id_cliente = ? AND status = 'não lida'
-    ");
-    $stmt->execute([$idAluno]);
-    $totalNotificacoes = $stmt->fetch()['total_notif'] ?? 0;
-
 } catch (PDOException $e) {
     error_log("Erro no dashboard: " . $e->getMessage());
     $planosAluno = [];
     $agendamentosAluno = [];
     $historicoCompras = [];
     $totalGasto = 0;
+}
+
+// Buscar notificações separadamente para não quebrar o dashboard se a tabela não existir
+$totalNotificacoes = 0;
+$notificacoesRecentes = [];
+
+try {
+    // Notificações não lidas
+    $stmt = $conn->prepare("
+        SELECT COUNT(*) as total_notif
+        FROM notificacao
+        WHERE (id_cliente = ? OR id_cliente IS NULL) AND status = 'não lida'
+    ");
+    $stmt->execute([$idAluno]);
+    $totalNotificacoes = $stmt->fetch()['total_notif'] ?? 0;
+
+    // Buscar notificações recentes (últimas 5)
+    $stmt = $conn->prepare("
+        SELECT 
+            id_notificacao,
+            titulo,
+            mensagem,
+            DATE_FORMAT(data_envio, '%d/%m/%Y %H:%i') as data_formatada,
+            status,
+            prioridade
+        FROM notificacao
+        WHERE id_cliente = ? OR id_cliente IS NULL
+        ORDER BY data_envio DESC
+        LIMIT 5
+    ");
+    $stmt->execute([$idAluno]);
+    $notificacoesRecentes = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+} catch (PDOException $e) {
+    error_log("Erro ao buscar notificações: " . $e->getMessage());
     $totalNotificacoes = 0;
+    $notificacoesRecentes = [];
 }
 ?>
 <!DOCTYPE html>
@@ -160,6 +187,13 @@ try {
         .btn-cancelar-plano { background: #ff4444; color: #fff; border: none; padding: 8px 15px; border-radius: 8px; font-size: 0.85rem; cursor: pointer; transition: all 0.3s; display: flex; align-items: center; gap: 5px; }
         .btn-cancelar-plano:hover { background: #cc0000; transform: translateY(-2px); }
         .btn-cancelar-plano i { font-size: 0.9rem; }
+        
+        /* Notificações */
+        .item-list li p { word-wrap: break-word; }
+        .item-list::-webkit-scrollbar { width: 8px; }
+        .item-list::-webkit-scrollbar-track { background: rgba(255,255,255,0.05); border-radius: 10px; }
+        .item-list::-webkit-scrollbar-thumb { background: rgba(0,240,225,0.3); border-radius: 10px; }
+        .item-list::-webkit-scrollbar-thumb:hover { background: rgba(0,240,225,0.5); }
     </style>
     <link rel="icon" type="image/x-icon" href="assets/images/imagens/favicon.ico">
 </head>
@@ -323,6 +357,48 @@ try {
                         <i class="fas fa-shopping-cart"></i>
                         <p>Você ainda não realizou compras</p>
                         <a href="produtos_loja.php" class="btn-action">Ver Produtos</a>
+                    </div>
+                <?php endif; ?>
+            </div>
+
+            <!-- Notificações -->
+            <div class="dashboard-card">
+                <div class="card-header">
+                    <h2><i class="fas fa-bell"></i> Notificações</h2>
+                    <?php if ($totalNotificacoes > 0): ?>
+                        <span style="background: #ff4444; color: white; padding: 4px 10px; border-radius: 12px; font-size: 0.85rem;">
+                            <?php echo $totalNotificacoes; ?> nova<?php echo $totalNotificacoes > 1 ? 's' : ''; ?>
+                        </span>
+                    <?php endif; ?>
+                </div>
+                <?php if (!empty($notificacoesRecentes)): ?>
+                    <ul class="item-list" style="max-height: 400px; overflow-y: auto;">
+                        <?php foreach ($notificacoesRecentes as $notif): ?>
+                            <li style="flex-direction: column; align-items: flex-start; padding: 12px 0;">
+                                <div style="display: flex; justify-content: space-between; width: 100%; margin-bottom: 8px;">
+                                    <span class="name" style="display: flex; align-items: center; gap: 8px;">
+                                        <?php if ($notif['status'] === 'não lida'): ?>
+                                            <i class="fas fa-circle" style="font-size: 0.5rem; color: #ff4444;"></i>
+                                        <?php endif; ?>
+                                        <?php echo htmlspecialchars($notif['titulo']); ?>
+                                    </span>
+                                    <span class="detail"><?php echo $notif['data_formatada']; ?></span>
+                                </div>
+                                <p style="color: #aaa; margin: 0; font-size: 0.9rem; line-height: 1.5;">
+                                    <?php echo htmlspecialchars($notif['mensagem']); ?>
+                                </p>
+                                <?php if ($notif['prioridade'] === 'alta'): ?>
+                                    <span style="display: inline-block; background: rgba(255,68,68,0.2); color: #ff4444; padding: 3px 10px; border-radius: 8px; font-size: 0.75rem; margin-top: 8px;">
+                                        <i class="fas fa-exclamation-circle"></i> Prioridade Alta
+                                    </span>
+                                <?php endif; ?>
+                            </li>
+                        <?php endforeach; ?>
+                    </ul>
+                <?php else: ?>
+                    <div class="empty-state">
+                        <i class="fas fa-bell-slash"></i>
+                        <p>Nenhuma notificação no momento</p>
                     </div>
                 <?php endif; ?>
             </div>

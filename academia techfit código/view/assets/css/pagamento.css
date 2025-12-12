@@ -356,6 +356,12 @@ body {
     box-shadow: 0 0 0 2px rgba(0, 240, 225, 0.1);
 }
 
+.form-group select option {
+    background: #1a1a2e;
+    color: #ffffff;
+    padding: 10px;
+}
+
 .form-group input::placeholder {
     color: var(--text-muted);
 }
@@ -454,6 +460,12 @@ body {
 
 .parcelamento select {
     width: 100%;
+}
+
+.parcelamento select option {
+    background: #1a1a2e;
+    color: #ffffff;
+    padding: 10px;
 }
 
 /* PIX */

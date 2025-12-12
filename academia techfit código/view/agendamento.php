@@ -25,26 +25,51 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['agendar_aula'])) {
         } elseif (strtotime($data_agendamento) < strtotime(date('Y-m-d'))) {
             $mensagem_alerta = 'Não é possível agendar em datas passadas.';
         } else {
-            $dataHoraCompleta = $data_agendamento . ' ' . $horario;
-            $stmt = $conn->prepare('INSERT INTO agendamento (id_cliente, tipo_aula, data_agendamento) VALUES (?, ?, ?)');
-            $stmt->execute([$id_cliente, $tipo_aula, $dataHoraCompleta]);
-            $mensagem_alerta = 'Aula agendada com sucesso! Aguarde confirmação.';
+            // Busca a aula no banco para verificar vagas
+            $stmt = $conn->prepare('SELECT id_aula, vagas_totais, vagas_ocupadas FROM aulas WHERE nome_aula = ? AND horario = ? AND status = "ativa"');
+            $stmt->execute([$tipo_aula, $horario]);
+            $aula = $stmt->fetch(PDO::FETCH_ASSOC);
+            
+            if (!$aula) {
+                $mensagem_alerta = 'Aula não encontrada ou inativa.';
+            } elseif ($aula['vagas_ocupadas'] >= $aula['vagas_totais']) {
+                $mensagem_alerta = 'Não há vagas disponíveis para esta aula.';
+            } else {
+                // Insere agendamento
+                $dataHoraCompleta = $data_agendamento . ' ' . $horario;
+                $stmt = $conn->prepare('INSERT INTO agendamento (id_cliente, tipo_aula, data_agendamento) VALUES (?, ?, ?)');
+                $stmt->execute([$id_cliente, $tipo_aula, $dataHoraCompleta]);
+                
+                // Aumenta vagas_ocupadas da aula
+                $stmt = $conn->prepare('UPDATE aulas SET vagas_ocupadas = vagas_ocupadas + 1 WHERE id_aula = ?');
+                $stmt->execute([$aula['id_aula']]);
+                
+                $mensagem_alerta = 'Aula agendada com sucesso! Aguarde confirmação.';
+            }
         }
     } catch (Exception $e) {
         $mensagem_alerta = 'Erro ao agendar: ' . $e->getMessage();
     }
 }
 
-// Grade fixa para exibição (layout antigo)
-$grade_aulas = [
-    ['horario' => '07:00', 'nome' => 'Yoga Matinal',     'vagas' => 21],
-    ['horario' => '09:00', 'nome' => 'Yoga Matinal',     'vagas' => 15],
-    ['horario' => '13:00', 'nome' => 'Spinning Class',   'vagas' => 22],
-    ['horario' => '15:00', 'nome' => 'Pilates',          'vagas' => 14],
-    ['horario' => '17:50', 'nome' => 'Treino Funcional', 'vagas' => 38],
-    ['horario' => '19:00', 'nome' => 'Pilates',          'vagas' => 17],
-    ['horario' => '21:00', 'nome' => 'HIIT',             'vagas' => 0]
-];
+// Busca aulas ativas do banco de dados
+try {
+    $conn = Connection::getInstance();
+    $stmt = $conn->query('SELECT nome_aula, horario, vagas_totais, vagas_ocupadas, (vagas_totais - vagas_ocupadas) as vagas_disponiveis FROM aulas WHERE status = "ativa" ORDER BY horario');
+    $grade_aulas = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    
+    // Formata para o layout esperado
+    $grade_aulas = array_map(function($aula) {
+        return [
+            'horario' => date('H:i', strtotime($aula['horario'])),
+            'nome' => $aula['nome_aula'],
+            'vagas' => $aula['vagas_disponiveis']
+        ];
+    }, $grade_aulas);
+} catch (Exception $e) {
+    // Se der erro, usa array vazio
+    $grade_aulas = [];
+}
 
 // Próximos 30 dias para o calendário
 $diasDisponiveis = [];
@@ -87,19 +112,37 @@ for ($i = 0; $i < 30; $i++) {
 
     <header class="techfit-header">
         <div class="header-container">
+            <!-- Logo -->
             <a href="inicio.html" class="header-logo">
+                <img src="assets/images/imagens/WhatsApp Image 2025-10-02 at 15.15.22.jpeg" 
+                     alt="TechFit - Academia Inteligente" 
+                     class="logo-image">
                 <div class="logo-text">TECH<span>FIT</span></div>
             </a>
+
+            <!-- Navegação -->
             <nav class="main-navigation">
                 <ul class="nav-links">
                     <li><a href="inicio.html" class="nav-link">Início</a></li>
-                    <li><a href="dashboard_aluno.php" class="nav-link">Dashboard</a></li>
+                    <li><a href="pagina_1.html" class="nav-link">Academias</a></li>
                     <li><a href="produtos_loja.php" class="nav-link">Produtos</a></li>
                     <li><a href="agendamento.php" class="nav-link active">Agendamento</a></li>
                     <li><a href="suporte.html" class="nav-link">Suporte</a></li>
-                    <li><a href="logout.php" class="nav-link" style="color: #ff4444;">Sair</a></li>
                 </ul>
+
+                <!-- Botão de Ação -->
+                <div class="header-cta">
+                    <!-- Botão do Carrinho (será adicionado pelo JavaScript) -->
+                    <a href="dashboard_aluno.php" class="cta-button">Dashboard</a>
+                </div>
             </nav>
+
+            <!-- Menu Hambúrguer (Mobile) -->
+            <button class="hamburger-menu" aria-label="Menu">
+                <span class="hamburger-line"></span>
+                <span class="hamburger-line"></span>
+                <span class="hamburger-line"></span>
+            </button>
         </div>
     </header>
 
@@ -213,5 +256,6 @@ for ($i = 0; $i < 30; $i++) {
         });
     </script>
     <script src="assets/js/script.js"></script>
+    <script src="assets/js/header-carrinho-simples.js"></script>
 </body>
 </html>

@@ -132,13 +132,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $insertId = $conn->lastInsertId();
             error_log("Pedido criado: ID=$insertId, Cliente=$idClienteLogado");
 
-            // NOVO: Registra cada produto/plano na tabela venda e pagamento
-            // Tenta pegar o ID do cliente da sessão ou do POST
-            $idCliente = $_SESSION['user_id'] ?? $_SESSION['id_cliente'] ?? null;
+            $idCliente = $_SESSION['user_id'] ?? $_SESSION['id_cliente'] ?? $idClienteLogado ?? null;
             
-            if ($pedido_json && $idCliente) {
+            if ($pedido_json) {
                 $pedidoData = json_decode($pedido_json, true);
+                
                 if (json_last_error() === JSON_ERROR_NONE && isset($pedidoData['itens']) && is_array($pedidoData['itens'])) {
+                    
                     $stmtVenda = $conn->prepare("INSERT INTO venda (id_cliente, id_produtos, quantidade, valor_total, data_venda) VALUES (?, ?, ?, ?, NOW())");
                     $stmtPagamento = $conn->prepare("INSERT INTO pagamento (id_cliente, id_planos, valor_pago, metodo_pagamento, status_pagamento, data_pagamento) VALUES (?, ?, ?, ?, ?, NOW())");
                     
@@ -151,7 +151,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         $quantidade = $item['quantidade'] ?? 1;
                         $valorTotalItem = $item['preco'] * $quantidade;
                         
-                        // Se for PLANO, insere na tabela pagamento
                         if ($tipoItem === 'plano' && $idItem) {
                             try {
                                 $stmtPagamento->execute([
@@ -159,19 +158,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                     $idItem,
                                     $valorTotalItem,
                                     $order['metodo_pagamento'],
-                                    'pago' // Status confirmado
+                                    'pago'
                                 ]);
                                 $planoInserido = true;
-                                error_log("✓ Plano contratado: Cliente=$idCliente, Plano=$idItem, Valor=$valorTotalItem");
-                                
-                                // Limpa carrinho de planos após sucesso
                                 $_SESSION['carrinho_planos'] = ['itens' => [], 'subtotal' => 0];
                             } catch (PDOException $e) {
                                 error_log("✗ Erro ao inserir pagamento de plano: " . $e->getMessage());
                             }
                         }
-                        // Se for PRODUTO, insere na tabela venda
-                        elseif ($idItem && is_numeric($idItem) && intval($idItem) > 0) {
+                        elseif ($tipoItem === 'produto' && $idItem && is_numeric($idItem)) {
                             try {
                                 $stmtVenda->execute([
                                     $idCliente,
@@ -180,9 +175,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                     $valorTotalItem
                                 ]);
                                 $vendasInseridas++;
-                                error_log("✓ Venda registrada: Cliente=$idCliente, Produto=$idItem, Qtd=$quantidade, Valor=$valorTotalItem");
+                                
+                                $stmtEstoque = $conn->prepare("UPDATE produtos SET quantidade = quantidade - ? WHERE id_produtos = ? AND quantidade >= ?");
+                                $stmtEstoque->execute([$quantidade, intval($idItem), $quantidade]);
                             } catch (PDOException $e) {
-                                error_log("✗ Erro ao inserir venda: " . $e->getMessage());
+                                error_log($e->getMessage());
                             }
                         }
                     }
@@ -195,6 +192,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if (session_status() == PHP_SESSION_NONE) session_start();
             $_SESSION['order'] = $order;
             $_SESSION['pedido_id'] = $insertId;
+
+            // Limpa o carrinho da sessão e localStorage após compra bem-sucedida
+            if (isset($_SESSION['carrinho_planos'])) {
+                unset($_SESSION['carrinho_planos']);
+            }
+            $_SESSION['limpar_carrinho_js'] = true; // Flag para limpar no frontend
 
             // Redireciona para página de confirmação com id do pedido
             header('Location: confirmacao.php?pedido_id=' . $insertId);
@@ -327,26 +330,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         </div>
 
                         <!-- Formulário PIX -->
-                        <div id="form-pix" style="display: none; padding: 20px; text-align: center;">
-                            <div style="background: #fff; color: #121212; padding: 30px; border-radius: 10px; margin: 20px 0;">
-                                <i class="fas fa-qrcode" style="font-size: 100px; color: #00f0e1; margin-bottom: 20px;"></i>
-                                <h3>Pagamento via PIX</h3>
-                                <p>Após gerar o QR Code, você terá 15 minutos para realizar o pagamento.</p>
-                                <div style="background: #f0f0f0; padding: 15px; border-radius: 5px; margin: 20px 0;">
-                                    <p style="font-size: 12px; color: #666;">Código PIX será gerado após confirmar o pedido</p>
+                        <div id="form-pix" style="display: none;">
+                            <div style="background: linear-gradient(135deg, rgba(0,240,225,0.1) 0%, rgba(0,168,204,0.1) 100%); padding: 30px; border-radius: 15px; border: 2px solid rgba(0,240,225,0.3); text-align: center;">
+                                <i class="fas fa-qrcode" style="font-size: 80px; color: #00f0e1; margin-bottom: 20px;"></i>
+                                <h3 style="color: #00f0e1; margin-bottom: 15px;">Pagamento via PIX</h3>
+                                <p style="color: #b0b7d9; margin-bottom: 20px;">O QR Code PIX será gerado após você confirmar o pedido.</p>
+                                <div style="background: rgba(0,0,0,0.3); padding: 20px; border-radius: 10px; border-left: 4px solid #00f0e1;">
+                                    <p style="color: #fff; margin: 0; font-size: 14px;"><i class="fas fa-info-circle"></i> Você terá 15 minutos para realizar o pagamento</p>
+                                    <p style="color: #aaa; margin: 10px 0 0 0; font-size: 13px;">Pagamento instantâneo e seguro</p>
                                 </div>
                             </div>
                         </div>
 
                         <!-- Formulário Boleto -->
-                        <div id="form-boleto" style="display: none; padding: 20px; text-align: center;">
-                            <div style="background: #fff; color: #121212; padding: 30px; border-radius: 10px; margin: 20px 0;">
-                                <i class="fas fa-barcode" style="font-size: 100px; color: #00f0e1; margin-bottom: 20px;"></i>
-                                <h3>Pagamento via Boleto Bancário</h3>
-                                <p>O boleto será gerado e enviado para seu e-mail.</p>
-                                <div style="background: #f0f0f0; padding: 15px; border-radius: 5px; margin: 20px 0;">
-                                    <p style="font-size: 12px; color: #666;">Vencimento: 3 dias úteis</p>
-                                    <p style="font-size: 12px; color: #666;">O pedido será processado após a confirmação do pagamento</p>
+                        <div id="form-boleto" style="display: none;">
+                            <div style="background: linear-gradient(135deg, rgba(255,193,7,0.1) 0%, rgba(255,152,0,0.1) 100%); padding: 30px; border-radius: 15px; border: 2px solid rgba(255,193,7,0.3); text-align: center;">
+                                <i class="fas fa-barcode" style="font-size: 80px; color: #ffc107; margin-bottom: 20px;"></i>
+                                <h3 style="color: #ffc107; margin-bottom: 15px;">Pagamento via Boleto Bancário</h3>
+                                <p style="color: #b0b7d9; margin-bottom: 20px;">O boleto será gerado e enviado para o seu e-mail após confirmar.</p>
+                                <div style="background: rgba(0,0,0,0.3); padding: 20px; border-radius: 10px; border-left: 4px solid #ffc107;">
+                                    <p style="color: #fff; margin: 0; font-size: 14px;"><i class="fas fa-calendar-alt"></i> Vencimento em 3 dias úteis</p>
+                                    <p style="color: #aaa; margin: 10px 0 0 0; font-size: 13px;">O pedido será processado após a confirmação do pagamento</p>
                                 </div>
                             </div>
                         </div>
@@ -361,6 +365,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <?php if (!empty($erro)): ?>
                         <div style="color: red; font-weight: bold; margin-bottom: 10px;"><?php echo htmlspecialchars($erro); ?></div>
                     <?php endif; ?>
+
+                    <!-- Campo hidden para enviar dados do carrinho -->
+                    <input type="hidden" id="pedido_json" name="pedido_json" value="">
 
                     <button class="btn-confirmar-pagamento" id="btnConfirmarPagamento" type="submit">
                         <i class="fas fa-lock"></i>
@@ -377,6 +384,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <script>
 // Inicializar sistema de pagamento
 document.addEventListener('DOMContentLoaded', function() {
+    // Preencher campo hidden com dados do carrinho do localStorage
+    const dadosCarrinho = localStorage.getItem('dadosCompraTechFit');
+    if (dadosCarrinho) {
+        document.getElementById('pedido_json').value = dadosCarrinho;
+        console.log('✅ Dados do carrinho carregados no formulário');
+    } else {
+        console.warn('⚠️ Nenhum dado de carrinho encontrado no localStorage');
+    }
+    
     // Configurar alternância de métodos de pagamento
     document.querySelectorAll('input[name="metodo-pagamento"]').forEach(radio => {
         radio.addEventListener('change', function(e) {
@@ -389,16 +405,6 @@ document.addEventListener('DOMContentLoaded', function() {
             
             // Mostrar o formulário selecionado
             document.getElementById(`form-${metodo}`).style.display = 'block';
-            
-            // Atualizar texto do botão
-            const btn = document.getElementById('btnConfirmarPagamento');
-            if (metodo === 'pix') {
-                btn.innerHTML = '<i class="fas fa-qrcode"></i> Gerar QR Code PIX';
-            } else if (metodo === 'boleto') {
-                btn.innerHTML = '<i class="fas fa-barcode"></i> Gerar Boleto';
-            } else {
-                btn.innerHTML = '<i class="fas fa-lock"></i> Confirmar Pagamento';
-            }
         });
     });
     

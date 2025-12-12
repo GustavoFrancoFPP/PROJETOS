@@ -16,11 +16,6 @@ if (!isset($_SESSION['carrinho_planos'])) {
 }
 
 $planosCarrinho = $_SESSION['carrinho_planos'];
-
-// Debug: Log do estado do carrinho
-error_log("📦 Carrinho.php - Session ID: " . session_id());
-error_log("📦 Carrinho.php - Itens: " . count($planosCarrinho['itens']));
-error_log("📦 Carrinho.php - Subtotal: " . $planosCarrinho['subtotal']);
 ?>
 <!DOCTYPE html>
 <html lang="pt-br">
@@ -81,6 +76,65 @@ error_log("📦 Carrinho.php - Subtotal: " . $planosCarrinho['subtotal']);
             align-items: center;
             gap: 10px;
         }
+        
+        .product-item {
+            background: linear-gradient(135deg, #1e1e1e 0%, #2a2a2a 100%);
+            border: 1px solid #333;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+        }
+        
+        .product-item .item-nome {
+            color: #fff;
+            font-size: 18px;
+            margin-bottom: 8px;
+        }
+        
+        .product-item .item-descricao {
+            color: #999;
+            font-size: 14px;
+            margin-bottom: 12px;
+        }
+        
+        .product-item .item-detalhes {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .product-item .item-detalhes span {
+            color: #00f0e1;
+            font-weight: 500;
+        }
+        
+        .product-item .item-preco {
+            font-size: 20px;
+            font-weight: bold;
+        }
+        
+        .product-item .item-controles {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .product-item .remover-item {
+            background: #e74c3c;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+        
+        .product-item .remover-item:hover {
+            background: #c0392b;
+            transform: scale(1.05);
+        }
     </style>
 </head>
 <body>
@@ -138,12 +192,32 @@ error_log("📦 Carrinho.php - Subtotal: " . $planosCarrinho['subtotal']);
             <div class="carrinho-content">
                 <div class="itens-carrinho">
                     <!-- Seção de Planos (PHP) -->
-                    <?php if (count($planosCarrinho['itens']) > 0): ?>
+                    <?php 
+                    $temPlanos = false;
+                    $temProdutos = false;
+                    
+                    // Separa planos de produtos
+                    $planosLista = [];
+                    $produtosLista = [];
+                    
+                    foreach ($planosCarrinho['itens'] as $item) {
+                        $tipo = $item['tipo'] ?? 'produto';
+                        if ($tipo === 'plano') {
+                            $planosLista[] = $item;
+                            $temPlanos = true;
+                        } else {
+                            $produtosLista[] = $item;
+                            $temProdutos = true;
+                        }
+                    }
+                    ?>
+                    
+                    <?php if ($temPlanos): ?>
                         <div class="section-title">
                             <i class="fas fa-crown"></i>
                             Planos de Assinatura
                         </div>
-                        <?php foreach ($planosCarrinho['itens'] as $plano): ?>
+                        <?php foreach ($planosLista as $plano): ?>
                             <div class="plano-item" data-plano-id="<?php echo htmlspecialchars($plano['id']); ?>">
                                 <div class="item-info">
                                     <span class="plano-badge"><i class="fas fa-star"></i> Plano Premium</span>
@@ -151,7 +225,7 @@ error_log("📦 Carrinho.php - Subtotal: " . $planosCarrinho['subtotal']);
                                     <p class="item-descricao"><?php echo htmlspecialchars($plano['descricao']); ?></p>
                                     <p class="plano-preco-destaque">R$ <?php echo number_format($plano['preco'], 2, ',', '.'); ?>/mês</p>
                                     <div class="item-controles">
-                                        <button class="remover-item" onclick="removerPlano('<?php echo htmlspecialchars($plano['id']); ?>')">
+                                        <button class="remover-item" onclick="removerItem('<?php echo htmlspecialchars($plano['id']); ?>', 'plano')">
                                             <i class="fas fa-trash"></i> Remover Plano
                                         </button>
                                     </div>
@@ -161,16 +235,38 @@ error_log("📦 Carrinho.php - Subtotal: " . $planosCarrinho['subtotal']);
                         <div class="section-divider"></div>
                     <?php endif; ?>
 
-                    <!-- Seção de Produtos (JavaScript/localStorage) -->
-                    <div class="section-title" id="produtosTitle" style="display: none;">
-                        <i class="fas fa-shopping-bag"></i>
-                        Produtos
-                    </div>
+                    <!-- Seção de Produtos -->
+                    <?php if ($temProdutos): ?>
+                        <div class="section-title">
+                            <i class="fas fa-shopping-bag"></i>
+                            Produtos
+                        </div>
+                        <?php foreach ($produtosLista as $produto): ?>
+                            <div class="product-item" data-produto-id="<?php echo htmlspecialchars($produto['id']); ?>">
+                                <div class="item-info">
+                                    <h4 class="item-nome"><?php echo htmlspecialchars($produto['nome']); ?></h4>
+                                    <p class="item-descricao"><?php echo htmlspecialchars($produto['descricao'] ?? ''); ?></p>
+                                    <div class="item-detalhes">
+                                        <span class="item-preco">R$ <?php echo number_format($produto['preco'], 2, ',', '.'); ?></span>
+                                        <span class="item-quantidade">Quantidade: <?php echo intval($produto['quantidade'] ?? 1); ?></span>
+                                        <span class="item-subtotal">Subtotal: R$ <?php echo number_format($produto['subtotal'], 2, ',', '.'); ?></span>
+                                    </div>
+                                    <div class="item-controles">
+                                        <button class="remover-item" onclick="removerItem('<?php echo htmlspecialchars($produto['id']); ?>', 'produto')">
+                                            <i class="fas fa-trash"></i> Remover
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        <?php endforeach; ?>
+                        <div class="section-divider"></div>
+                    <?php endif; ?>
                     
-                    <div class="carrinho-vazio" id="carrinhoVazio" style="<?php echo count($planosCarrinho['itens']) > 0 ? 'display: none;' : ''; ?>">
+                    <div class="carrinho-vazio" id="carrinhoVazio" style="<?php echo ($temPlanos || $temProdutos) ? 'display: none;' : ''; ?>">
                         <i class="fas fa-shopping-cart"></i>
                         <h3>Seu carrinho está vazio</h3>
                         <p>Adicione produtos ou escolha um plano da TECHFIT!</p>
+                        
                         <div style="display: flex; gap: 10px; justify-content: center; margin-top: 15px;">
                             <a href="produtos_loja.php" class="btn-primary">Ver Produtos</a>
                             <a href="planos.php" class="btn-primary" style="background: linear-gradient(135deg, #00f0e1 0%, #00c9b8 100%);">Ver Planos</a>
@@ -260,31 +356,38 @@ error_log("📦 Carrinho.php - Subtotal: " . $planosCarrinho['subtotal']);
 
     <script>
         /**
-         * Remove plano do carrinho via AJAX
+         * Remove item (plano ou produto) do carrinho via AJAX
          */
-        async function removerPlano(planoId) {
+        async function removerItem(itemId, tipoItem) {
             try {
                 const response = await fetch('CarrinhoController.php', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
-                        action: 'remover_plano',
-                        id: planoId
+                        action: 'remover_item',
+                        id: itemId,
+                        tipo: tipoItem
                     })
                 });
 
                 const result = await response.json();
                 
                 if (result.sucesso) {
-                    alert('Plano removido do carrinho!');
                     window.location.reload();
                 } else {
-                    alert(result.mensagem || 'Erro ao remover plano');
+                    alert(result.mensagem || 'Erro ao remover item');
                 }
             } catch (error) {
                 console.error('Erro:', error);
-                alert('Erro ao remover plano. Tente novamente.');
+                alert('Erro ao remover item. Tente novamente.');
             }
+        }
+        
+        /**
+         * Compatibilidade com código antigo
+         */
+        function removerPlano(planoId) {
+            removerItem(planoId, 'plano');
         }
     </script>
     <script>
@@ -405,8 +508,8 @@ error_log("📦 Carrinho.php - Subtotal: " . $planosCarrinho['subtotal']);
                     
                     console.log('✅ Finalizando compra:', dadosPedido);
                     
-                    // Redireciona para pagamento.html
-                    window.location.href = 'pagamento.html';
+                    // Redireciona para pagamento.php
+                    window.location.href = 'pagamento.php';
                 });
             }
         });

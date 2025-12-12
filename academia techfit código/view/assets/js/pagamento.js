@@ -6,13 +6,14 @@ class Pagamento {
     }
 
     init() {
-        if (!this.dadosCompra) {
-            this.mostrarErro('Dados do carrinho não encontrados. Redirecionando...');
-            setTimeout(() => window.location.href = 'carrinho.html', 2000);
-            return;
-        }
+        // Comentado pois o pagamento.php agora funciona via POST do formulário
+        // if (!this.dadosCompra) {
+        //     this.mostrarErro('Dados do carrinho não encontrados. Redirecionando...');
+        //     setTimeout(() => window.location.href = 'carrinho.php', 2000);
+        //     return;
+        // }
 
-        this.renderizarResumo();
+        // this.renderizarResumo();
         this.configurarEventos();
         this.configurarMascaras();
         this.configurarMetodosPagamento();
@@ -299,12 +300,12 @@ class Pagamento {
                 localStorage.removeItem('dadosCompraTechFit');
                 localStorage.removeItem('carrinhoTechFit');
                 
-                // Mostra sucesso e redireciona
-                this.mostrarSucesso('Pagamento processado com sucesso!');
+                // Mostra sucesso e redireciona após 3 segundos
+                this.mostrarSucesso('Pagamento processado com sucesso! Aguarde...');
                 
                 setTimeout(() => {
                     window.location.href = 'confirmacao.php?success=1&total=' + result.total;
-                }, 1500);
+                }, 3000);
             } else {
                 throw new Error(result.mensagem || 'Erro ao processar pagamento');
             }

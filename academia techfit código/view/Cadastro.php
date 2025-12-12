@@ -60,7 +60,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['acao']) && $_POST['ac
                 <input type="hidden" name="acao" value="cadastrar">
                 
                 <?php if ($mensagem): ?>
-                    <p style="color: <?php echo strpos($mensagem, 'Erro') !== false ? 'red' : 'var(--cor-ciano-principal)'; ?>; text-align: center; font-weight: bold; margin-bottom: 15px;">
+                    <p style="color: <?php echo (strpos($mensagem, 'Erro') !== false || strpos($mensagem, 'já') !== false) ? 'red' : 'var(--cor-ciano-principal)'; ?>; text-align: center; font-weight: bold; margin-bottom: 15px;">
                         <?php echo $mensagem; ?>
                     </p>
                 <?php endif; ?>
@@ -120,5 +120,54 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['acao']) && $_POST['ac
     </main>
     
     <script src="assets/js/login.js"></script>
+    <script>
+        function formatarCPF(input) {
+            let valor = input.value.replace(/\D/g, '');
+            if (valor.length > 11) valor = valor.substring(0, 11);
+            
+            if (valor.length > 9) {
+                valor = valor.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
+            } else if (valor.length > 6) {
+                valor = valor.replace(/(\d{3})(\d{3})(\d{1,3})/, '$1.$2.$3');
+            } else if (valor.length > 3) {
+                valor = valor.replace(/(\d{3})(\d{1,3})/, '$1.$2');
+            }
+            
+            input.value = valor;
+        }
+
+        function formatarTelefone(input) {
+            let valor = input.value.replace(/\D/g, '');
+            if (valor.length > 11) valor = valor.substring(0, 11);
+            
+            if (valor.length > 10) {
+                valor = valor.replace(/(\d{2})(\d{5})(\d{4})/, '($1) $2-$3');
+            } else if (valor.length > 6) {
+                valor = valor.replace(/(\d{2})(\d{4})(\d{0,4})/, '($1) $2-$3');
+            } else if (valor.length > 2) {
+                valor = valor.replace(/(\d{2})(\d{0,5})/, '($1) $2');
+            } else if (valor.length > 0) {
+                valor = valor.replace(/(\d{0,2})/, '($1');
+            }
+            
+            input.value = valor;
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const inputCPF = document.getElementById('cadCPF');
+            if (inputCPF) {
+                inputCPF.addEventListener('input', function() {
+                    formatarCPF(this);
+                });
+            }
+
+            const inputTelefone = document.getElementById('cadTelefone');
+            if (inputTelefone) {
+                inputTelefone.addEventListener('input', function() {
+                    formatarTelefone(this);
+                });
+            }
+        });
+    </script>
 </body>
 </html>

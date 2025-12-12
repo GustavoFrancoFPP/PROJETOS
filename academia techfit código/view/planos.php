@@ -2,51 +2,97 @@
 session_start();
 require_once __DIR__ . '/../config/Connection.php';
 
-// Dados dos planos (exatamente como na imagem)
-$planos = [
-    [
-        'id' => 'plano-sigma',
-        'nome' => 'Plano Sigma',
-        'preco' => 239.90,
-        'descricao' => 'O melhor que tem, inclui todos os treinos, acesso a todas as aulas e ainda ganha suplementos de graça para potencializar seus resultados.',
-        'beneficios' => [
+// Busca planos do banco de dados
+$planos = [];
+try {
+    $conn = Connection::getInstance();
+    $stmt = $conn->query("SELECT * FROM planos WHERE nome_planos IN ('Plano Sigma', 'Plano Alpha', 'Plano Beta') ORDER BY valor DESC");
+    $planosDB = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    
+    // Define benefícios para cada plano
+    $beneficiosPorPlano = [
+        'Plano Sigma' => [
             'Acesso a todas as academias TechFit',
             'Todos os tipos de aulas disponíveis',
             'Suplementos disponíveis',
             'Avaliação física disponível',
             'Acompanhamento Nutricional'
         ],
-        'destaque' => false
-    ],
-    [
-        'id' => 'plano-alpha',
-        'nome' => 'Plano Alpha',
-        'preco' => 139.90,
-        'descricao' => 'Ideal para todos da casa, acesso completo à academia para múltiplos membros com benefícios especiais para cada família.',
-        'beneficios' => [
+        'Plano Alpha' => [
             'Acesso a todas as academias TechFit',
             'Todos os tipos de aulas disponíveis',
             'Suplementos disponíveis',
             'Avaliação física disponível',
             'Acompanhamento Nutricional (não incluído)'
         ],
-        'destaque' => true
-    ],
-    [
-        'id' => 'plano-beta',
-        'nome' => 'Plano Beta',
-        'preco' => 89.90,
-        'descricao' => 'Essencial para quem quer manter a forma, com acesso aos equipamentos e treinos básicos sem complicação.',
-        'beneficios' => [
+        'Plano Beta' => [
             'Acesso a todas as academias TechFit',
             'Todos os tipos de aulas disponíveis',
             'Suplementos disponíveis (não incluído)',
             'Avaliação física disponível (não incluído)',
             'Acompanhamento Nutricional (não incluído)'
+        ]
+    ];
+    
+    foreach ($planosDB as $planoDB) {
+        $planos[] = [
+            'id' => strtolower(str_replace(' ', '-', $planoDB['nome_planos'])),
+            'nome' => $planoDB['nome_planos'],
+            'preco' => floatval($planoDB['valor']),
+            'descricao' => $planoDB['descricao'],
+            'beneficios' => $beneficiosPorPlano[$planoDB['nome_planos']] ?? [],
+            'destaque' => ($planoDB['nome_planos'] === 'Plano Alpha')
+        ];
+    }
+    
+} catch (Exception $e) {
+    error_log("Erro ao buscar planos: " . $e->getMessage());
+    // Se falhar, usa dados padrão
+    $planos = [
+        [
+            'id' => 'plano-sigma',
+            'nome' => 'Plano Sigma',
+            'preco' => 239.90,
+            'descricao' => 'O melhor que tem, inclui todos os treinos, acesso a todas as aulas e ainda ganha suplementos de graça para potencializar seus resultados.',
+            'beneficios' => [
+                'Acesso a todas as academias TechFit',
+                'Todos os tipos de aulas disponíveis',
+                'Suplementos disponíveis',
+                'Avaliação física disponível',
+                'Acompanhamento Nutricional'
+            ],
+            'destaque' => false
         ],
-        'destaque' => false
-    ]
-];
+        [
+            'id' => 'plano-alpha',
+            'nome' => 'Plano Alpha',
+            'preco' => 139.90,
+            'descricao' => 'Ideal para todos da casa, acesso completo à academia para múltiplos membros com benefícios especiais para cada família.',
+            'beneficios' => [
+                'Acesso a todas as academias TechFit',
+                'Todos os tipos de aulas disponíveis',
+                'Suplementos disponíveis',
+                'Avaliação física disponível',
+                'Acompanhamento Nutricional (não incluído)'
+            ],
+            'destaque' => true
+        ],
+        [
+            'id' => 'plano-beta',
+            'nome' => 'Plano Beta',
+            'preco' => 89.90,
+            'descricao' => 'Essencial para quem quer manter a forma, com acesso aos equipamentos e treinos básicos sem complicação.',
+            'beneficios' => [
+                'Acesso a todas as academias TechFit',
+                'Todos os tipos de aulas disponíveis',
+                'Suplementos disponíveis (não incluído)',
+                'Avaliação física disponível (não incluído)',
+                'Acompanhamento Nutricional (não incluído)'
+            ],
+            'destaque' => false
+        ]
+    ];
+}
 
 // Dados de usuário se logado
 $user_logado = isset($_SESSION['user_id']);
@@ -255,10 +301,15 @@ $user_logado = isset($_SESSION['user_id']);
 
     <header class="techfit-header">
         <div class="header-container">
+            <!-- Logo -->
             <a href="inicio.html" class="header-logo">
+                <img src="assets/images/imagens/WhatsApp Image 2025-10-02 at 15.15.22.jpeg" 
+                     alt="TechFit - Academia Inteligente" 
+                     class="logo-image">
                 <div class="logo-text">TECH<span>FIT</span></div>
             </a>
 
+            <!-- Navegação -->
             <nav class="main-navigation">
                 <ul class="nav-links">
                     <li><a href="inicio.html" class="nav-link">Início</a></li>
@@ -268,15 +319,14 @@ $user_logado = isset($_SESSION['user_id']);
                     <li><a href="suporte.html" class="nav-link">Suporte</a></li>
                 </ul>
 
+                <!-- Botão de Ação -->
                 <div class="header-cta">
-                    <?php if ($user_logado): ?>
-                        <a href="dashboard_aluno.php" class="cta-button">Dashboard</a>
-                    <?php else: ?>
-                        <a href="login.php" class="cta-button">Área do Aluno</a>
-                    <?php endif; ?>
+                    <!-- Botão do Carrinho (será adicionado pelo JavaScript) -->
+                    <a href="login.php" class="cta-button">Área do Aluno</a>
                 </div>
             </nav>
 
+            <!-- Menu Hambúrguer (Mobile) -->
             <button class="hamburger-menu" aria-label="Menu">
                 <span class="hamburger-line"></span>
                 <span class="hamburger-line"></span>
@@ -390,5 +440,6 @@ $user_logado = isset($_SESSION['user_id']);
             }
         }
     </script>
+    <script src="assets/js/header-carrinho-simples.js"></script>
 </body>
 </html>

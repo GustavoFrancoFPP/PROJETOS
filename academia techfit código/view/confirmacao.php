@@ -22,7 +22,7 @@ if ($pedido_id) {
         if ($pedido) {
             $numeroPedido = $pedido['numero_pedido'];
             $totalPedido = $pedido['total'];
-            $itensPedido = json_decode($pedido['itens'], true) ?? [];
+            $itensPedido = $pedido['itens'] ? json_decode($pedido['itens'], true) ?? [] : [];
         }
     } catch (Exception $e) {
         error_log("Erro ao buscar pedido: " . $e->getMessage());
@@ -120,7 +120,7 @@ if ($pedido_id) {
             <?php else: ?>
                 <div class="alert alert-warning">
                     <i class="fas fa-exclamation-triangle"></i>
-                    <p>Nenhum pedido encontrado. Por favor, volte ao <a href="carrinho.html">carrinho</a> e tente novamente.</p>
+                    <p>Nenhum pedido encontrado. Por favor, volte ao <a href="carrinho.php">carrinho</a> e tente novamente.</p>
                 </div>
             <?php endif; ?>
         </div>
@@ -128,17 +128,20 @@ if ($pedido_id) {
 </div>
 
 <script>
-// Limpa o carrinho do localStorage após confirmar o pedido
+// Limpa o carrinho do localStorage e sessionStorage após confirmar o pedido
 if (typeof localStorage !== 'undefined') {
     localStorage.removeItem('carrinhoTechFit');
+    localStorage.removeItem('dadosCompraTechFit');
     console.log('✓ Carrinho limpo após confirmação do pedido');
 }
 </script>
 
 <?php 
-// Limpa a sessão do pedido após exibir
+// Limpa a sessão do pedido e carrinho após exibir
 unset($_SESSION['order']);
 unset($_SESSION['pedido_id']);
+unset($_SESSION['carrinho_planos']);
+unset($_SESSION['limpar_carrinho_js']);
 ?>
 
 <?php require_once __DIR__ . '/inc/footer.php'; ?>
