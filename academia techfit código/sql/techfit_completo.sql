@@ -1,17 +1,7 @@
--- ====================================================================================================
--- TECHFIT - SISTEMA DE GESTÃO DE ACADEMIA
--- Script SQL Completo e Unificado
--- ====================================================================================================
-
 DROP DATABASE IF EXISTS academia;
 CREATE DATABASE academia CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 USE academia;
 
--- ====================================================================================================
--- TABELAS PRINCIPAIS
--- ====================================================================================================
-
--- Cliente
 CREATE TABLE cliente (
     id_cliente INT AUTO_INCREMENT PRIMARY KEY,
     nome_cliente VARCHAR(255) NOT NULL,
@@ -24,7 +14,6 @@ CREATE TABLE cliente (
     data_cadastro TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB;
 
--- Funcionário
 CREATE TABLE funcionario (
     id_funcionario INT AUTO_INCREMENT PRIMARY KEY,
     nome_funcionario VARCHAR(255) NOT NULL,
@@ -38,7 +27,6 @@ CREATE TABLE funcionario (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB;
 
--- Login (Autenticação)
 CREATE TABLE login (
     id_login INT AUTO_INCREMENT PRIMARY KEY,
     nome_usuario VARCHAR(100) NOT NULL UNIQUE,
@@ -50,7 +38,6 @@ CREATE TABLE login (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB;
 
--- Planos
 CREATE TABLE planos (
     id_planos INT AUTO_INCREMENT PRIMARY KEY,
     nome_planos VARCHAR(255) NOT NULL,
@@ -61,7 +48,6 @@ CREATE TABLE planos (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB;
 
--- Aulas (Grade de Horários)
 CREATE TABLE aulas (
     id_aula INT AUTO_INCREMENT PRIMARY KEY,
     nome_aula VARCHAR(200) NOT NULL,
@@ -76,7 +62,6 @@ CREATE TABLE aulas (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB;
 
--- Agendamento
 CREATE TABLE agendamento (
     id_agendamento INT AUTO_INCREMENT PRIMARY KEY,
     tipo_aula VARCHAR(255) NOT NULL,
@@ -85,7 +70,6 @@ CREATE TABLE agendamento (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB;
 
--- Produtos
 CREATE TABLE produtos (
     id_produtos INT AUTO_INCREMENT PRIMARY KEY,
     nome_produto VARCHAR(255) NOT NULL,
@@ -100,7 +84,6 @@ CREATE TABLE produtos (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB;
 
--- Venda
 CREATE TABLE venda (
     id_venda INT AUTO_INCREMENT PRIMARY KEY,
     id_cliente INT NOT NULL,
@@ -110,7 +93,6 @@ CREATE TABLE venda (
     valor_total DECIMAL(10,2) NOT NULL
 ) ENGINE=InnoDB;
 
--- Pedidos (Histórico completo de compras)
 CREATE TABLE pedidos (
     id_pedido INT AUTO_INCREMENT PRIMARY KEY,
     numero_pedido VARCHAR(50) DEFAULT NULL,
@@ -127,14 +109,12 @@ CREATE TABLE pedidos (
     data_pedido DATETIME DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB;
 
--- Forma de Pagamento
 CREATE TABLE forma_pagamento (
     id_forma_pagamento INT AUTO_INCREMENT PRIMARY KEY,
     tipo ENUM('cartao', 'pix', 'boleto', 'dinheiro') NOT NULL,
     descricao VARCHAR(255)
 ) ENGINE=InnoDB;
 
--- Pagamento (Planos)
 CREATE TABLE pagamento (
     id_pagamento INT AUTO_INCREMENT PRIMARY KEY,
     id_cliente INT NOT NULL,
@@ -145,7 +125,6 @@ CREATE TABLE pagamento (
     id_forma_pagamento INT
 ) ENGINE=InnoDB;
 
--- Notificação
 CREATE TABLE notificacao (
     id_notificacao INT AUTO_INCREMENT PRIMARY KEY,
     titulo VARCHAR(255) NOT NULL,
@@ -157,7 +136,6 @@ CREATE TABLE notificacao (
     prioridade ENUM('baixa', 'media', 'alta') DEFAULT 'media'
 ) ENGINE=InnoDB;
 
--- Avaliação
 CREATE TABLE avaliacao (
     id_avaliacao INT AUTO_INCREMENT PRIMARY KEY,
     descricao VARCHAR(255) NOT NULL,
@@ -166,7 +144,6 @@ CREATE TABLE avaliacao (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB;
 
--- Suporte
 CREATE TABLE suporte (
     id_suporte INT AUTO_INCREMENT PRIMARY KEY,
     descricao VARCHAR(255) NOT NULL,
@@ -176,7 +153,6 @@ CREATE TABLE suporte (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB;
 
--- Treinos
 CREATE TABLE treinos (
     id_treino INT AUTO_INCREMENT PRIMARY KEY,
     id_cliente INT NOT NULL,
@@ -188,7 +164,6 @@ CREATE TABLE treinos (
     data_fim DATE
 ) ENGINE=InnoDB;
 
--- Exercício
 CREATE TABLE exercicio (
     id_exercicio INT AUTO_INCREMENT PRIMARY KEY,
     id_treino INT NOT NULL,
@@ -198,7 +173,6 @@ CREATE TABLE exercicio (
     carga DECIMAL(5,2)
 ) ENGINE=InnoDB;
 
--- Presença
 CREATE TABLE presenca (
     id_presenca INT AUTO_INCREMENT PRIMARY KEY,
     id_agendamento INT NOT NULL,
@@ -206,10 +180,6 @@ CREATE TABLE presenca (
     data_presenca DATETIME DEFAULT CURRENT_TIMESTAMP,
     status ENUM('presente', 'faltou') DEFAULT 'presente'
 ) ENGINE=InnoDB;
-
--- ====================================================================================================
--- FOREIGN KEYS
--- ====================================================================================================
 
 ALTER TABLE login
     ADD FOREIGN KEY (id_cliente) REFERENCES cliente(id_cliente) ON DELETE CASCADE,
@@ -251,10 +221,6 @@ ALTER TABLE presenca
     ADD FOREIGN KEY (id_agendamento) REFERENCES agendamento(id_agendamento) ON DELETE CASCADE,
     ADD FOREIGN KEY (id_cliente) REFERENCES cliente(id_cliente) ON DELETE CASCADE;
 
--- ====================================================================================================
--- ÍNDICES PARA PERFORMANCE
--- ====================================================================================================
-
 CREATE INDEX idx_cliente_email ON cliente(email);
 CREATE INDEX idx_cliente_cpf ON cliente(cpf);
 CREATE INDEX idx_aulas_dia_horario ON aulas(dia_semana, horario);
@@ -266,30 +232,22 @@ CREATE INDEX idx_venda_cliente ON venda(id_cliente);
 CREATE INDEX idx_pagamento_cliente ON pagamento(id_cliente);
 CREATE INDEX idx_notificacao_status ON notificacao(status);
 
--- ====================================================================================================
--- DADOS INICIAIS
--- ====================================================================================================
-
--- Funcionários
 INSERT INTO funcionario (nome_funcionario, email, cpf, telefone, cargo, data_admissao) VALUES
 ('Admin Master', 'admin@techfit.com', '000.000.000-00', '(19) 99999-9999', 'admin', '2024-01-01'),
 ('Ana Silva', 'ana.silva@techfit.com', '111.111.111-11', '(19) 98888-8888', 'personal_trainer', '2024-01-15'),
 ('Carlos Mendes', 'carlos.mendes@techfit.com', '222.222.222-22', '(19) 97777-7777', 'personal_trainer', '2024-02-01');
 
--- Clientes
 INSERT INTO cliente (nome_cliente, email, endereco, telefone, genero, cpf) VALUES
 ('Carlos Pereira', 'carlos.pereira@gmail.com', 'Av. Brasil, 450', '11 98234-5678', 'Masculino', '321.654.987-00'),
 ('Lucas Andrade', 'lucas.andrade@hotmail.com', 'Rua das Flores, 87', '21 97654-3321', 'Masculino', '789.123.456-11'),
 ('Rogério Souza', 'rogerio.souza@yahoo.com', 'Rua XV de Novembro, 300', '41 99544-2211', 'Masculino', '654.321.789-22');
 
--- Logins (Senha padrão: "123456" para clientes | "admin123" para admin)
 INSERT INTO login (nome_usuario, senha_usuario, tipo_usuario, id_cliente, id_funcionario) VALUES
 ('admin', '$2y$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhkO', 'funcionario', NULL, 1),
 ('carlos_pereira', '$2y$10$e0MYzXyjpJS7Pd0RVvHwHeFt6nqXqZ3qJdJGqVJnLVFqp1xEOyGay', 'cliente', 1, NULL),
 ('lucas_andrade', '$2y$10$e0MYzXyjpJS7Pd0RVvHwHeFt6nqXqZ3qJdJGqVJnLVFqp1xEOyGay', 'cliente', 2, NULL),
 ('rogerio_souza', '$2y$10$e0MYzXyjpJS7Pd0RVvHwHeFt6nqXqZ3qJdJGqVJnLVFqp1xEOyGay', 'cliente', 3, NULL);
 
--- Aulas
 INSERT INTO aulas (nome_aula, dia_semana, horario, professor, vagas_totais, descricao) VALUES
 ('Yoga Matinal', 'Segunda', '07:00:00', 'Prof. Ana Silva', 20, 'Aula de Yoga para iniciantes'),
 ('HIIT Intenso', 'Segunda', '18:00:00', 'Prof. Carlos Mendes', 25, 'Treino intervalado de alta intensidade'),
@@ -299,7 +257,6 @@ INSERT INTO aulas (nome_aula, dia_semana, horario, professor, vagas_totais, desc
 ('Zumba', 'Quinta', '19:00:00', 'Prof. Juliana Santos', 35, 'Dança fitness'),
 ('Crossfit', 'Sexta', '17:00:00', 'Prof. Marcos Vieira', 15, 'Treino de alta performance');
 
--- Produtos
 INSERT INTO produtos (nome_produto, tipo_produto, categoria, preco, quantidade_estoque, url_imagem, descricao) VALUES
 ('Whey Protein 1kg', 'suplemento', 'Proteína', 89.90, 50, 'imagens/whey.jpg', 'Proteína concentrada para ganho de massa'),
 ('Creatina 300g', 'suplemento', 'Energia', 45.00, 30, 'imagens/creatina.jpg', 'Aumenta força e resistência'),
@@ -309,24 +266,17 @@ INSERT INTO produtos (nome_produto, tipo_produto, categoria, preco, quantidade_e
 ('Luvas de Treino', 'acessorio', 'Equipamento', 35.00, 40, 'imagens/luvas.jpg', 'Proteção para mãos'),
 ('Garrafa Térmica', 'acessorio', 'Hidratação', 29.90, 60, 'imagens/garrafa.jpg', 'Mantém água gelada por 12h');
 
--- Notificações
 INSERT INTO notificacao (titulo, mensagem, tipo, prioridade) VALUES
 ('Bem-vindo à TechFit!', 'Seja bem-vindo à melhor academia da região! Aproveite nossos equipamentos de última geração.', 'geral', 'media'),
 ('Manutenção Programada', 'Academia fechada no dia 25/12 para manutenção. Feliz Natal!', 'geral', 'alta'),
 ('Nova Modalidade', 'Agora temos aulas de CrossFit! Venha experimentar.', 'geral', 'media');
 
--- Formas de Pagamento
 INSERT INTO forma_pagamento (tipo, descricao) VALUES
 ('cartao', 'Cartão de crédito Visa ou Mastercard'),
 ('pix', 'Transferência via PIX'),
 ('boleto', 'Pagamento por boleto bancário'),
 ('dinheiro', 'Pagamento em espécie na recepção');
 
--- ====================================================================================================
--- VIEWS
--- ====================================================================================================
-
--- Aulas com ocupação
 CREATE OR REPLACE VIEW vw_aulas_ocupacao AS
 SELECT 
     id_aula, nome_aula, dia_semana, horario, professor,
@@ -335,13 +285,11 @@ SELECT
     ROUND((vagas_ocupadas / vagas_totais) * 100, 2) as taxa_ocupacao
 FROM aulas WHERE status = 'ativa';
 
--- Produtos com baixo estoque
 CREATE OR REPLACE VIEW vw_produtos_baixo_estoque AS
 SELECT id_produtos, nome_produto, tipo_produto, quantidade_estoque, preco
 FROM produtos
 WHERE quantidade_estoque < 10 AND status = 'ativo';
 
--- Estatísticas gerais
 CREATE OR REPLACE VIEW vw_estatisticas_geral AS
 SELECT 
     (SELECT COUNT(*) FROM cliente) as total_alunos,
@@ -350,11 +298,6 @@ SELECT
     (SELECT COUNT(*) FROM produtos WHERE status = 'ativo') as total_produtos,
     (SELECT COALESCE(SUM(valor_pago), 0) FROM pagamento WHERE MONTH(data_pagamento) = MONTH(CURRENT_DATE())) as faturamento_mes;
 
--- ====================================================================================================
--- TRIGGERS
--- ====================================================================================================
-
--- Atualizar vagas ao inserir agendamento
 DELIMITER //
 CREATE TRIGGER trg_atualizar_vagas_aula
 AFTER INSERT ON agendamento
@@ -368,7 +311,6 @@ BEGIN
 END//
 DELIMITER ;
 
--- Atualizar estoque ao realizar venda
 DELIMITER //
 CREATE TRIGGER trg_atualizar_estoque_venda
 AFTER INSERT ON venda
@@ -379,10 +321,3 @@ BEGIN
     WHERE id_produtos = NEW.id_produtos;
 END//
 DELIMITER ;
-
--- ====================================================================================================
--- CREDENCIAIS DE TESTE
--- ====================================================================================================
--- ADMIN: usuario = admin | senha = admin123
--- CLIENTE: usuario = carlos_pereira | senha = 123456
--- ====================================================================================================

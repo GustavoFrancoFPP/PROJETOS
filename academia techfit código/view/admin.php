@@ -1,6 +1,16 @@
 ﻿<?php
-session_start();
+/**
+ * ========================================
+ * PAINEL ADMINISTRATIVO COMPLETO - TECHFIT
+ * CRUD: Alunos | Aulas | Produtos | Funcionários | Notificações
+ * ========================================
+ */
 
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+}
+
+// SEGURANÇA: Apenas funcionários
 if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true || $_SESSION['tipo_usuario'] !== 'funcionario') {
     header('Location: login.php');
     exit;
@@ -12,12 +22,16 @@ $conn = Connection::getInstance();
 $mensagem = '';
 $tipo_mensagem = 'success';
 
+// ========================================
+// PROCESSAMENTO DE AÇÕES POST
+// ========================================
+
 if (isset($_POST['action'])) {
     $action = $_POST['action'];
     
     try {
         switch ($action) {
-            case 'cadastrar_aluno':
+            // ============ CRUD ALUNOS ============
             case 'cadastrar_aluno':
                 $conn->beginTransaction();
                 
@@ -72,21 +86,22 @@ if (isset($_POST['action'])) {
                 $mensagem = "Aluno excluído com sucesso!";
                 break;
                 
+            // ============ CRUD AULAS ============
             case 'cadastrar_aula':
-                $stmt = $conn->prepare("INSERT INTO aulas (nome_aula, dia_semana, horario, instrutor, vagas_totais, vagas_ocupadas, descricao, status, created_at) VALUES (?, ?, ?, ?, ?, 0, ?, 'ativa', NOW())");
+                $stmt = $conn->prepare("INSERT INTO aulas (nome_aula, dia_semana, horario, professor, vagas_totais, descricao, status) VALUES (?, ?, ?, ?, ?, ?, 'ativa')");
                 $stmt->execute([
                     $_POST['nome_aula'],
                     $_POST['dia_semana'],
                     $_POST['horario'],
                     $_POST['instrutor'],
-                    $_POST['vagas_totais'] ?? 20,
+                    $_POST['vagas_totais'],
                     $_POST['descricao'] ?? ''
                 ]);
                 $mensagem = "Aula cadastrada com sucesso!";
                 break;
                 
             case 'editar_aula':
-                $stmt = $conn->prepare("UPDATE aulas SET nome_aula = ?, dia_semana = ?, horario = ?, instrutor = ?, vagas_totais = ?, descricao = ? WHERE id_aula = ?");
+                $stmt = $conn->prepare("UPDATE aulas SET nome_aula = ?, dia_semana = ?, horario = ?, professor = ?, vagas_totais = ?, descricao = ? WHERE id_aula = ?");
                 $stmt->execute([
                     $_POST['nome_aula'],
                     $_POST['dia_semana'],
@@ -105,46 +120,52 @@ if (isset($_POST['action'])) {
                 $mensagem = "Aula cancelada com sucesso!";
                 break;
                 
+            // ============ CRUD PRODUTOS ============
             case 'cadastrar_produto':
-                $stmt = $conn->prepare("INSERT INTO produtos (nome_produto, tipo_produto, categoria, preco, quantidade, created_at) VALUES (?, ?, ?, ?, ?, NOW())");
-                $stmt->execute([
-                    $_POST['nome_produto'],
-                    $_POST['tipo_produto'],
-                    $_POST['categoria'],
-                    $_POST['preco'],
-                    $_POST['quantidade'] ?? 0
-                ]);
-                $mensagem = "Produto cadastrado com sucesso!";
-                break;
-                
-            case 'editar_produto':
-                $stmt = $conn->prepare("UPDATE produtos SET nome_produto = ?, tipo_produto = ?, categoria = ?, preco = ?, quantidade = ? WHERE id_produtos = ?");
+                $stmt = $conn->prepare("INSERT INTO produtos (nome_produto, tipo_produto, categoria, preco, quantidade_estoque, url_imagem, descricao, status) VALUES (?, ?, ?, ?, ?, ?, ?, 'ativo')");
                 $stmt->execute([
                     $_POST['nome_produto'],
                     $_POST['tipo_produto'],
                     $_POST['categoria'],
                     $_POST['preco'],
                     $_POST['quantidade'],
+                    $_POST['url_imagem'] ?? '',
+                    $_POST['descricao'] ?? ''
+                ]);
+                $mensagem = "Produto cadastrado com sucesso!";
+                break;
+                
+            case 'editar_produto':
+                $stmt = $conn->prepare("UPDATE produtos SET nome_produto = ?, tipo_produto = ?, categoria = ?, preco = ?, quantidade_estoque = ?, url_imagem = ?, descricao = ? WHERE id_produtos = ?");
+                $stmt->execute([
+                    $_POST['nome_produto'],
+                    $_POST['tipo_produto'],
+                    $_POST['categoria'],
+                    $_POST['preco'],
+                    $_POST['quantidade'],
+                    $_POST['url_imagem'] ?? '',
+                    $_POST['descricao'] ?? '',
                     $_POST['id_produtos']
                 ]);
                 $mensagem = "Produto atualizado com sucesso!";
                 break;
                 
             case 'desativar_produto':
-                $stmt = $conn->prepare("DELETE FROM produtos WHERE id_produtos = ?");
+                $stmt = $conn->prepare("UPDATE produtos SET status = 'inativo' WHERE id_produtos = ?");
                 $stmt->execute([$_POST['id_produtos']]);
-                $mensagem = "Produto removido com sucesso!";
+                $mensagem = "Produto desativado com sucesso!";
                 break;
                 
+            // ============ CRUD FUNCIONÁRIOS ============
             case 'cadastrar_funcionario':
                 $conn->beginTransaction();
                 
-                // Tabela funcionario atual não tem email, cargo, telefone - apenas cpf, nome e salario
-                $stmt = $conn->prepare("INSERT INTO funcionario (nome_funcionario, cpf, salario, data_contratacao) VALUES (?, ?, ?, NOW())");
+                $stmt = $conn->prepare("INSERT INTO funcionario (nome_funcionario, email, cpf, cargo, status) VALUES (?, ?, ?, ?, 'ativo')");
                 $stmt->execute([
                     $_POST['nome_funcionario'],
+                    $_POST['email'],
                     $_POST['cpf'],
-                    $_POST['salario'] ?? 0.00
+                    $_POST['cargo'] ?? 'personal_trainer'
                 ]);
                 $id_funcionario = $conn->lastInsertId();
                 
@@ -163,6 +184,7 @@ if (isset($_POST['action'])) {
                 $mensagem = "Funcionário removido com sucesso!";
                 break;
                 
+            // ============ NOTIFICAÇÕES ============
             case 'enviar_notificacao':
                 // Notificação requer id_cliente, então vamos enviar para todos os alunos
                 $alunos = $conn->query("SELECT id_cliente FROM cliente")->fetchAll();
@@ -197,13 +219,13 @@ $totalAulasAtivas = $conn->query("SELECT COUNT(*) as total FROM aulas WHERE stat
 $totalProdutos = $conn->query("SELECT COUNT(*) as total FROM produtos")->fetch(PDO::FETCH_ASSOC)['total'] ?? 0;
 
 // Listas
-$alunos = $conn->query("SELECT c.*, l.nome_usuario as login_usuario, COUNT(a.id_agendamento) as total_agendamentos FROM cliente c LEFT JOIN login l ON c.id_cliente = l.id_cliente LEFT JOIN agendamento a ON c.id_cliente = a.id_cliente GROUP BY c.id_cliente, c.nome_cliente, c.email, c.endereco, c.telefone, c.genero, c.cpf, c.status, c.data_cadastro, l.nome_usuario ORDER BY c.nome_cliente")->fetchAll(PDO::FETCH_ASSOC);
+$alunos = $conn->query("SELECT c.*, COUNT(a.id_agendamento) as total_agendamentos FROM cliente c LEFT JOIN agendamento a ON c.id_cliente = a.id_cliente GROUP BY c.id_cliente ORDER BY c.nome_cliente")->fetchAll(PDO::FETCH_ASSOC);
 
 $aulas = $conn->query("SELECT *, (vagas_totais - vagas_ocupadas) as vagas_disponiveis FROM aulas WHERE status = 'ativa' ORDER BY dia_semana, horario")->fetchAll(PDO::FETCH_ASSOC);
 
 $produtos = $conn->query("SELECT * FROM produtos ORDER BY nome_produto")->fetchAll(PDO::FETCH_ASSOC);
 
-$funcionarios = $conn->query("SELECT f.*, l.nome_usuario as login_usuario FROM funcionario f LEFT JOIN login l ON f.id_funcionario = l.id_funcionario ORDER BY f.nome_funcionario")->fetchAll(PDO::FETCH_ASSOC);
+$funcionarios = $conn->query("SELECT * FROM funcionario ORDER BY nome_funcionario")->fetchAll(PDO::FETCH_ASSOC);
 
 $notificacoes = $conn->query("SELECT * FROM notificacao ORDER BY data_envio DESC LIMIT 10")->fetchAll(PDO::FETCH_ASSOC);
 ?>
@@ -303,11 +325,11 @@ $notificacoes = $conn->query("SELECT * FROM notificacao ORDER BY data_envio DESC
                             </div>
                             <div class="form-group">
                                 <label class="form-label">CPF*</label>
-                                <input type="text" name="cpf" class="form-control" maxlength="14" required>
+                                <input type="text" name="cpf" class="form-control" required>
                             </div>
                             <div class="form-group">
                                 <label class="form-label">Telefone</label>
-                                <input type="text" name="telefone" class="form-control" maxlength="15">
+                                <input type="text" name="telefone" class="form-control">
                             </div>
                             <div class="form-group">
                                 <label class="form-label">Endereço</label>
@@ -362,16 +384,13 @@ $notificacoes = $conn->query("SELECT * FROM notificacao ORDER BY data_envio DESC
                                             </td>
                                             <td><?php echo $aluno['total_agendamentos']; ?></td>
                                             <td>
-                                                <button class="btn btn-info btn-sm" onclick="alert('Usuário de Login: <?php echo addslashes($aluno['login_usuario'] ?? 'Não cadastrado'); ?>')" title="Ver usuário de login">
-                                                    <i class="fas fa-info-circle"></i>
-                                                </button>
-                                                <button onclick="editarAluno(<?php echo htmlspecialchars(json_encode($aluno)); ?>)" class="btn btn-warning btn-sm" title="Editar aluno">
+                                                <button onclick="editarAluno(<?php echo htmlspecialchars(json_encode($aluno)); ?>)" class="btn btn-warning btn-sm">
                                                     <i class="fas fa-edit"></i>
                                                 </button>
                                                 <form method="POST" style="display:inline;" onsubmit="return confirm('Excluir este aluno permanentemente?');">
                                                     <input type="hidden" name="action" value="excluir_aluno">
                                                     <input type="hidden" name="id_cliente" value="<?php echo $aluno['id_cliente']; ?>">
-                                                    <button type="submit" class="btn btn-danger btn-sm" title="Excluir aluno">
+                                                    <button type="submit" class="btn btn-danger btn-sm">
                                                         <i class="fas fa-trash"></i>
                                                     </button>
                                                 </form>
@@ -460,7 +479,7 @@ $notificacoes = $conn->query("SELECT * FROM notificacao ORDER BY data_envio DESC
                                             <td><?php echo htmlspecialchars($aula['nome_aula']); ?></td>
                                             <td><?php echo $aula['dia_semana']; ?></td>
                                             <td><?php echo date('H:i', strtotime($aula['horario'])); ?></td>
-                                            <td><?php echo htmlspecialchars($aula['instrutor'] ?? ''); ?></td>
+                                            <td><?php echo htmlspecialchars($aula['professor'] ?? ''); ?></td>
                                             <td><?php echo ($aula['vagas_totais'] - $aula['vagas_ocupadas']); ?> / <?php echo $aula['vagas_totais']; ?></td>
                                             <td>
                                                 <?php 
@@ -472,14 +491,11 @@ $notificacoes = $conn->query("SELECT * FROM notificacao ORDER BY data_envio DESC
                                                 </span>
                                             </td>
                                             <td>
-                                                <button onclick="editarAula(<?php echo htmlspecialchars(json_encode($aula)); ?>)" class="btn btn-warning btn-sm" title="Editar aula">
-                                                    <i class="fas fa-edit"></i>
-                                                </button>
                                                 <form method="POST" style="display:inline;" onsubmit="return confirm('Cancelar esta aula?');">
                                                     <input type="hidden" name="action" value="cancelar_aula">
                                                     <input type="hidden" name="id_aula" value="<?php echo $aula['id_aula']; ?>">
-                                                    <button type="submit" class="btn btn-danger btn-sm" title="Cancelar aula">
-                                                        <i class="fas fa-ban"></i>
+                                                    <button type="submit" class="btn btn-danger btn-sm">
+                                                        <i class="fas fa-ban"></i> Cancelar
                                                     </button>
                                                 </form>
                                             </td>
@@ -569,7 +585,7 @@ $notificacoes = $conn->query("SELECT * FROM notificacao ORDER BY data_envio DESC
                                             <td>R$ <?php echo number_format($produto['preco'], 2, ',', '.'); ?></td>
                                             <td>
                                                 <?php 
-                                                    $estoque = $produto['quantidade'] ?? 0;
+                                                    $estoque = $produto['quantidade_estoque'] ?? 0;
                                                     $badgeClass = $estoque < 10 ? 'danger' : ($estoque < 30 ? 'warning' : 'success');
                                                 ?>
                                                 <span class="badge badge-<?php echo $badgeClass; ?>">
@@ -577,14 +593,11 @@ $notificacoes = $conn->query("SELECT * FROM notificacao ORDER BY data_envio DESC
                                                 </span>
                                             </td>
                                             <td>
-                                                <button onclick="editarProduto(<?php echo htmlspecialchars(json_encode($produto)); ?>)" class="btn btn-warning btn-sm" title="Editar produto">
-                                                    <i class="fas fa-edit"></i>
-                                                </button>
-                                                <form method="POST" style="display:inline;" onsubmit="return confirm('Remover este produto?');">
+                                                <form method="POST" style="display:inline;" onsubmit="return confirm('Desativar este produto?');">
                                                     <input type="hidden" name="action" value="desativar_produto">
                                                     <input type="hidden" name="id_produtos" value="<?php echo $produto['id_produtos']; ?>">
-                                                    <button type="submit" class="btn btn-danger btn-sm" title="Remover produto">
-                                                        <i class="fas fa-trash"></i>
+                                                    <button type="submit" class="btn btn-danger btn-sm">
+                                                        <i class="fas fa-ban"></i>
                                                     </button>
                                                 </form>
                                             </td>
@@ -614,16 +627,25 @@ $notificacoes = $conn->query("SELECT * FROM notificacao ORDER BY data_envio DESC
                                 <input type="text" name="nome_funcionario" class="form-control" required>
                             </div>
                             <div class="form-group">
-                                <label class="form-label">Usuário/Login* (será usado para entrar no sistema)</label>
-                                <input type="text" name="email" class="form-control" required placeholder="usuario123">
+                                <label class="form-label">Email*</label>
+                                <input type="email" name="email" class="form-control" required>
                             </div>
                             <div class="form-group">
                                 <label class="form-label">CPF*</label>
-                                <input type="text" name="cpf" class="form-control" maxlength="14" required>
+                                <input type="text" name="cpf" class="form-control" required>
                             </div>
                             <div class="form-group">
-                                <label class="form-label">Salário (R$)</label>
-                                <input type="number" step="0.01" name="salario" class="form-control" value="0.00">
+                                <label class="form-label">Telefone</label>
+                                <input type="text" name="telefone" class="form-control">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Cargo*</label>
+                                <select name="cargo" class="form-select" required>
+                                    <option value="admin">Administrador</option>
+                                    <option value="personal_trainer">Personal Trainer</option>
+                                    <option value="recepcionista">Recepcionista</option>
+                                    <option value="gerente">Gerente</option>
+                                </select>
                             </div>
                             <div class="form-group">
                                 <label class="form-label">Senha Inicial*</label>
@@ -645,9 +667,10 @@ $notificacoes = $conn->query("SELECT * FROM notificacao ORDER BY data_envio DESC
                                     <tr>
                                         <th>ID</th>
                                         <th>Nome</th>
-                                        <th>Usuário/Login</th>
+                                        <th>Email</th>
                                         <th>CPF</th>
-                                        <th>Salário</th>
+                                        <th>Telefone</th>
+                                        <th>Cargo</th>
                                         <th>Ações</th>
                                     </tr>
                                 </thead>
@@ -656,13 +679,11 @@ $notificacoes = $conn->query("SELECT * FROM notificacao ORDER BY data_envio DESC
                                         <tr>
                                             <td><?php echo $func['id_funcionario']; ?></td>
                                             <td><?php echo htmlspecialchars($func['nome_funcionario']); ?></td>
-                                            <td><?php echo htmlspecialchars($func['login_usuario'] ?? '-'); ?></td>
+                                            <td><?php echo htmlspecialchars($func['email'] ?? '-'); ?></td>
                                             <td><?php echo htmlspecialchars($func['cpf']); ?></td>
-                                            <td>R$ <?php echo number_format($func['salario'] ?? 0, 2, ',', '.'); ?></td>
+                                            <td><?php echo htmlspecialchars($func['telefone'] ?? '-'); ?></td>
+                                            <td><span class="badge badge-success"><?php echo strtoupper(str_replace('_', ' ', $func['cargo'] ?? 'funcionario')); ?></span></td>
                                             <td>
-                                                <button class="btn btn-primary btn-sm" onclick="alert('Usuário: ' + '<?php echo addslashes($func['login_usuario'] ?? 'Não cadastrado'); ?>')">
-                                                    <i class="fas fa-info-circle"></i>
-                                                </button>
                                                 <form method="POST" style="display:inline;" onsubmit="return confirm('Desativar este funcionário?');">
                                                     <input type="hidden" name="action" value="desativar_funcionario">
                                                     <input type="hidden" name="id_funcionario" value="<?php echo $func['id_funcionario']; ?>">
@@ -762,54 +783,6 @@ $notificacoes = $conn->query("SELECT * FROM notificacao ORDER BY data_envio DESC
     </main>
 
     <script>
-        function formatarCPF(input) {
-            let valor = input.value.replace(/\D/g, '');
-            if (valor.length > 11) valor = valor.substring(0, 11);
-            
-            if (valor.length > 9) {
-                valor = valor.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
-            } else if (valor.length > 6) {
-                valor = valor.replace(/(\d{3})(\d{3})(\d{1,3})/, '$1.$2.$3');
-            } else if (valor.length > 3) {
-                valor = valor.replace(/(\d{3})(\d{1,3})/, '$1.$2');
-            }
-            
-            input.value = valor;
-        }
-
-        function formatarTelefone(input) {
-            let valor = input.value.replace(/\D/g, '');
-            if (valor.length > 11) valor = valor.substring(0, 11);
-            
-            if (valor.length > 10) {
-                valor = valor.replace(/(\d{2})(\d{5})(\d{4})/, '($1) $2-$3');
-            } else if (valor.length > 6) {
-                valor = valor.replace(/(\d{2})(\d{4})(\d{0,4})/, '($1) $2-$3');
-            } else if (valor.length > 2) {
-                valor = valor.replace(/(\d{2})(\d{0,5})/, '($1) $2');
-            } else if (valor.length > 0) {
-                valor = valor.replace(/(\d{0,2})/, '($1');
-            }
-            
-            input.value = valor;
-        }
-
-        document.addEventListener('DOMContentLoaded', function() {
-            const inputsCPF = document.querySelectorAll('input[name="cpf"]');
-            inputsCPF.forEach(input => {
-                input.addEventListener('input', function() {
-                    formatarCPF(this);
-                });
-            });
-
-            const inputsTelefone = document.querySelectorAll('input[name="telefone"]');
-            inputsTelefone.forEach(input => {
-                input.addEventListener('input', function() {
-                    formatarTelefone(this);
-                });
-            });
-        });
-
         // Gerenciamento de Tabs
         function openTab(evt, tabId) {
             const tabContents = document.querySelectorAll('.tab-content');
@@ -823,56 +796,6 @@ $notificacoes = $conn->query("SELECT * FROM notificacao ORDER BY data_envio DESC
         }
 
         // Funções de Edição
-        function editarAula(aula) {
-            const nome = prompt('Nome da Aula:', aula.nome_aula);
-            const dia = prompt('Dia da Semana:', aula.dia_semana);
-            const horario = prompt('Horário (HH:MM):', aula.horario);
-            const instrutor = prompt('Instrutor:', aula.instrutor);
-            const vagas = prompt('Vagas Totais:', aula.vagas_totais);
-            const descricao = prompt('Descrição:', aula.descricao || '');
-            
-            if (nome && dia && horario && instrutor && vagas) {
-                const form = document.createElement('form');
-                form.method = 'POST';
-                form.innerHTML = `
-                    <input type="hidden" name="action" value="editar_aula">
-                    <input type="hidden" name="id_aula" value="${aula.id_aula}">
-                    <input type="hidden" name="nome_aula" value="${nome}">
-                    <input type="hidden" name="dia_semana" value="${dia}">
-                    <input type="hidden" name="horario" value="${horario}">
-                    <input type="hidden" name="instrutor" value="${instrutor}">
-                    <input type="hidden" name="vagas_totais" value="${vagas}">
-                    <input type="hidden" name="descricao" value="${descricao}">
-                `;
-                document.body.appendChild(form);
-                form.submit();
-            }
-        }
-
-        function editarProduto(produto) {
-            const nome = prompt('Nome do Produto:', produto.nome_produto);
-            const tipo = prompt('Tipo (suplemento/roupa/acessorio):', produto.tipo_produto);
-            const categoria = prompt('Categoria:', produto.categoria || '');
-            const preco = prompt('Preço (R$):', produto.preco);
-            const quantidade = prompt('Quantidade em Estoque:', produto.quantidade);
-            
-            if (nome && tipo && preco && quantidade) {
-                const form = document.createElement('form');
-                form.method = 'POST';
-                form.innerHTML = `
-                    <input type="hidden" name="action" value="editar_produto">
-                    <input type="hidden" name="id_produtos" value="${produto.id_produtos}">
-                    <input type="hidden" name="nome_produto" value="${nome}">
-                    <input type="hidden" name="tipo_produto" value="${tipo}">
-                    <input type="hidden" name="categoria" value="${categoria}">
-                    <input type="hidden" name="preco" value="${preco}">
-                    <input type="hidden" name="quantidade" value="${quantidade}">
-                `;
-                document.body.appendChild(form);
-                form.submit();
-            }
-        }
-
         function editarAluno(aluno) {
             const nome = prompt('Nome:', aluno.nome_cliente);
             const email = prompt('Email:', aluno.email);

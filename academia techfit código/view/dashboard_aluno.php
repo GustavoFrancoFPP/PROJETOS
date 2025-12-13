@@ -366,8 +366,13 @@ try {
                 <div class="card-header">
                     <h2><i class="fas fa-bell"></i> Notificações</h2>
                     <?php if ($totalNotificacoes > 0): ?>
+<<<<<<< HEAD
                         <span style="background: #ff4444; color: white; padding: 4px 10px; border-radius: 12px; font-size: 0.85rem;">
                             <?php echo $totalNotificacoes; ?> nova<?php echo $totalNotificacoes > 1 ? 's' : ''; ?>
+=======
+                        <span style="background: #ff4444; color: #fff; padding: 5px 12px; border-radius: 20px; font-size: 0.85rem; font-weight: 600;">
+                            <?php echo $totalNotificacoes; ?> nova(s)
+>>>>>>> 8caf2c5082afc4a75a3af1b1fcdf77d5f216b5de
                         </span>
                     <?php endif; ?>
                 </div>

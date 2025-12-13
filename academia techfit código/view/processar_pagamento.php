@@ -43,9 +43,32 @@ try {
     $idCliente = $_SESSION['user_id'];
     $metodoPagamento = $dados['metodoPagamento'] ?? 'cartao';
     $dadosCompra = $dados['dadosCompra'] ?? null;
+    $dadosCliente = $dados['dadosCliente'] ?? null;
     
     if (!$dadosCompra || !isset($dadosCompra['itens'])) {
         throw new Exception('Dados da compra inválidos');
+    }
+    
+    // Buscar dados do cliente no banco
+    $stmtCliente = $conn->prepare("SELECT nome_cliente, email, cpf, telefone, endereco FROM cliente WHERE id_cliente = ?");
+    $stmtCliente->execute([$idCliente]);
+    $clienteDB = $stmtCliente->fetch(PDO::FETCH_ASSOC);
+    
+    if (!$clienteDB) {
+        throw new Exception('Dados do cliente não encontrados');
+    }
+    
+    // Usar dados do formulário se fornecidos, senão usar do banco
+    $nomeCliente = $dadosCliente['nome'] ?? $clienteDB['nome_cliente'];
+    $emailCliente = $dadosCliente['email'] ?? $clienteDB['email'];
+    $cpfCliente = $dadosCliente['cpf'] ?? $clienteDB['cpf'];
+    $telefoneCliente = $dadosCliente['telefone'] ?? $clienteDB['telefone'];
+    
+    // Dados de endereço do formulário
+    $enderecoCompleto = $clienteDB['endereco'] ?? '';
+    if ($dadosCliente && isset($dadosCliente['endereco'])) {
+        $end = $dadosCliente['endereco'];
+        $enderecoCompleto = ($end['logradouro'] ?? '') . ', ' . ($end['numero'] ?? '');
     }
     
     $itens = $dadosCompra['itens'];
@@ -136,17 +159,17 @@ try {
     
     // Salva dados do pedido na sessão para a página de confirmação
     $_SESSION['order'] = [
-        'nome' => $dados['nome'] ?? '',
-        'email' => $dados['email'] ?? '',
-        'cpf' => $dados['cpf'] ?? '',
-        'telefone' => $dados['telefone'] ?? '',
-        'endereco' => $dados['endereco'] ?? '',
-        'numero' => $dados['numero'] ?? '',
-        'complemento' => $dados['complemento'] ?? '',
-        'bairro' => $dados['bairro'] ?? '',
-        'cidade' => $dados['cidade'] ?? '',
-        'estado' => $dados['estado'] ?? '',
-        'cep' => $dados['cep'] ?? '',
+        'nome' => $nomeCliente,
+        'email' => $emailCliente,
+        'cpf' => $cpfCliente,
+        'telefone' => $telefoneCliente,
+        'endereco' => $dadosCliente['endereco']['logradouro'] ?? $enderecoCompleto,
+        'numero' => $dadosCliente['endereco']['numero'] ?? '',
+        'complemento' => $dadosCliente['endereco']['complemento'] ?? '',
+        'bairro' => $dadosCliente['endereco']['bairro'] ?? '',
+        'cidade' => $dadosCliente['endereco']['cidade'] ?? '',
+        'estado' => $dadosCliente['endereco']['estado'] ?? '',
+        'cep' => $dadosCliente['endereco']['cep'] ?? '',
         'metodo_pagamento' => $metodoPagamento,
         'itens' => $itens,
         'total' => $total
