@@ -151,11 +151,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         $quantidade = $item['quantidade'] ?? 1;
                         $valorTotalItem = $item['preco'] * $quantidade;
                         
-                        if ($tipoItem === 'plano' && $idItem) {
+                        // Extrai apenas o número do ID se vier como 'produto-1' ou 'plano-1'
+                        if ($idItem && !is_numeric($idItem)) {
+                            // Remove prefixos como 'produto-' ou 'plano-'
+                            $idItem = preg_replace('/[^0-9]/', '', $idItem);
+                        }
+                        
+                        if ($tipoItem === 'plano' && $idItem && is_numeric($idItem)) {
                             try {
                                 $stmtPagamento->execute([
                                     $idCliente,
-                                    $idItem,
+                                    intval($idItem),
                                     $valorTotalItem,
                                     $order['metodo_pagamento'],
                                     'pago'
