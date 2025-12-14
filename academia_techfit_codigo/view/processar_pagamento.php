@@ -106,6 +106,14 @@ try {
         } else {
             // Processa venda de produto
             $idProduto = $item['id'] ?? null;
+            
+            // Remove prefixo 'produto-' se existir e converte para inteiro
+            if ($idProduto && is_string($idProduto) && strpos($idProduto, 'produto-') === 0) {
+                $idProduto = intval(str_replace('produto-', '', $idProduto));
+            } else {
+                $idProduto = intval($idProduto);
+            }
+            
             $quantidade = intval($item['quantidade'] ?? 1);
             $valorTotal = floatval($item['subtotal'] ?? ($item['preco'] ?? 0) * $quantidade);
             

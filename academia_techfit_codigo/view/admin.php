@@ -106,13 +106,16 @@ if (isset($_POST['action'])) {
                 break;
                 
             case 'cadastrar_produto':
+                $quantidade_estoque = isset($_POST['quantidade_estoque']) && $_POST['quantidade_estoque'] !== ''
+                    ? intval($_POST['quantidade_estoque'])
+                    : 0;
                 $stmt = $conn->prepare("INSERT INTO produtos (nome_produto, tipo_produto, categoria, preco, quantidade_estoque, url_imagem, descricao, status) VALUES (?, ?, ?, ?, ?, ?, ?, 'ativo')");
                 $stmt->execute([
                     $_POST['nome_produto'],
                     $_POST['tipo_produto'],
                     $_POST['categoria'],
                     $_POST['preco'],
-                    $_POST['quantidade_estoque'] ?? 0,
+                    $quantidade_estoque,
                     $_POST['url_imagem'] ?? '',
                     $_POST['descricao'] ?? ''
                 ]);
@@ -120,13 +123,16 @@ if (isset($_POST['action'])) {
                 break;
                 
             case 'editar_produto':
+                $quantidade_estoque = isset($_POST['quantidade_estoque']) && $_POST['quantidade_estoque'] !== ''
+                    ? intval($_POST['quantidade_estoque'])
+                    : 0;
                 $stmt = $conn->prepare("UPDATE produtos SET nome_produto = ?, tipo_produto = ?, categoria = ?, preco = ?, quantidade_estoque = ?, url_imagem = ?, descricao = ? WHERE id_produtos = ?");
                 $stmt->execute([
                     $_POST['nome_produto'],
                     $_POST['tipo_produto'],
                     $_POST['categoria'],
                     $_POST['preco'],
-                    $_POST['quantidade_estoque'],
+                    $quantidade_estoque,
                     $_POST['url_imagem'] ?? '',
                     $_POST['descricao'] ?? '',
                     $_POST['id_produtos']
@@ -582,7 +588,7 @@ $notificacoes = $conn->query("SELECT * FROM notificacao ORDER BY data_envio DESC
                                             <td>R$ <?php echo number_format($produto['preco'], 2, ',', '.'); ?></td>
                                             <td>
                                                 <?php 
-                                                    $estoque = $produto['quantidade'] ?? 0;
+                                                    $estoque = $produto['quantidade_estoque'] ?? 0;
                                                     $badgeClass = $estoque < 10 ? 'danger' : ($estoque < 30 ? 'warning' : 'success');
                                                 ?>
                                                 <span class="badge badge-<?php echo $badgeClass; ?>">

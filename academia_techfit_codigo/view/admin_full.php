@@ -122,39 +122,83 @@ if (isset($_POST['action'])) {
                 
             // ============ CRUD PRODUTOS ============
             case 'cadastrar_produto':
+                // Agora o campo do formulário é quantidade_estoque
+                $quantidade_estoque = isset($_POST['quantidade_estoque']) && $_POST['quantidade_estoque'] !== '' 
+                    ? intval($_POST['quantidade_estoque']) 
+                    : 0;
                 $stmt = $conn->prepare("INSERT INTO produtos (nome_produto, tipo_produto, categoria, preco, quantidade_estoque, url_imagem, descricao, status) VALUES (?, ?, ?, ?, ?, ?, ?, 'ativo')");
                 $stmt->execute([
                     $_POST['nome_produto'],
                     $_POST['tipo_produto'],
                     $_POST['categoria'],
                     $_POST['preco'],
-                    $_POST['quantidade_estoque'],
+                    $quantidade_estoque,
                     $_POST['url_imagem'] ?? '',
                     $_POST['descricao'] ?? ''
                 ]);
                 $mensagem = "Produto cadastrado com sucesso!";
                 break;
                 
-            case 'editar_produto':
-                $stmt = $conn->prepare("UPDATE produtos SET nome_produto = ?, tipo_produto = ?, categoria = ?, preco = ?, quantidade_estoque = ?, url_imagem = ?, descricao = ? WHERE id_produtos = ?");
-                $stmt->execute([
-                    $_POST['nome_produto'],
-                    $_POST['tipo_produto'],
-                    $_POST['categoria'],
-                    $_POST['preco'],
-                    $_POST['quantidade_estoque'],
-                    $_POST['url_imagem'] ?? '',
-                    $_POST['descricao'] ?? '',
-                    $_POST['id_produtos']
-                ]);
-                $mensagem = "Produto atualizado com sucesso!";
-                break;
-                
-            case 'desativar_produto':
-                $stmt = $conn->prepare("UPDATE produtos SET status = 'inativo' WHERE id_produtos = ?");
-                $stmt->execute([$_POST['id_produtos']]);
-                $mensagem = "Produto desativado com sucesso!";
-                break;
+            // Garantir que quantidade_estoque não seja null
+    // Corrigir: o campo no formulário se chama 'quantidade', não 'quantidade_estoque'
+    $quantidade_estoque = isset($_POST['quantidade']) && $_POST['quantidade'] !== '' 
+        ? intval($_POST['quantidade']) 
+        : 0;
+    $stmt = $conn->prepare("UPDATE produtos SET nome_produto = ?, tipo_produto = ?, categoria = ?, preco = ?, quantidade_estoque = ?, url_imagem = ?, descricao = ? WHERE id_produtos = ? ");
+    $stmt->execute([
+        $_POST['nome_produto'],
+        $_POST['tipo_produto'],
+        $_POST['categoria'],
+        $_POST['preco'],
+        $quantidade_estoque,
+        $_POST['url_imagem'] ?? '',
+        $_POST['descricao'] ?? '',
+        $_POST['id_produtos']
+    ]);
+    $mensagem = "Produto atualizado com sucesso!";
+    break;
+
+// Também corrigir o case 'cadastrar_produto' (aproximadamente linha 118):
+
+case 'cadastrar_produto':
+    // Corrigir: o campo no formulário se chama 'quantidade', não 'quantidade_estoque'
+    $quantidade_estoque = isset($_POST['quantidade']) && $_POST['quantidade'] !== '' 
+        ? intval($_POST['quantidade']) 
+        : 0;
+    
+    $stmt = $conn->prepare("INSERT INTO produtos (nome_produto, tipo_produto, categoria, preco, quantidade_estoque, url_imagem, descricao, status) VALUES (?, ?, ?, ?, ?, ?, ?, 'ativo')");
+    $stmt->execute([
+        $_POST['nome_produto'],
+        $_POST['tipo_produto'],
+        $_POST['categoria'],
+        $_POST['preco'],
+        $quantidade_estoque,
+        $_POST['url_imagem'] ?? '',
+        $_POST['descricao'] ?? ''
+    ]);
+    $mensagem = "Produto cadastrado com sucesso!";
+    break;
+    
+case 'editar_produto': 
+    // Agora o campo do formulário é quantidade_estoque
+    $quantidade_estoque = isset($_POST['quantidade_estoque']) && $_POST['quantidade_estoque'] !== '' 
+        ? intval($_POST['quantidade_estoque']) 
+        : 0;
+    
+    $stmt = $conn->prepare("UPDATE produtos SET nome_produto = ?, tipo_produto = ?, categoria = ?, preco = ?, quantidade_estoque = ?, url_imagem = ?, descricao = ? WHERE id_produtos = ? ");
+    $stmt->execute([
+        $_POST['nome_produto'],
+        $_POST['tipo_produto'],
+        $_POST['categoria'],
+        $_POST['preco'],
+        $quantidade_estoque,
+        $_POST['url_imagem'] ?? '',
+        $_POST['descricao'] ?? '',
+        $_POST['id_produtos']
+    ]);
+    $mensagem = "Produto atualizado com sucesso!";
+    break;
+
                 
             // ============ CRUD FUNCIONÁRIOS ============
             case 'cadastrar_funcionario':
@@ -948,20 +992,22 @@ $notificacoes = $conn->query("SELECT * FROM notificacao WHERE tipo = 'geral' ORD
 
         function editarProduto(produto) {
             const nome = prompt('Nome do Produto:', produto.nome_produto);
+            const tipo = prompt('Tipo (suplemento/roupa/acessorio):', produto.tipo_produto);
+            const categoria = prompt('Categoria:', produto.categoria || '');
             const preco = prompt('Preço (R$):', produto.preco);
-            const estoque = prompt('Quantidade em Estoque:', produto.quantidade_estoque);
+            const quantidade_estoque = prompt('Quantidade em Estoque:', produto.quantidade_estoque);
             
-            if (nome && preco && estoque) {
+            if (nome && tipo && preco && quantidade_estoque !== null) {
                 const form = document.createElement('form');
                 form.method = 'POST';
                 form.innerHTML = `
                     <input type="hidden" name="action" value="editar_produto">
                     <input type="hidden" name="id_produtos" value="${produto.id_produtos}">
                     <input type="hidden" name="nome_produto" value="${nome}">
-                    <input type="hidden" name="tipo_produto" value="${produto.tipo_produto}">
-                    <input type="hidden" name="categoria" value="${produto.categoria || ''}">
+                    <input type="hidden" name="tipo_produto" value="${tipo}">
+                    <input type="hidden" name="categoria" value="${categoria}">
                     <input type="hidden" name="preco" value="${preco}">
-                    <input type="hidden" name="quantidade_estoque" value="${estoque}">
+                    <input type="hidden" name="quantidade_estoque" value="${quantidade_estoque}">
                     <input type="hidden" name="url_imagem" value="${produto.url_imagem || ''}">
                     <input type="hidden" name="descricao" value="${produto.descricao || ''}">
                 `;

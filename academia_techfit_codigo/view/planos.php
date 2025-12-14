@@ -107,262 +107,211 @@ $user_logado = isset($_SESSION['user_id']);
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     <style>
         .planos-wrapper {
-            padding: 80px 20px;
-            background: linear-gradient(135deg, #0f172a 0%, #1a1a2e 100%);
-            min-height: 100vh;
-        }
+    padding: 80px 20px;
+    background: linear-gradient(135deg, #0f172a 0%, #1a1a2e 100%);
+    min-height: 100vh;
+}
 
-        .planos-header {
-            text-align: center;
-            margin-bottom: 60px;
-            animation: fadeInDown 0.8s ease;
-        }
+.planos-header {
+    text-align: center;
+    margin-bottom: 60px;
+    animation: fadeInDown 0.8s ease;
+}
 
-        .planos-header h2 {
-            font-size: 3rem;
-            color: #fff;
-            margin-bottom: 15px;
-            font-weight: 700;
-        }
+.planos-header h2 {
+    font-size: 3rem;
+    color: #fff;
+    margin-bottom: 15px;
+    font-weight: 700;
+}
 
-        .planos-header p {
-            font-size: 1.2rem;
-            color: #b0b7d9;
-        }
+.planos-header p {
+    font-size: 1.2rem;
+    color: #b0b7d9;
+}
 
-        /* Usar os mesmos estilos do inicio.html */
-        .pricing-section {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 30px;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
+.pricing-section {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 30px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
 
-        .plan-card {
-            background: rgba(30, 30, 30, 0.6);
-            backdrop-filter: blur(15px);
-            border-radius: 15px;
-            padding: 35px 30px;
-            display: flex;
-            flex-direction: column;
-            border: 2px solid transparent;
-            transition: all 0.3s ease;
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
-            position: relative;
-            overflow: hidden;
-        }
+.plan-card {
+    background: rgba(30, 30, 30, 0.6);
+    backdrop-filter: blur(15px);
+    border-radius: 15px;
+    padding: 35px 30px;
+    display: flex;
+    flex-direction: column;
+    border: 2px solid transparent;
+    transition: all 0.3s ease;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+    position: relative;
+    overflow: hidden;
+}
 
-        .plan-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 4px;
-            background: linear-gradient(90deg, #00F0E1, #00d4ff);
-            transform: scaleX(0);
-            transition: transform 0.3s ease;
-        }
+.plan-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background: linear-gradient(90deg, #00F0E1, #00d4ff);
+    transform: scaleX(0);
+    transition: transform 0.3s ease;
+}
 
-        .plan-card:hover::before {
-            transform: scaleX(1);
-        }
+.plan-card:hover::before {
+    transform: scaleX(1);
+}
 
-        .plan-card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
-        }
+.plan-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+}
 
-        .plan-card.featured {
-            transform: scale(1.05);
-            border-color: #00F0E1;
-            box-shadow: 0 12px 30px rgba(0, 209, 178, 0.2);
-        }
+.plan-card.featured {
+    transform: scale(1.05);
+    border-color: #00F0E1;
+    box-shadow: 0 12px 30px rgba(0, 209, 178, 0.2);
+}
 
-        .plan-card.featured:hover {
-            transform: scale(1.05) translateY(-8px);
-        }
+.plan-card.featured:hover {
+    transform: scale(1.05) translateY(-8px);
+}
 
-        .plan-card h3 {
-            font-size: 1.6rem;
-            margin-bottom: 15px;
-            color: #fff;
-            text-align: center;
-        }
+.plan-card h3 {
+    font-size: 1.6rem;
+    margin-bottom: 15px;
+    color: #fff;
+    text-align: center;
+}
 
-        .plan-card > p {
-            font-size: 1rem;
-            color: #b0b7d9;
-            flex-grow: 1;
-            margin-bottom: 20px;
-            text-align: center;
-            line-height: 1.6;
-        }
+.plan-card > p {
+    font-size: 1rem;
+    color: #b0b7d9;
+    flex-grow: 1;
+    margin-bottom: 20px;
+    text-align: center;
+    line-height: 1.6;
+}
 
-        .price {
-            font-size: 2.5rem;
-            font-weight: 700;
-            margin: 25px 0;
-            color: #fff;
-            text-align: center;
-            position: relative;
-        }
+.price {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin: 25px 0;
+    color: #fff;
+    text-align: center;
+    position: relative;
+}
 
-        .price::before {
-            content: '';
-            position: absolute;
-            top: -10px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 60px;
-            height: 2px;
-            background: #00F0E1;
-        }
+.price::before {
+    content: '';
+    position: absolute;
+    top: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 2px;
+    background: #00F0E1;
+}
 
-        .price span {
-            font-size: 1rem;
-            font-weight: 400;
-            color: #b0b7d9;
-            display: block;
-            margin-top: 5px;
-        }
+.price span {
+    font-size: 1rem;
+    font-weight: 400;
+    color: #b0b7d9;
+    display: block;
+    margin-top: 5px;
+}
 
-        .btn-primary {
-            background: linear-gradient(135deg, #00F0E1, #00d4ff);
-            color: #0f172a;
-            border: none;
-            padding: 14px 30px;
-            border-radius: 8px;
-            font-size: 1rem;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin-bottom: 25px;
-            text-align: center;
-            text-decoration: none;
-            display: block;
-        }
+.btn-primary {
+    background: linear-gradient(135deg, #00F0E1, #00d4ff);
+    color: #0f172a;
+    border: none;
+    padding: 14px 30px;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 25px;
+    text-align: center;
+    text-decoration: none;
+    display: block;
+}
 
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 25px rgba(0, 240, 225, 0.3);
-        }
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px rgba(0, 240, 225, 0.3);
+}
 
-        .features-list {
-            list-style: none;
-            padding: 0;
-            margin-top: 20px;
-        }
+.features-list {
+    list-style: none;
+    padding: 0;
+    margin-top: 20px;
+}
 
-        .features-list li {
-            padding: 10px 0;
-            font-size: 0.95rem;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
+.features-list li {
+    padding: 10px 0;
+    font-size: 0.95rem;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
 
-        .features-list li.included {
-            color: #b0b7d9;
-        }
+.features-list li.included {
+    color: #b0b7d9;
+}
 
-        .features-list li.included::before {
-            content: '✓';
-            color: #00F0E1;
-            font-weight: 700;
-            font-size: 1.2rem;
-        }
+.features-list li.included::before {
+    content: '✓';
+    color: #00F0E1;
+    font-weight: 700;
+    font-size: 1.2rem;
+}
 
-        .features-list li.excluded {
-            color: #888;
-            opacity: 0.7;
-        }
+.features-list li.excluded {
+    color: #888;
+    opacity: 0.7;
+}
 
-        .features-list li.excluded::before {
-            content: '✕';
-            color: #ff6b6b;
-            font-weight: 700;
-            font-size: 1.2rem;
-        }
+.features-list li.excluded::before {
+    content: '✕';
+    color: #ff6b6b;
+    font-weight: 700;
+    font-size: 1.2rem;
+}
 
-        @keyframes fadeInDown {
-            from {
-                opacity: 0;
-                transform: translateY(-30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
+@keyframes fadeInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
 
-        @media (max-width: 768px) {
-            .planos-header h2 {
-                font-size: 2rem;
-            }
+@media (max-width: 768px) {
+    .planos-header h2 {
+        font-size: 2rem;
+    }
 
-            .pricing-section {
-                grid-template-columns: 1fr;
-                gap: 20px;
-            }
+    .pricing-section {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
 
-            .plan-card.featured {
-                transform: scale(1.02);
-            }
-        }
-    </style>
-    <link rel="icon" type="image/x-icon" href="assets/images/imagens/favicon.ico">
-</head>
-<body>
-            align-items: center;
-            gap: 12px;
-        }
-
-        .plano-beneficios li::before {
-            content: '✓';
-            color: #00F0E1;
-            font-weight: 700;
-            font-size: 1.2rem;
-        }
-
-        .plano-beneficios li.nao-incluso::before {
-            content: '✕';
-            color: #ff6b6b;
-        }
-
-        .plano-beneficios li.nao-incluso {
-            color: #888;
-            opacity: 0.7;
-        }
-
-        @keyframes fadeInDown {
-            from {
-                opacity: 0;
-                transform: translateY(-30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        @media (max-width: 768px) {
-            .planos-header h2 {
-                font-size: 2rem;
-            }
-
-            .plano-card.destaque {
-                transform: scale(1.02);
-            }
-
-            .planos-grid {
-                grid-template-columns: 1fr;
-                gap: 20px;
-            }
-        }
+    .plan-card.featured {
+        transform: scale(1.02);
+    }
+}
     </style>
     <link rel="icon" type="image/x-icon" href="assets/images/imagens/favicon.ico">
 </head>
