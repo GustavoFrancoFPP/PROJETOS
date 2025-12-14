@@ -1,0 +1,173 @@
+﻿<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel ADM - Produtos</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+    <link rel="stylesheet" href="assets/css/admin.css">
+    <link rel="icon" type="image/x-icon" href="assets/images/imagens/favicon.ico">
+</head>
+<body class="admin-page">
+
+    <!-- Header -->
+    <header class="techfit-header">
+        <div class="header-container">
+            <a href="admin.html" class="header-logo">
+                <img src="assets/images/imagens/WhatsApp Image 2025-10-02 at 15.15.22.jpeg" 
+                     alt="TechFit - Academia Inteligente" 
+                     class="logo-image">
+                <div class="logo-text">TECH<span>FIT</span></div>
+            </a>
+
+            <!-- Navegação -->
+            <nav class="main-navigation">
+                <ul class="nav-links">
+                    <li><a href="admin.html" class="nav-link">Visão Geral</a></li>
+                    <li><a href="produtosadm.html" class="nav-link active">Produtos</a></li>
+                    <li><a href="aulas.html" class="nav-link">Aulas</a></li>
+                    <li><a href="feedbacks.html" class="nav-link">Feedbacks</a></li>
+                    <li><a href="faturamento.html" class="nav-link">Faturamento</a></li>
+                </ul>
+
+                <!-- Botão de Ação -->
+                <div class="header-cta">
+                    <a href="login.php" class="cta-button logout">
+                        <i class="fas fa-sign-out-alt"></i>
+                        Sair
+                    </a>
+                </div>
+            </nav>
+
+            <!-- Menu Hambúrguer (Mobile) -->
+            <button class="hamburger-menu" aria-label="Menu">
+                <span class="hamburger-line"></span>
+                <span class="hamburger-line"></span>
+                <span class="hamburger-line"></span>
+            </button>
+        </div>
+    </header>
+
+    <main class="admin-main">
+        <div class="container">
+            <p class="page-title">GERENCIAMENTO DE PRODUTOS E ESTOQUE</p>
+            
+            <a href="#" class="action-btn primary" style="margin-bottom: 25px; display: inline-flex; width: auto; padding: 15px 25px;">
+                <i class="fa-solid fa-plus-circle"></i>
+                <span>Adicionar Novo Produto</span>
+            </a>
+
+            <div class="panel">
+                <h2>Lista de Produtos</h2>
+                <div style="overflow-x: auto;">
+                    <table style="width: 100%; border-collapse: collapse;">
+                        <thead>
+                            <tr style="background: rgba(0, 209, 178, 0.1);">
+                                <th style="padding: 15px; text-align: left; border-bottom: 2px solid var(--cor-ciano-principal);">ID</th>
+                                <th style="padding: 15px; text-align: left; border-bottom: 2px solid var(--cor-ciano-principal);">Nome do Produto</th>
+                                <th style="padding: 15px; text-align: left; border-bottom: 2px solid var(--cor-ciano-principal);">Categoria</th>
+                                <th style="padding: 15px; text-align: left; border-bottom: 2px solid var(--cor-ciano-principal);">Preço</th>
+                                <th style="padding: 15px; text-align: left; border-bottom: 2px solid var(--cor-ciano-principal);">Estoque</th>
+                                <th style="padding: 15px; text-align: left; border-bottom: 2px solid var(--cor-ciano-principal);">Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr style="border-bottom: 1px solid rgba(255,255,255,0.1);">
+                                <td style="padding: 15px;">#001</td>
+                                <td style="padding: 15px;">Whey Protein Max</td>
+                                <td style="padding: 15px;">Suplemento</td>
+                                <td style="padding: 15px;">R$ 159,90</td>
+                                <td style="padding: 15px;">55</td>
+                                <td style="padding: 15px;">
+                                    <a href="#" style="color: var(--cor-ciano-principal); margin-right: 15px; text-decoration: none;">
+                                        <i class="fa-solid fa-pen-to-square"></i> Editar
+                                    </a>
+                                    <a href="#" style="color: #f14668; text-decoration: none;">
+                                        <i class="fa-solid fa-trash"></i> Excluir
+                                    </a>
+                                </td>
+                            </tr>
+                            <tr style="border-bottom: 1px solid rgba(255,255,255,0.1);">
+                                <td style="padding: 15px;">#002</td>
+                                <td style="padding: 15px;">Camiseta DryFit TechFit</td>
+                                <td style="padding: 15px;">Vestuário</td>
+                                <td style="padding: 15px;">R$ 79,90</td>
+                                <td style="padding: 15px;">120</td>
+                                <td style="padding: 15px;">
+                                    <a href="#" style="color: var(--cor-ciano-principal); margin-right: 15px; text-decoration: none;">
+                                        <i class="fa-solid fa-pen-to-square"></i> Editar
+                                    </a>
+                                    <a href="#" style="color: #f14668; text-decoration: none;">
+                                        <i class="fa-solid fa-trash"></i> Excluir
+                                    </a>
+                                </td>
+                            </tr>
+                            <tr style="border-bottom: 1px solid rgba(255,255,255,0.1);">
+                                <td style="padding: 15px;">#003</td>
+                                <td style="padding: 15px;">Barra de Proteína</td>
+                                <td style="padding: 15px;">Alimentos</td>
+                                <td style="padding: 15px;">R$ 12,50</td>
+                                <td style="padding: 15px;">300</td>
+                                <td style="padding: 15px;">
+                                    <a href="#" style="color: var(--cor-ciano-principal); margin-right: 15px; text-decoration: none;">
+                                        <i class="fa-solid fa-pen-to-square"></i> Editar
+                                    </a>
+                                    <a href="#" style="color: #f14668; text-decoration: none;">
+                                        <i class="fa-solid fa-trash"></i> Excluir
+                                    </a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <section class="main-content-grid" style="margin-top: 30px;">
+                <div class="panel">
+                    <h2>Alerta de Estoque Baixo</h2>
+                    <ul class="item-list">
+                        <li>
+                            <div class="icon-placeholder" style="background-color: rgba(241, 70, 104, 0.2); color: #F14668;">
+                                <i class="fa-solid fa-box-open"></i>
+                            </div>
+                            <div class="item-info">
+                                <span class="name">Creatina Monohidratada</span>
+                                <span class="time">Estoque: 8</span>
+                            </div>
+                            <a href="#" class="action-btn" style="padding: 8px 15px; font-size: 0.8rem; width: auto;">
+                                Comprar Mais
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="main-footer">
+        <div class="container">
+            <div class="footer-brand">
+                <img src="assets/images/imagens/WhatsApp Image 2025-10-02 at 15.15.22.jpeg" alt="Logo da TECHFIT" class="logo-img">
+                <p>Sua Academia do Futuro!</p>
+            </div>
+            <div class="footer-copyright">
+                <p>&copy; 2024 TECHFIT. Todos os direitos reservados.</p>
+            </div>
+            <div class="footer-contact">
+                <a href="#"><i class="fab fa-instagram"></i> TECHFIT_OFC</a>
+                <a href="#"><i class="fab fa-whatsapp"></i> (19) 99936-4328</a>
+            </div>
+        </div>
+    </footer>
+
+</body>
+<script src="assets/js/admin.js"></script>
+<script src="assets/js/header-admin.js"></script>
+</html>

@@ -1,0 +1,195 @@
+﻿<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unidades - TechFit</title>
+    <link rel="stylesheet" href="assets/css/unidades.css">
+    <!-- Leaflet CSS para o mapa -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <link rel="icon" type="image/x-icon" href="assets/images/imagens/favicon.ico">
+</head>
+<body class="corpo-1">
+    <!-- Header -->
+   <header class="techfit-header">
+        <div class="header-container">
+            <!-- Logo -->
+            <a href="inicio.html" class="header-logo">
+                <img src="assets/images/imagens/WhatsApp Image 2025-10-02 at 15.15.22.jpeg" 
+                     alt="TechFit - Academia Inteligente" 
+                     class="logo-image">
+                <div class="logo-text">TECH<span>FIT</span></div>
+            </a>
+
+            <!-- Navegação -->
+            <nav class="main-navigation">
+                <ul class="nav-links">
+                    <li><a href="inicio.html" class="nav-link active">Início</a></li>
+                    <li><a href="pagina_1.html" class="nav-link">Academias</a></li>
+                    <li><a href="produtos_loja.php" class="nav-link">Produtos</a></li>
+                    <li><a href="agendamento.php" class="nav-link">Agendamento</a></li>
+                    <li><a href="suporte.html" class="nav-link">Suporte</a></li>
+                </ul>
+
+                <!-- Botão de Ação -->
+                <div class="header-cta">
+                    <!-- Botão do Carrinho (será adicionado pelo JavaScript) -->
+                    <a href="login.php" class="cta-button">Área do Aluno</a>
+                </div>
+            </nav>
+
+            <!-- Menu Hambúrguer (Mobile) -->
+            <button class="hamburger-menu" aria-label="Menu">
+                <span class="hamburger-line"></span>
+                <span class="hamburger-line"></span>
+                <span class="hamburger-line"></span>
+            </button>
+        </div>
+    </header>
+    
+    <!-- Overlay para efeito visual -->
+    <div class="overlay"></div>
+    
+    <!-- Conteúdo Principal -->
+    <main class="unidades-container">
+        <section class="unidades-header">
+            <h1>Nossas Unidades</h1>
+            <p>Encontre a TechFit mais próxima de você e venha fazer parte da nossa comunidade fitness</p>
+        </section>
+        
+        <section class="filtros-container">
+            <button class="filtro-btn active" data-filtro="todas">Todas as Unidades</button>
+            <button class="filtro-btn" data-filtro="sp">São Paulo</button>
+            <button class="filtro-btn" data-filtro="rj">Rio de Janeiro</button>
+            <button class="filtro-btn" data-filtro="mg">Minas Gerais</button>
+        </section>
+        
+        <section class="unidades-grid">
+            <!-- Unidade 1 - Paulista -->
+            <div class="unidade-card" data-cidade="sp">
+                <img src="assets/images/imagens/unidade-paulista.jpg" alt="TechFit Paulista" class="unidade-imagem">
+                <div class="unidade-info">
+                    <h3 class="unidade-nome">TechFit Paulista</h3>
+                    
+                    <div class="unidade-endereco">
+                        <span>📍</span>
+                        <p>Av. Paulista, 1234 - Bela Vista, São Paulo - SP</p>
+                    </div>
+                    
+                    <div class="unidade-horario">
+                        <span>🕒</span>
+                        <p>Segunda a Sexta: 5h às 23h<br>Sábados e Domingos: 6h às 20h</p>
+                    </div>
+                    
+                    <div class="unidade-destaques">
+                        <span class="destaque-tag">Piscina</span>
+                        <span class="destaque-tag">Estacionamento</span>
+                        <span class="destaque-tag">Área Kids</span>
+                    </div>
+                    
+                    <div class="unidade-acoes">
+                        <a href="agendamento.php" class="acao-btn agendar">Agendar Aula</a>
+                        <a href="#" class="acao-btn detalhes" data-unidade="paulista">Ver Detalhes</a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Unidade 2 - Ipanema -->
+            <div class="unidade-card" data-cidade="rj">
+                <img src="assets/images/imagens/unidade-ipanema.jpg" alt="TechFit Ipanema" class="unidade-imagem">
+                <div class="unidade-info">
+                    <h3 class="unidade-nome">TechFit Ipanema</h3>
+                    
+                    <div class="unidade-endereco">
+                        <span>📍</span>
+                        <p>Rua Visconde de Pirajá, 550 - Ipanema, Rio de Janeiro - RJ</p>
+                    </div>
+                    
+                    <div class="unidade-horario">
+                        <span>🕒</span>
+                        <p>Segunda a Sexta: 5h às 23h<br>Sábados e Domingos: 6h às 20h</p>
+                    </div>
+                    
+                    <div class="unidade-destaques">
+                        <span class="destaque-tag">Vista para o Mar</span>
+                        <span class="destaque-tag">Yoga</span>
+                        <span class="destaque-tag">Pilates</span>
+                    </div>
+                    
+                    <div class="unidade-acoes">
+                        <a href="agendamento.php" class="acao-btn agendar">Agendar Aula</a>
+                        <a href="#" class="acao-btn detalhes" data-unidade="ipanema">Ver Detalhes</a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Unidade 3 - Savassi -->
+            <div class="unidade-card" data-cidade="mg">
+                <img src="assets/images/imagens/unidade-savassi.jpg" alt="TechFit Savassi" class="unidade-imagem">
+                <div class="unidade-info">
+                    <h3 class="unidade-nome">TechFit Savassi</h3>
+                    
+                    <div class="unidade-endereco">
+                        <span>📍</span>
+                        <p>Rua Antônio de Albuquerque, 781 - Savassi, Belo Horizonte - MG</p>
+                    </div>
+                    
+                    <div class="unidade-horario">
+                        <span>🕒</span>
+                        <p>Segunda a Sexta: 5h às 23h<br>Sábados e Domingos: 6h às 20h</p>
+                    </div>
+                    
+                    <div class="unidade-destaques">
+                        <span class="destaque-tag">CrossFit</span>
+                        <span class="destaque-tag">Personal Trainer</span>
+                        <span class="destaque-tag">Estacionamento</span>
+                    </div>
+                    
+                    <div class="unidade-acoes">
+                        <a href="agendamento.php" class="acao-btn agendar">Agendar Aula</a>
+                        <a href="#" class="acao-btn detalhes" data-unidade="savassi">Ver Detalhes</a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Unidade 4 - Morumbi -->
+            <div class="unidade-card" data-cidade="sp">
+                <img src="assets/images/imagens/unidade-morumbi.jpg" alt="TechFit Morumbi" class="unidade-imagem">
+                <div class="unidade-info">
+                    <h3 class="unidade-nome">TechFit Morumbi</h3>
+                    
+                    <div class="unidade-endereco">
+                        <span>📍</span>
+                        <p>Av. Jorge João Saad, 767 - Morumbi, São Paulo - SP</p>
+                    </div>
+                    
+                    <div class="unidade-horario">
+                        <span>🕒</span>
+                        <p>Segunda a Sexta: 5h às 23h<br>Sábados e Domingos: 6h às 20h</p>
+                    </div>
+                    
+                    <div class="unidade-destaques">
+                        <span class="destaque-tag">Piscina</span>
+                        <span class="destaque-tag">Sauna</span>
+                        <span class="destaque-tag">Área VIP</span>
+                    </div>
+                    
+                    <div class="unidade-acoes">
+                        <a href="agendamento.php" class="acao-btn agendar">Agendar Aula</a>
+                        <a href="#" class="acao-btn detalhes" data-unidade="morumbi">Ver Detalhes</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section class="mapa-container">
+            <h2>Encontre a Unidade Mais Próxima</h2>
+            <div id="map"></div>
+        </section>
+    </main>
+    
+    <!-- Scripts -->
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <script src="assets/js/unidades.js"></script>
+</body>
+</html>

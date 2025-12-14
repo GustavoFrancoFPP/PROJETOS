@@ -1,0 +1,367 @@
+﻿<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel ADM - Feedbacks</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+    <link rel="stylesheet" href="assets/css/admin.css">
+    <link rel="icon" type="image/x-icon" href="assets/images/imagens/favicon.ico">
+</head>
+<body class="admin-page">
+
+    <!-- Header -->
+    <header class="techfit-header">
+        <div class="header-container">
+            <a href="visao.html" class="header-logo">
+                <img src="assets/images/imagens/WhatsApp Image 2025-10-02 at 15.15.22.jpeg" 
+                     alt="TechFit - Academia Inteligente" 
+                     class="logo-image">
+                <div class="logo-text">TECH<span>FIT</span></div>
+            </a>
+
+            <!-- Navegação -->
+            <nav class="main-navigation">
+                <ul class="nav-links">
+                    <li><a href="visao.html" class="nav-link">Visão Geral</a></li>
+                    <li><a href="produtosadm.html" class="nav-link">Produtos</a></li>
+                    <li><a href="aulas.html" class="nav-link">Aulas</a></li>
+                    <li><a href="feedbacks.html" class="nav-link active">Feedbacks</a></li>
+                    <li><a href="faturamento.html" class="nav-link">Faturamento</a></li>
+                </ul>
+
+                <!-- Botão de Ação -->
+                <div class="header-cta">
+                    <a href="login.php" class="cta-button logout">
+                        <i class="fas fa-sign-out-alt"></i>
+                        Sair
+                    </a>
+                </div>
+            </nav>
+
+            <!-- Menu Hambúrguer (Mobile) -->
+            <button class="hamburger-menu" aria-label="Menu">
+                <span class="hamburger-line"></span>
+                <span class="hamburger-line"></span>
+                <span class="hamburger-line"></span>
+            </button>
+        </div>
+    </header>
+
+    <main class="admin-main">
+        <div class="container">
+            <p class="page-title">GERENCIAMENTO DE FEEDBACKS</p>
+            
+            <!-- Estatísticas de Feedback -->
+            <section class="stats-grid">
+                <div class="stats-card">
+                    <div class="icon">
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <div class="value">4.8</div>
+                    <div class="label">Avaliação Média</div>
+                </div>
+                <div class="stats-card">
+                    <div class="icon">
+                        <i class="fas fa-comments"></i>
+                    </div>
+                    <div class="value">156</div>
+                    <div class="label">Feedbacks Hoje</div>
+                </div>
+                <div class="stats-card">
+                    <div class="icon">
+                        <i class="fas fa-thumbs-up"></i>
+                    </div>
+                    <div class="value">94%</div>
+                    <div class="label">Avaliações Positivas</div>
+                </div>
+                <div class="stats-card">
+                    <div class="icon">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <div class="value">12</div>
+                    <div class="label">Pendentes</div>
+                </div>
+            </section>
+
+            <!-- Filtros -->
+            <div class="panel" style="margin-bottom: 25px;">
+                <div style="display: flex; gap: 15px; flex-wrap: wrap; align-items: center;">
+                    <select class="form-control" style="width: auto;">
+                        <option>Todos os Feedbacks</option>
+                        <option>Apenas Positivos</option>
+                        <option>Apenas Negativos</option>
+                        <option>Não Respondidos</option>
+                    </select>
+                    <select class="form-control" style="width: auto;">
+                        <option>Todas as Áreas</option>
+                        <option>Academia</option>
+                        <option>Aulas</option>
+                        <option>Instrutores</option>
+                        <option>Produtos</option>
+                    </select>
+                    <input type="date" class="form-control" style="width: auto;">
+                    <button class="action-btn">
+                        <i class="fas fa-filter"></i>
+                        Filtrar
+                    </button>
+                </div>
+            </div>
+
+            <!-- Lista de Feedbacks -->
+            <div class="panel">
+                <h2>Últimos Feedbacks</h2>
+                <div class="data-table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Aluno</th>
+                                <th>Avaliação</th>
+                                <th>Comentário</th>
+                                <th>Área</th>
+                                <th>Data</th>
+                                <th>Status</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <strong>Maria Santos</strong><br>
+                                    <small>mariasantos@email.com</small>
+                                </td>
+                                <td>
+                                    <div class="rating-stars">
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                    </div>
+                                    <small>5.0</small>
+                                </td>
+                                <td>
+                                    <div style="max-width: 300px;">
+                                        "Excelente aula de yoga! A instrutora Ana é maravilhosa e o ambiente é muito acolhedor."
+                                    </div>
+                                </td>
+                                <td>Aulas</td>
+                                <td>10/12/2024</td>
+                                <td><span class="status-badge status-completed">Respondido</span></td>
+                                <td>
+                                    <a href="#" class="action-btn" style="padding: 8px 12px; font-size: 0.8rem;">
+                                        <i class="fas fa-reply"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <strong>João Silva</strong><br>
+                                    <small>joaosilva@email.com</small>
+                                </td>
+                                <td>
+                                    <div class="rating-stars">
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="far fa-star"></i>
+                                    </div>
+                                    <small>4.0</small>
+                                </td>
+                                <td>
+                                    <div style="max-width: 300px;">
+                                        "Gostei da academia, mas os vestiários precisam de mais manutenção."
+                                    </div>
+                                </td>
+                                <td>Academia</td>
+                                <td>10/12/2024</td>
+                                <td><span class="status-badge status-pending">Pendente</span></td>
+                                <td>
+                                    <a href="#" class="action-btn" style="padding: 8px 12px; font-size: 0.8rem;">
+                                        <i class="fas fa-reply"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <strong>Ana Costa</strong><br>
+                                    <small>anacosta@email.com</small>
+                                </td>
+                                <td>
+                                    <div class="rating-stars">
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="far fa-star"></i>
+                                        <i class="far fa-star"></i>
+                                    </div>
+                                    <small>3.0</small>
+                                </td>
+                                <td>
+                                    <div style="max-width: 300px;">
+                                        "O whey protein está muito caro. Poderia ter mais opções de preço."
+                                    </div>
+                                </td>
+                                <td>Produtos</td>
+                                <td>09/12/2024</td>
+                                <td><span class="status-badge status-pending">Pendente</span></td>
+                                <td>
+                                    <a href="#" class="action-btn" style="padding: 8px 12px; font-size: 0.8rem;">
+                                        <i class="fas fa-reply"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <strong>Carlos Lima</strong><br>
+                                    <small>carloslima@email.com</small>
+                                </td>
+                                <td>
+                                    <div class="rating-stars">
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="far fa-star"></i>
+                                        <i class="far fa-star"></i>
+                                        <i class="far fa-star"></i>
+                                    </div>
+                                    <small>2.0</small>
+                                </td>
+                                <td>
+                                    <div style="max-width: 300px;">
+                                        "O instrutor chegou 15 minutos atrasado na aula de spinning. Muito desorganizado."
+                                    </div>
+                                </td>
+                                <td>Instrutores</td>
+                                <td>09/12/2024</td>
+                                <td><span class="status-badge status-completed">Respondido</span></td>
+                                <td>
+                                    <a href="#" class="action-btn" style="padding: 8px 12px; font-size: 0.8rem;">
+                                        <i class="fas fa-reply"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Análise de Sentimento -->
+            <section class="main-content-grid" style="margin-top: 30px;">
+                <div class="panel">
+                    <h2>Distribuição de Avaliações</h2>
+                    <div style="padding: 20px;">
+                        <div style="display: flex; align-items: center; margin-bottom: 15px;">
+                            <span style="width: 100px;">5 Estrelas</span>
+                            <div style="flex: 1; background: rgba(255,255,255,0.1); border-radius: 10px; margin: 0 15px;">
+                                <div style="width: 75%; height: 20px; background: linear-gradient(135deg, #28a745, #20c997); border-radius: 10px;"></div>
+                            </div>
+                            <span>75%</span>
+                        </div>
+                        <div style="display: flex; align-items: center; margin-bottom: 15px;">
+                            <span style="width: 100px;">4 Estrelas</span>
+                            <div style="flex: 1; background: rgba(255,255,255,0.1); border-radius: 10px; margin: 0 15px;">
+                                <div style="width: 15%; height: 20px; background: linear-gradient(135deg, #00D1B2, #00d4ff); border-radius: 10px;"></div>
+                            </div>
+                            <span>15%</span>
+                        </div>
+                        <div style="display: flex; align-items: center; margin-bottom: 15px;">
+                            <span style="width: 100px;">3 Estrelas</span>
+                            <div style="flex: 1; background: rgba(255,255,255,0.1); border-radius: 10px; margin: 0 15px;">
+                                <div style="width: 6%; height: 20px; background: linear-gradient(135deg, #ffc107, #fd7e14); border-radius: 10px;"></div>
+                            </div>
+                            <span>6%</span>
+                        </div>
+                        <div style="display: flex; align-items: center; margin-bottom: 15px;">
+                            <span style="width: 100px;">2 Estrelas</span>
+                            <div style="flex: 1; background: rgba(255,255,255,0.1); border-radius: 10px; margin: 0 15px;">
+                                <div style="width: 3%; height: 20px; background: linear-gradient(135deg, #ff6b95, #ff3860); border-radius: 10px;"></div>
+                            </div>
+                            <span>3%</span>
+                        </div>
+                        <div style="display: flex; align-items: center;">
+                            <span style="width: 100px;">1 Estrela</span>
+                            <div style="flex: 1; background: rgba(255,255,255,0.1); border-radius: 10px; margin: 0 15px;">
+                                <div style="width: 1%; height: 20px; background: linear-gradient(135deg, #dc3545, #e83e8c); border-radius: 10px;"></div>
+                            </div>
+                            <span>1%</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="panel">
+                    <h2>Feedbacks por Área</h2>
+                    <ul class="item-list">
+                        <li>
+                            <div class="icon-placeholder gradient-primary">
+                                <i class="fas fa-dumbbell"></i>
+                            </div>
+                            <div class="item-info">
+                                <span class="name">Academia</span>
+                                <span class="time">45 feedbacks</span>
+                            </div>
+                            <span class="status-badge status-active">4.7</span>
+                        </li>
+                        <li>
+                            <div class="icon-placeholder gradient-success">
+                                <i class="fas fa-running"></i>
+                            </div>
+                            <div class="item-info">
+                                <span class="name">Aulas</span>
+                                <span class="time">38 feedbacks</span>
+                            </div>
+                            <span class="status-badge status-active">4.9</span>
+                        </li>
+                        <li>
+                            <div class="icon-placeholder gradient-warning">
+                                <i class="fas fa-user-tie"></i>
+                            </div>
+                            <div class="item-info">
+                                <span class="name">Instrutores</span>
+                                <span class="time">52 feedbacks</span>
+                            </div>
+                            <span class="status-badge status-active">4.8</span>
+                        </li>
+                        <li>
+                            <div class="icon-placeholder gradient-danger">
+                                <i class="fas fa-shopping-bag"></i>
+                            </div>
+                            <div class="item-info">
+                                <span class="name">Produtos</span>
+                                <span class="time">21 feedbacks</span>
+                            </div>
+                            <span class="status-badge status-active">4.5</span>
+                        </li>
+                    </ul>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="main-footer">
+        <div class="container">
+            <div class="footer-brand">
+                <img src="assets/images/imagens/WhatsApp Image 2025-10-02 at 15.15.22.jpeg" alt="Logo da TECHFIT" class="logo-img">
+                <p>Sua Academia do Futuro!</p>
+            </div>
+            <div class="footer-copyright">
+                <p>&copy; 2024 TECHFIT. Todos os direitos reservados.</p>
+            </div>
+            <div class="footer-contact">
+                <a href="#"><i class="fab fa-instagram"></i> TECHFIT_OFC</a>
+                <a href="#"><i class="fab fa-whatsapp"></i> (19) 99936-4328</a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="assets/js/feedbacks.js"></script>
+    <script src="assets/js/header-admin.js"></script>
+</body>
+</html>

@@ -1,0 +1,156 @@
+﻿<?php
+session_start();
+// Impede acesso direto sem login
+if (!isset($_SESSION['user_id'])) {
+    header('Location: login.php');
+    exit;
+}
+?>
+<!DOCTYPE html>
+<html lang="pt-pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Compra Confirmada - TECHFIT</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"/>
+    
+    <style>
+        :root {
+            --ciano: #00F0E1;
+            --fundo: #0f1525;
+            --card: #141928;
+            --texto: #ffffff;
+            --verde: #2ecc71;
+        }
+
+        body {
+            background-color: var(--fundo);
+            font-family: 'Poppins', sans-serif;
+            color: var(--texto);
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .confirmacao-box {
+            background: var(--card);
+            padding: 50px;
+            border-radius: 20px;
+            text-align: center;
+            max-width: 500px;
+            width: 90%;
+            /* Efeito Neon */
+            box-shadow: 0 0 30px rgba(0, 240, 225, 0.15);
+            border: 1px solid rgba(0, 240, 225, 0.2);
+            animation: slideUp 0.6s ease;
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(30px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .icon-wrapper {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: rgba(46, 204, 113, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 30px;
+            border: 3px solid var(--verde);
+        }
+
+        .icon-wrapper i {
+            font-size: 50px;
+            color: var(--verde);
+        }
+
+        h1 {
+            color: var(--ciano);
+            font-size: 28px;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        p.descricao {
+            color: #b0b7d9;
+            margin-bottom: 40px;
+            line-height: 1.6;
+        }
+
+        .detalhes-pedido {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 30px;
+            text-align: left;
+        }
+
+        .linha-detalhe {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        .linha-detalhe:last-child { border-bottom: none; }
+
+        .btn-painel {
+            display: inline-block;
+            background: var(--ciano);
+            color: #000;
+            padding: 15px 40px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: 0.3s;
+            box-shadow: 0 5px 15px rgba(0, 240, 225, 0.2);
+        }
+
+        .btn-painel:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(0, 240, 225, 0.4);
+            background: #fff;
+        }
+    </style>
+    <link rel="icon" type="image/x-icon" href="assets/images/imagens/favicon.ico">
+</head>
+<body>
+
+    <div class="confirmacao-box">
+        <div class="icon-wrapper">
+            <i class="fas fa-check"></i>
+        </div>
+        
+        <h1>Sucesso!</h1>
+        <p class="descricao">A sua compra foi confirmada. Os produtos foram movidos para o seu histórico e o pagamento foi registado.</p>
+
+        <div class="detalhes-pedido">
+            <div class="linha-detalhe">
+                <span style="color: #888;">Estado:</span>
+                <span style="color: var(--verde); font-weight: bold;">Concluído</span>
+            </div>
+            <div class="linha-detalhe">
+                <span style="color: #888;">Data:</span>
+                <span><?php echo date('d/m/Y H:i'); ?></span>
+            </div>
+            <div class="linha-detalhe">
+                <span style="color: #888;">Retirada:</span>
+                <span>Recepção TechFit</span>
+            </div>
+        </div>
+
+        <a href="dashboard_aluno.php" class="btn-painel">
+            Voltar ao Painel
+        </a>
+    </div>
+
+</body>
+</html>

@@ -1,0 +1,174 @@
+﻿<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="TechFit - Conheça nossas unidades. Encontre a academia inteligente mais próxima de você!">
+    <meta name="keywords" content="academia, techfit, unidades, localização, fitness">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link rel="stylesheet" href="assets/css/unidades.css">
+    <title>Unidades - Techfit</title>
+    <link rel="icon" type="image/x-icon" href="assets/images/imagens/favicon.ico">
+</head>
+<body class="corpo-1">
+
+           <header class="techfit-header">
+        <div class="header-container">
+            <a href="inicio.html" class="header-logo">
+                <img src="assets/images/imagens/WhatsApp Image 2025-10-02 at 15.15.22.jpeg" 
+                     alt="TechFit - Academia Inteligente" 
+                     class="logo-image">
+                <div class="logo-text">TECH<span>FIT</span></div>
+            </a>
+
+            <!-- Navegação -->
+            <nav class="main-navigation">
+                <ul class="nav-links" role="menubar">
+                    <li><a href="inicio.html" class="nav-link">Início</a></li>
+                    <li><a href="pagina_1.html" class="nav-link active">Academias</a></li>
+                    <li><a href="produtos_loja.php" class="nav-link">Produtos</a></li>
+                    <li><a href="agendamento.php" class="nav-link">Agendamento</a></li>
+                    <li><a href="suporte.html" class="nav-link">Suporte</a></li>
+                </ul>
+
+                <!-- Botão de Ação -->
+                <div class="header-cta">
+                    <!-- Botão do Carrinho (será adicionado pelo JavaScript) -->
+                    <a href="login.php" class="cta-button">Área do Aluno</a>
+                </div>
+            </nav>
+
+            <button class="hamburger-menu" aria-label="Menu">
+                <span class="hamburger-line"></span>
+                <span class="hamburger-line"></span>
+                <span class="hamburger-line"></span>
+            </button>
+        </div>
+    </header>
+
+
+    <div class="overlay"></div>
+    
+    <div class="unidades-container">
+        <div class="unidades-header">
+            <h1>Nossas Unidades</h1>
+            <p>Encontre a academia TechFit mais próxima de você e venha fazer parte da revolução fitness com inteligência artificial</p>
+        </div>
+        
+        <div class="filtros-container">
+            <button class="filtro-btn active" data-filtro="todas">Todas as Unidades</button>
+            <button class="filtro-btn" data-filtro="sp">São Paulo</button>
+            <button class="filtro-btn" data-filtro="rj">Rio de Janeiro</button>
+            <button class="filtro-btn" data-filtro="mg">Minas Gerais</button>
+        </div>
+        
+        <div class="unidades-grid">
+            <div class="unidade-card" data-cidade="sp" data-lat="-23.5630" data-lng="-46.6520">
+                <img src="assets/images/imagens/academia techfit parte externa.jpg" alt="TechFit Paulista" class="unidade-imagem">
+                <div class="unidade-info">
+                    <h3 class="unidade-nome">TechFit Paulista</h3>
+                    <div class="unidade-endereco">
+                        <span class="material-symbols-outlined">location_on</span>
+                        <p>Av. Paulista, 1234 - Bela Vista, São Paulo - SP</p>
+                    </div>
+                    <div class="unidade-horario">
+                        <span class="material-symbols-outlined">schedule</span>
+                        <p>Segunda a Sexta: 5h às 23h | Sábados: 6h às 20h | Domingos: 7h às 18h</p>
+                    </div>
+                    <div class="unidade-destaques">
+                        <span class="destaque-tag">Estacionamento</span>
+                        <span class="destaque-tag">Área de Crossfit</span>
+                        <span class="destaque-tag">Piscina</span>
+                        <span class="destaque-tag">Estúdio de Pilates</span>
+                    </div>
+                    <div class="unidade-acoes">
+                          <a href="detalhes-unidade.html" class="acao-btn detalhes" data-unidade="paulista">Ver Detalhes</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="unidade-card" data-cidade="rj" data-lat="-22.9836" data-lng="-43.1991">
+                <img src="assets/images/imagens/academia techfit parte externa.jpg" alt="TechFit Ipanema" class="unidade-imagem">
+                <div class="unidade-info">
+                    <h3 class="unidade-nome">TechFit Ipanema</h3>
+                    <div class="unidade-endereco">
+                        <span class="material-symbols-outlined">location_on</span>
+                        <p>Rua Visconde de Pirajá, 550 - Ipanema, Rio de Janeiro - RJ</p>
+                    </div>
+                    <div class="unidade-horario">
+                        <span class="material-symbols-outlined">schedule</span>
+                        <p>Segunda a Sexta: 5h às 23h | Sábados: 6h às 20h | Domingos: 7h às 18h</p>
+                    </div>
+                    <div class="unidade-destaques">
+                        <span class="destaque-tag">Vista para o Mar</span>
+                        <span class="destaque-tag">Área de Musculação</span>
+                        <span class="destaque-tag">Sauna</span>
+                        <span class="destaque-tag">Estacionamento</span>
+                    </div>
+                    <div class="unidade-acoes">
+                         <a href="detalhes-unidade.html" class="acao-btn detalhes" data-unidade="ipanema">Ver Detalhes</a>
+                    </div>
+                </div>
+            </div>
+            <div class="unidade-card" data-cidade="mg" data-lat="-19.9246" data-lng="-43.9355">
+                <img src="assets/images/imagens/academia techfit parte externa.jpg" alt="TechFit Savassi" class="unidade-imagem">
+                <div class="unidade-info">
+                    <h3 class="unidade-nome">TechFit Savassi</h3>
+                    <div class="unidade-endereco">
+                        <span class="material-symbols-outlined">location_on</span>
+                        <p>Rua Antônio de Albuquerque, 781 - Savassi, Belo Horizonte - MG</p>
+                    </div>
+                    <div class="unidade-horario">
+                        <span class="material-symbols-outlined">schedule</span>
+                        <p>Segunda a Sexta: 5h às 23h | Sábados: 6h às 20h | Domingos: 7h às 18h</p>
+                    </div>
+                    <div class="unidade-destaques">
+                        <span class="destaque-tag">Estacionamento</span>
+                        <span class="destaque-tag">Área de Lutas</span>
+                        <span class="destaque-tag">Spa</span>
+                        <span class="destaque-tag">Nutricionista</span>
+                    </div>
+                    <div class="unidade-acoes">
+                         <a href="detalhes-unidade.html" class="acao-btn detalhes" data-unidade="savassi">Ver Detalhes</a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="unidade-card" data-cidade="sp" data-lat="-23.6220" data-lng="-46.6990">
+                <img src="assets/images/imagens/academia techfit parte externa.jpg" alt="TechFit Morumbi" class="unidade-imagem">
+                <div class="unidade-info">
+                    <h3 class="unidade-nome">TechFit Morumbi</h3>
+                    <div class="unidade-endereco">
+                        <span class="material-symbols-outlined">location_on</span>
+                        <p>Av. Jorge João Saad, 767 - Morumbi, São Paulo - SP</p>
+                    </div>
+                    <div class="unidade-horario">
+                        <span class="material-symbols-outlined">schedule</span>
+                        <p>Segunda a Sexta: 5h às 23h | Sábados: 6h às 20h | Domingos: 7h às 18h</p>
+                    </div>
+                    <div class="unidade-destaques">
+                        <span class="destaque-tag">Piscina Olímpica</span>
+                        <span class="destaque-tag">Quadra Poliesportiva</span>
+                        <span class="destaque-tag">Personal Trainer</span>
+                        <span class="destaque-tag">Estacionamento</span>
+                    </div>
+                    <div class="unidade-acoes">
+                       <a href="detalhes-unidade.html" class="acao-btn detalhes" data-unidade="morumbi">Ver Detalhes</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="mapa-container">
+            <h2>Encontre a Unidade Mais Próxima</h2>
+            <div id="map"></div>
+        </div>
+    </div>
+    
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="assets/js/unidades.js"></script>
+    <script src="assets/js/header-carrinho-simples.js"></script>
+</body>
+</html>

@@ -1,0 +1,760 @@
+﻿<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Localização - TechFit</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <style>
+        :root {
+            --cor-principal: #00bcd4;
+            --cor-principal-escura: #00a8cc;
+            --cor-fundo-escuro: #121212;
+            --cor-fundo-transparente: rgba(18, 18, 18, 0.8);
+            --cor-card-escuro: rgba(30, 30, 30, 0.85);
+            --cor-card-claro: rgba(230, 230, 230, 0.6);
+            --cor-texto-primario: #FFFFFF;
+            --cor-texto-secundario: #B3B3B3;
+            --cor-borda-sutil: #444444;
+            
+            /* Header */
+            --header-bg: rgba(18, 18, 18, 0.95);
+            --header-border: rgba(0, 240, 225, 0.2);
+            --nav-hover: #00f0e1;
+            --nav-text: #ffffff;
+            --nav-text-muted: #b0b0b0;
+        }
+
+        /* ===== RESET E CONFIGURAÇÕES BASE ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #0c0c0c 0%, #1a1a1a 100%);
+            min-height: 100vh;
+            color: white;
+            overflow-x: hidden;
+        }
+
+        /* ===== HEADER MODERNO TECHFIT ===== */
+        .techfit-header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background: var(--header-bg);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--header-border);
+            z-index: 1000;
+            padding: 0;
+            transition: all 0.3s ease;
+        }
+
+        .header-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 80px;
+        }
+
+        .header-logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            text-decoration: none;
+            transition: transform 0.3s ease;
+        }
+
+        .header-logo:hover {
+            transform: scale(1.05);
+        }
+
+        .logo-image {
+            height: 50px;
+            width: auto;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .logo-text {
+            font-family: 'Poppins', sans-serif;
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--nav-text);
+            letter-spacing: -0.5px;
+        }
+
+        .logo-text span {
+            color: var(--nav-hover);
+        }
+
+        .main-navigation {
+            display: flex;
+            align-items: center;
+            gap: 40px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 35px;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        .nav-link {
+            position: relative;
+            text-decoration: none;
+            color: var(--nav-text-muted);
+            font-family: 'Poppins', sans-serif;
+            font-weight: 500;
+            font-size: 1rem;
+            padding: 10px 0;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .nav-link::before {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(90deg, var(--nav-hover), #00d4ff);
+            transition: width 0.3s ease;
+        }
+
+        .nav-link:hover {
+            color: var(--nav-text);
+        }
+
+        .nav-link:hover::before {
+            width: 100%;
+        }
+
+        .nav-link.active {
+            color: var(--nav-hover);
+        }
+
+        .nav-link.active::before {
+            width: 100%;
+        }
+
+        .header-cta {
+            margin-left: 30px;
+        }
+
+        .cta-button {
+            background: linear-gradient(135deg, var(--nav-hover), #00d4ff);
+            color: #000;
+            text-decoration: none;
+            padding: 12px 28px;
+            border-radius: 25px;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            box-shadow: 0 4px 15px rgba(0, 240, 225, 0.3);
+        }
+
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 240, 225, 0.4);
+            background: linear-gradient(135deg, #00d4ff, var(--nav-hover));
+        }
+
+        .hamburger-menu {
+            display: none;
+            flex-direction: column;
+            gap: 4px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 5px;
+        }
+
+        .hamburger-line {
+            width: 25px;
+            height: 3px;
+            background: var(--nav-text);
+            transition: all 0.3s ease;
+            border-radius: 2px;
+        }
+
+        /* ===== CONTEÚDO PRINCIPAL ===== */
+        .localizacao-container {
+            width: 90%;
+            max-width: 1300px;
+            margin: 0 auto;
+            padding: 120px 0 60px;
+        }
+
+        .localizacao-header {
+            text-align: center;
+            margin-bottom: 50px;
+            animation: fadeInUp 1s ease;
+        }
+
+        .localizacao-header h1 {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            background: linear-gradient(135deg, var(--cor-principal), #00d4ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .localizacao-header p {
+            font-size: 1.2rem;
+            max-width: 700px;
+            margin: 0 auto;
+            color: var(--cor-texto-secundario);
+        }
+
+        .conteudo-principal {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            margin-bottom: 60px;
+        }
+
+        /* ===== MAPA ===== */
+        .mapa-section {
+            background: var(--cor-card-escuro);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(10px);
+        }
+
+        .mapa-section h2 {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+            color: var(--cor-principal);
+            font-size: 1.8rem;
+        }
+
+        #map {
+            height: 500px;
+            width: 100%;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        /* ===== INFORMAÇÕES DE LOCALIZAÇÃO ===== */
+        .info-section {
+            background: var(--cor-card-escuro);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(10px);
+        }
+
+        .info-section h2 {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 25px;
+            color: var(--cor-principal);
+            font-size: 1.8rem;
+        }
+
+        .info-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 25px;
+            border-left: 4px solid var(--cor-principal);
+            transition: transform 0.3s ease;
+        }
+
+        .info-card:hover {
+            transform: translateX(10px);
+        }
+
+        .info-card h3 {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+            color: var(--cor-texto-primario);
+            font-size: 1.3rem;
+        }
+
+        .info-card p {
+            color: var(--cor-texto-secundario);
+            line-height: 1.6;
+            margin-bottom: 10px;
+        }
+
+        .destaque {
+            color: var(--cor-principal) !important;
+            font-weight: 600;
+        }
+
+        /* ===== UNIDADES PRÓXIMAS ===== */
+        .unidades-section {
+            margin-top: 40px;
+        }
+
+        .unidades-section h2 {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 30px;
+            color: var(--cor-principal);
+            font-size: 1.8rem;
+            text-align: center;
+            justify-content: center;
+        }
+
+        .unidades-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+        }
+
+        .unidade-card {
+            background: var(--cor-card-escuro);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .unidade-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 25px rgba(0, 188, 212, 0.2);
+            border-color: var(--cor-principal);
+        }
+
+        .unidade-card h3 {
+            color: var(--cor-principal);
+            margin-bottom: 15px;
+            font-size: 1.4rem;
+        }
+
+        .unidade-info {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            margin-bottom: 12px;
+            color: var(--cor-texto-secundario);
+        }
+
+        .unidade-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .btn {
+            flex: 1;
+            text-align: center;
+            padding: 10px 15px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+
+        .btn-primary {
+            background: var(--cor-principal);
+            color: #000;
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        /* ===== ANIMAÇÕES ===== */
+        @keyframes fadeInUp {
+            0% {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* ===== RESPONSIVIDADE ===== */
+        @media (max-width: 1024px) {
+            .conteudo-principal {
+                grid-template-columns: 1fr;
+            }
+            
+            #map {
+                height: 400px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header-container {
+                height: 70px;
+                padding: 0 15px;
+            }
+            
+            .logo-text {
+                font-size: 1.5rem;
+            }
+            
+            .logo-image {
+                height: 40px;
+            }
+            
+            .hamburger-menu {
+                display: flex;
+            }
+            
+            .main-navigation {
+                position: fixed;
+                top: 70px;
+                left: 0;
+                width: 100%;
+                background: var(--header-bg);
+                backdrop-filter: blur(20px);
+                flex-direction: column;
+                gap: 0;
+                padding: 20px 0;
+                transform: translateY(-100%);
+                opacity: 0;
+                visibility: hidden;
+                transition: all 0.3s ease;
+                border-bottom: 1px solid var(--header-border);
+            }
+            
+            .main-navigation.active {
+                transform: translateY(0);
+                opacity: 1;
+                visibility: visible;
+            }
+            
+            .nav-links {
+                flex-direction: column;
+                gap: 0;
+                width: 100%;
+            }
+            
+            .nav-link {
+                padding: 15px 30px;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+                width: 100%;
+                display: block;
+            }
+            
+            .nav-link::before {
+                display: none;
+            }
+            
+            .header-cta {
+                margin: 20px 30px 0;
+                width: calc(100% - 60px);
+            }
+            
+            .cta-button {
+                width: 100%;
+                text-align: center;
+                justify-content: center;
+            }
+
+            .localizacao-container {
+                padding-top: 100px;
+            }
+            
+            .localizacao-header h1 {
+                font-size: 2.2rem;
+            }
+            
+            .unidades-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .header-container {
+                height: 60px;
+            }
+            
+            .logo-text {
+                font-size: 1.3rem;
+            }
+            
+            .logo-image {
+                height: 35px;
+            }
+            
+            .main-navigation {
+                top: 60px;
+            }
+
+            .localizacao-container {
+                padding-top: 90px;
+            }
+            
+            .localizacao-header h1 {
+                font-size: 1.8rem;
+            }
+            
+            .mapa-section, .info-section {
+                padding: 20px;
+            }
+            
+            #map {
+                height: 300px;
+            }
+        }
+    </style>
+    <link rel="icon" type="image/x-icon" href="assets/images/imagens/favicon.ico">
+</head>
+<body>
+    <header class="techfit-header">
+        <div class="header-container">
+            <a href="inicio.html" class="header-logo">
+                <img src="assets/images/imagens/WhatsApp Image 2025-10-02 at 15.15.22.jpeg" 
+                     alt="TechFit - Academia Inteligente" 
+                     class="logo-image">
+                <div class="logo-text">TECH<span>FIT</span></div>
+            </a>
+
+            <nav class="main-navigation" aria-label="Navegação principal">
+                <ul class="nav-links" role="menubar">
+                    <li><a href="inicio.html" class="nav-link">Início</a></li>
+                    <li><a href="pagina_1.html" class="nav-link">Academias</a></li>
+                    <li><a href="produtos_loja.php" class="nav-link">Produtos</a></li>
+                    <li><a href="agendamento.php" class="nav-link">Agendamento</a></li>
+                    <li><a href="suporte.html" class="nav-link">Suporte</a></li>
+                </ul>
+
+                <div class="header-cta">
+                    <a href="login.php" class="cta-button">Área do Aluno</a>
+                </div>
+            </nav>
+
+            <button class="hamburger-menu" aria-label="Menu">
+                <span class="hamburger-line"></span>
+                <span class="hamburger-line"></span>
+                <span class="hamburger-line"></span>
+            </button>
+        </div>
+    </header>
+
+    <div class="localizacao-container">
+        <div class="localizacao-header">
+            <h1>Localização</h1>
+            <p>Encontre a TechFit mais próxima de você e descubra a melhor forma de chegar</p>
+        </div>
+
+        <div class="conteudo-principal">
+            <section class="mapa-section">
+                <h2>
+                    <span class="material-symbols-outlined">map</span>
+                    Mapa Interativo
+                </h2>
+                <div id="map"></div>
+            </section>
+
+            <section class="info-section">
+                <h2>
+                    <span class="material-symbols-outlined">pin_drop</span>
+                    Como Chegar
+                </h2>
+                
+                <div class="info-card">
+                    <h3>
+                        <span class="material-symbols-outlined">directions_subway</span>
+                        Metrô
+                    </h3>
+                    <p><span class="destaque">Estação Paulista</span> (Linha 2-Verde)</p>
+                    <p>Saída: Rua Augusta</p>
+                    <p>5 minutos a pé da estação</p>
+                </div>
+
+                <div class="info-card">
+                    <h3>
+                        <span class="material-symbols-outlined">directions_bus</span>
+                        Ônibus
+                    </h3>
+                    <p><span class="destaque">Diversas linhas</span> na Av. Paulista</p>
+                    <p>Principais pontos:</p>
+                    <p>• Parada Paulista 1 (sentido Centro)</p>
+                    <p>• Parada Paulista 2 (sentido Pinheiros)</p>
+                </div>
+
+                <div class="info-card">
+                    <h3>
+                        <span class="material-symbols-outlined">local_parking</span>
+                        Estacionamento
+                    </h3>
+                    <p><span class="destaque">Entrada pela Rua Augusta</span></p>
+                    <p>200 vagas disponíveis</p>
+                    <p>3 horas grátis para alunos</p>
+                    <p>Horário: 5h às 23h</p>
+                </div>
+
+                <div class="info-card">
+                    <h3>
+                        <span class="material-symbols-outlined">directions_car</span>
+                        Carro
+                    </h3>
+                    <p><span class="destaque">Acesso fácil</span> pela Av. Paulista</p>
+                    <p>Estacionamento com manobrista</p>
+                    <p>Valet parking disponível</p>
+                </div>
+            </section>
+        </div>
+
+        <section class="unidades-section">
+            <h2>
+                <span class="material-symbols-outlined">location_city</span>
+                Unidades Próximas
+            </h2>
+            
+            <div class="unidades-grid">
+                <div class="unidade-card">
+                    <h3>TechFit Paulista</h3>
+                    <div class="unidade-info">
+                        <span class="material-symbols-outlined">location_on</span>
+                        <p>Av. Paulista, 1234 - Bela Vista, São Paulo - SP</p>
+                    </div>
+                    <div class="unidade-info">
+                        <span class="material-symbols-outlined">schedule</span>
+                        <p>Seg-Sex: 5h-23h | Sáb: 6h-20h | Dom: 7h-18h</p>
+                    </div>
+                    <div class="unidade-actions">
+                        <a href="detalhes-unidade.html?unidade=paulista" class="btn btn-primary">Ver Detalhes</a>
+                        <a href="agendamento.php" class="btn btn-secondary">Agendar Aula</a>
+                    </div>
+                </div>
+
+                <div class="unidade-card">
+                    <h3>TechFit Morumbi</h3>
+                    <div class="unidade-info">
+                        <span class="material-symbols-outlined">location_on</span>
+                        <p>Av. Jorge João Saad, 767 - Morumbi, São Paulo - SP</p>
+                    </div>
+                    <div class="unidade-info">
+                        <span class="material-symbols-outlined">schedule</span>
+                        <p>Seg-Sex: 5h-23h | Sáb: 6h-20h | Dom: 7h-18h</p>
+                    </div>
+                    <div class="unidade-actions">
+                        <a href="detalhes-unidade.html?unidade=morumbi" class="btn btn-primary">Ver Detalhes</a>
+                        <a href="agendamento.php" class="btn btn-secondary">Agendar Aula</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script>
+        function initMap() {
+            const techfitPaulista = [-23.5630, -46.6520];
+
+            const map = L.map('map').setView(techfitPaulista, 15);
+            
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '© OpenStreetMap contributors'
+            }).addTo(map);
+            
+            const customIcon = L.divIcon({
+                className: 'custom-marker',
+                html: `
+                    <div style="background: linear-gradient(135deg, #00bcd4, #00d4ff); 
+                                width: 40px; 
+                                height: 40px; 
+                                border-radius: 50%; 
+                                display: flex; 
+                                align-items: center; 
+                                justify-content: center;
+                                box-shadow: 0 2px 10px rgba(0, 188, 212, 0.5);
+                                border: 3px solid white;">
+                        <span class="material-symbols-outlined" style="color: white; font-size: 20px;">fitness_center</span>
+                    </div>
+                `,
+                iconSize: [40, 40],
+                iconAnchor: [20, 40]
+            });
+            
+            L.marker(techfitPaulista, { icon: customIcon })
+                .addTo(map)
+                .bindPopup(`
+                    <div style="min-width: 250px;">
+                        <h3 style="color: #00bcd4; margin-bottom: 10px;">TechFit Paulista</h3>
+                        <p style="margin-bottom: 15px; color: #333;">Av. Paulista, 1234 - Bela Vista</p>
+                        <div style="display: flex; gap: 10px;">
+                            <a href="detalhes-unidade.html?unidade=paulista" 
+                               style="background: #00bcd4; color: white; padding: 8px 16px; text-decoration: none; border-radius: 5px; font-size: 12px;">
+                                Ver Detalhes
+                            </a>
+                            <a href="agendamento.php" 
+                               style="background: #666; color: white; padding: 8px 16px; text-decoration: none; border-radius: 5px; font-size: 12px;">
+                                Agendar Aula
+                            </a>
+                        </div>
+                    </div>
+                `)
+                .openPopup();
+            
+            L.circle(techfitPaulista, {
+                color: '#00bcd4',
+                fillColor: '#00bcd4',
+                fillOpacity: 0.1,
+                radius: 500
+            }).addTo(map);
+        }
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            initMap();
+            
+            const hamburgerMenu = document.querySelector('.hamburger-menu');
+            const mainNavigation = document.querySelector('.main-navigation');
+            
+            if (hamburgerMenu) {
+                hamburgerMenu.addEventListener('click', function() {
+                    this.classList.toggle('active');
+                    mainNavigation.classList.toggle('active');
+                });
+            }
+            
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.addEventListener('click', function() {
+                    if (hamburgerMenu) hamburgerMenu.classList.remove('active');
+                    if (mainNavigation) mainNavigation.classList.remove('active');
+                });
+            });
+        });
+    </script>
+
+    <script src="assets/js/header-carrinho-simples.js"></script>
+</body>
+</html>

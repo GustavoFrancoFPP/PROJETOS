@@ -1,0 +1,143 @@
+﻿<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="TechFit - Sua Academia do Futuro. Treinos inteligentes com IA, planos acessíveis e tecnologia de ponta.">
+    <meta name="keywords" content="academia, techfit, treino, inteligência artificial, fitness, musculação">
+    <title>TECHFIT - Sua Academia do Futuro</title>
+    
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link rel="stylesheet" href="assets/css/inicio.css">
+    <link rel="icon" type="image/x-icon" href="assets/images/imagens/favicon.ico">
+</head>
+<body>
+
+    <header class="techfit-header">
+        <div class="header-container">
+            <!-- Logo -->
+            <a href="inicio.html" class="header-logo">
+                <img src="assets/images/imagens/WhatsApp Image 2025-10-02 at 15.15.22.jpeg" 
+                     alt="TechFit - Academia Inteligente" 
+                     class="logo-image">
+                <div class="logo-text">TECH<span>FIT</span></div>
+            </a>
+
+            <!-- Navegação -->
+            <nav class="main-navigation">
+                <ul class="nav-links">
+                    <li><a href="inicio.html" class="nav-link active">Início</a></li>
+                    <li><a href="pagina_1.html" class="nav-link">Academias</a></li>
+                    <li><a href="produtos_loja.php" class="nav-link">Produtos</a></li>
+                    <li><a href="agendamento.php" class="nav-link">Agendamento</a></li>
+                    <li><a href="suporte.html" class="nav-link">Suporte</a></li>
+                </ul>
+
+                <!-- Botão de Ação -->
+                <div class="header-cta">
+                    <!-- Botão do Carrinho (será adicionado pelo JavaScript) -->
+                    <a href="login.php" class="cta-button">Área do Aluno</a>
+                </div>
+            </nav>
+
+            <!-- Menu Hambúrguer (Mobile) -->
+            <button class="hamburger-menu" aria-label="Menu">
+                <span class="hamburger-line"></span>
+                <span class="hamburger-line"></span>
+                <span class="hamburger-line"></span>
+            </button>
+        </div>
+    </header>
+
+    <main>
+        <div class="container">
+            
+            <!-- CARROSSEL CORRIGIDO -->
+            <section class="hero-section">
+                <div class="carousel-container">
+                    <div class="carousel-wrapper">
+                        <div class="carousel-slide">
+                            <img src="assets/images/imagens/academias frente.png" alt="Visão externa da academia Techfit">
+                            <img src="assets/images/imagens/parte interna academia].png" alt="Área de musculação da academia Techfit">
+                            <img src="assets/images/imagens/halteres-no-chao-de-uma-academia-ai-generative.jpg" alt="Área de halteres da academia Techfit">
+                        </div>
+                    </div>
+                    <button class="carousel-btn prev-btn" aria-label="Imagem anterior">&#10094;</button>
+                    <button class="carousel-btn next-btn" aria-label="Próxima imagem">&#10095;</button>
+                    <div class="carousel-indicators">
+                        <button class="carousel-indicator active" data-index="0"></button>
+                        <button class="carousel-indicator" data-index="1"></button>
+                        <button class="carousel-indicator" data-index="2"></button>
+                    </div>
+                </div>
+            </section>
+
+            <section class="pricing-section">
+                <article class="plan-card">
+                    <h3>Plano Sigma</h3>
+                    <p>O melhor que tem, inclui todos os treinos, acesso a todas as aulas e ainda ganha suplementos de graça para potencializar seus resultados.</p>
+                    <div class="price">R$239,90 <span>por mês</span></div>
+                    <a href="planos.php" class="btn-primary">Saiba mais!</a>
+                    <ul class="features-list">
+                        <li class="included">Acesso a todas as academias TechFit</li>
+                        <li class="included">Todos os tipos de aulas disponíveis</li>
+                        <li class="included">Suplementos disponíveis</li>
+                        <li class="included">Avaliação física disponível</li>
+                        <li class="included">Acompanhamento Nutricional</li>
+                    </ul>
+                </article>
+
+                <article class="plan-card featured">
+                     <h3>Plano Alpha</h3>
+                     <p>Ideal para todos da casa, acesso completo à academia para múltiplos membros com benefícios especiais para cada família.</p>
+                     <div class="price">R$139,90 <span>por mês</span></div>
+                     <a href="planos.php" class="btn-primary">Saiba mais!</a>
+                     <ul class="features-list">
+                        <li class="included">Acesso a todas as academias TechFit</li>
+                        <li class="included">Todos os tipos de aulas disponíveis</li>
+                        <li class="included">Suplementos disponíveis</li>
+                        <li class="included">Avaliação física disponível</li>
+                        <li class="excluded">Acompanhamento Nutricional</li>
+                    </ul>
+                </article>
+
+                <article class="plan-card">
+                    <h3>Plano Beta</h3>
+                    <p>Essencial para quem quer manter a forma, com acesso aos equipamentos e treinos básicos sem complicação.</p>
+                    <div class="price">R$89,90 <span>por mês</span></div>
+                    <a href="planos.php" class="btn-primary">Saiba mais!</a>
+                    <ul class="features-list">
+                        <li class="included">Acesso a todas as academias TechFit</li>
+                        <li class="included">Todos os tipos de aulas disponíveis</li>
+                        <li class="excluded">Suplementos disponíveis</li>
+                        <li class="excluded">Avaliação física disponível</li>
+                        <li class="excluded">Acompanhamento Nutricional</li>
+                    </ul>
+                </article>
+            </section>
+        </div>
+    </main>
+
+    <footer class="main-footer">
+        <div class="container">
+            <div class="footer-brand">
+                <img src="assets/images/imagens/WhatsApp Image 2025-10-02 at 15.15.22.jpeg" alt="Logo da TECHFIT" class="logo-img">
+                <p>Sua Academia do Futuro!</p>
+            </div>
+            <div class="footer-copyright">
+                <p>&copy; 2024 TECHFIT. Todos os direitos reservados.</p>
+            </div>
+            <div class="footer-contact">
+                <a href="#"><i class="fa-brands fa-instagram"></i> TECHFIT_OFC</a>
+                <a href="#"><i class="fa-brands fa-whatsapp"></i> (19) 99936-4328</a>
+            </div>
+        </div>
+    </footer>
+    
+    <!-- Scripts -->
+    <script src="assets/js/inicio.js"></script>
+    <script src="assets/js/header-carrinho-simples.js"></script>
+</body>
+</html>
