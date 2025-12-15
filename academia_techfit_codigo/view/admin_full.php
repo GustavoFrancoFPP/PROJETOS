@@ -140,9 +140,9 @@ if (isset($_POST['action'])) {
                 break;
                 
             // Garantir que quantidade_estoque não seja null
-    // Corrigir: o campo no formulário se chama 'quantidade', não 'quantidade_estoque'
-    $quantidade_estoque = isset($_POST['quantidade']) && $_POST['quantidade'] !== '' 
-        ? intval($_POST['quantidade']) 
+    // Corrigir: usar sempre o campo 'quantidade_estoque' para edição
+    $quantidade_estoque = isset($_POST['quantidade_estoque']) && $_POST['quantidade_estoque'] !== '' 
+        ? intval($_POST['quantidade_estoque']) 
         : 0;
     $stmt = $conn->prepare("UPDATE produtos SET nome_produto = ?, tipo_produto = ?, categoria = ?, preco = ?, quantidade_estoque = ?, url_imagem = ?, descricao = ? WHERE id_produtos = ? ");
     $stmt->execute([

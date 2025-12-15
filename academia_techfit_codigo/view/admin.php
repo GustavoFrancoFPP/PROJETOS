@@ -545,7 +545,7 @@ $notificacoes = $conn->query("SELECT * FROM notificacao ORDER BY data_envio DESC
                             </div>
                             <div class="form-group">
                                 <label class="form-label">Quantidade em Estoque*</label>
-                                <input type="number" name="quantidade" class="form-control" min="0" required>
+                                <input type="number" name="quantidade_estoque" class="form-control" min="0" required>
                             </div>
                             <div class="form-group">
                                 <label class="form-label">URL da Imagem</label>
@@ -873,9 +873,9 @@ $notificacoes = $conn->query("SELECT * FROM notificacao ORDER BY data_envio DESC
             const tipo = prompt('Tipo (suplemento/roupa/acessorio):', produto.tipo_produto);
             const categoria = prompt('Categoria:', produto.categoria || '');
             const preco = prompt('Preço (R$):', produto.preco);
-            const quantidade = prompt('Quantidade em Estoque:', produto.quantidade);
+            const quantidade = prompt('Quantidade em Estoque:', produto.quantidade_estoque);
             
-            if (nome && tipo && preco && quantidade) {
+            if (nome && tipo && preco && quantidade !== null) {
                 const form = document.createElement('form');
                 form.method = 'POST';
                 form.innerHTML = `
@@ -885,7 +885,7 @@ $notificacoes = $conn->query("SELECT * FROM notificacao ORDER BY data_envio DESC
                     <input type="hidden" name="tipo_produto" value="${tipo}">
                     <input type="hidden" name="categoria" value="${categoria}">
                     <input type="hidden" name="preco" value="${preco}">
-                    <input type="hidden" name="quantidade" value="${quantidade}">
+                    <input type="hidden" name="quantidade_estoque" value="${quantidade}">
                 `;
                 document.body.appendChild(form);
                 form.submit();
